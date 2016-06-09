@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+    <link rel='stylesheet' href='/stylesheets/index.css' />
+</head>
+<body>
+<div class="back">
+    <div class="back-up">
+        <img class="back-img" src="/images/logo_n.png" >
+        <div>
+            <span>一种生活方式</span>
+        </div>
+    </div>
+    <div>
+        <span class="back-mid">让组团记账更简单</span></div>
+    <div class="back-down">
+        <img class="qq-img" src="/images/qq.png"  onclick="window.open('http://localhost:3000/users/login?type=qq')">
+        <img src="/images/line.png" >
+        <img class="weixin-img" src="/images/weixin.png"  onclick="window.open('http://localhost:3000/users/login?type=weixin')">
+    </div>
+</div>
+</body>
 </html>
