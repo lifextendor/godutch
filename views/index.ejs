@@ -2,10 +2,12 @@
 <html>
   <head>
     <title><%= title %></title>
+    <meta property="qc:admins" content="3001615074543064510063757" />
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <p>Welcome to <%= title %>! I'm <%= user %></p>
+    <button onclick='window.open("<%= root %>/users")'></button>
   </body>
 </html>
