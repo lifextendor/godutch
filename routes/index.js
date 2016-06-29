@@ -24,11 +24,11 @@ router.get('/', function(req, res, next) {
             Users.addUser(userInfo).then(function(userInfo){
                 res.render('index',{title:TITLE,user:userInfo.user_name,root:root});
             }).catch(function(){
-                res.render('login',{title:TITLE,root:root});
+                res.render('users',{title:TITLE,root:root});
             });
         });
     }else{
-        res.render('login',{title:TITLE,root:root});
+        res.render('users',{title:TITLE,root:root});
     }
 });
 

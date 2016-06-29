@@ -1,0 +1,18 @@
+[{
+	uname:'',
+	uid:'',
+	utype:'qq',
+	nick:''
+},
+{
+	uname:'',
+	uid:'',
+	utype:'wechat',
+	nick:''
+},{
+	uname:'',
+	uid:'',
+	upassword:'',
+	utype:'godutch',
+	nick:''
+}]

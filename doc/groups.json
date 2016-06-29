@@ -1,0 +1,16 @@
+[{
+	gid:'',
+	gname:'',
+	gdescription:'',
+	members:[uid0,uid1,uid2]
+},{
+	gid:'',
+	gname:'',
+	gdescriptiong:'',
+	members:[uid0,uid1]
+},{
+	gid:'',
+	gname:'',
+	gdescriptiong:'',
+	members:[uid0,uid1,uid2,uid3]
+}]
