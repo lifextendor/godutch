@@ -1,434 +1,343 @@
-var client = require("mongodb").MongoClient;
-var logger = require("../databases/log");
-var databaseinfo = require("../../package").database;
-var db_host = databaseinfo.db_host,
-	db_port = databaseinfo.db_port,
-	db_name = databaseinfo.db_name,
-	username = databaseinfo.username,
-	password = databaseinfo.password;
-var authenticate = username && password && (username + ":" + password + "@") || "";
-var url = "mongodb://" + authenticate + db_host + ":" + db_port + "/" + db_name;
+var DbUtil = require('./dbutil');
+var when = require('when');
+var COL = 'groups';
+var GRANT = {
+	Captain:'CAPTAIN',
+	ViceCapTain:'VICECAPTAIN',
+	TeamMember:'TEAMMEMBER'
+};
+var OPERATE = {
+	View:'VIEW', //查看团及余额和接收消息,和退出团
+	Count:'COUNT',//更新团的余额信息
+	Manage:'MANAGE' //团员管理，删除团,
+};
 
+var OPERATE_GRANT_MAP = {
+	VIEW:[GRANT.TeamMember,GRANT.ViceCapTain,GRANT.Captain],
+	COUNT:[GRANT.ViceCapTain,GRANT.Captain],
+	MANAGE:[GRANT.Captain]
+};
 
-var log4js = require('log4js');
-var _logger = log4js.getLogger();
-module.exports.createGroup = function(name, word, brief, succeed, failed) {
-	var that = this;
-	client.connect(url, function(err, db) {
-		if (err) {
-			_logger.error(err);
-			failed && failed.call(that, err);
-			db && db.close();
-			return;
-		}
-		db.createCollection(name, {
-			"strict": true
-		}, function(err, col) {
-			if (err) {
-				_logger.error(err);
-				db && db.close();
-				failed && failed.call(that, err);
+/*************** Group操作 ****************/
+function addGroup(groupInfo){
+	var deferred = when.defer(),
+		addGroupPromise = deferred.promise;
+	groupInfo.members = [{user:creator,money:0,grant:GRANT.Captain}];
+	var getGroupColPromise = DbUtil.connect().then(function(db){
+		return DbUtil.getCollection(db, COL);
+	}).catch(function(evt){
+		var createGroupColPromise = createGroupCollection(evt.db);
+		insertGroup(createGroupColPromise,deferred,groupInfo);
+	});
+	insertGroup(getGroupColPromise,deferred, groupInfo);
+	return addGroupPromise;
+}
+
+function findGroupById(groupId,provider,userId){
+	var deferred = when.defer(),
+		findGroupByIdPromise = deferred.promise;
+	var operate = OPERATE.View;
+	checkGrant(operate,groupId,provider,userId).then(function(){
+		DbUtil.connect().then(function(db){
+			return DbUtil.getCollection(db, COL);
+		}).catch(function(err){
+			deferred.reject(err);
+		}).then(function(evt){
+			if(!evt){
 				return;
 			}
-			insertDoc(col, [{
-				type: "captain",
-				word: word,
-				brief: brief,
-				createtime: new Date().getTime()
-			}], function(result) {
-				db && db.close();
-				logger.creategrouplog(name, function() {
-					succeed && succeed.call(that, result);
-				}, function() {
-					_logger.error("log create group " + name + " failed!");
-					failed && failed.call(that, err);
-				});
-			}, function(err) {
-				_logger.error(err);
-				db && db.close();
-				failed && failed.call(that, err);
-			}, that);
-		});
-	});
-};
-module.exports.dismissGroup = function(name, succeed, failed) {
-	var that = this;
-	client.connect(url, function(err, db) {
-		if (err) {
-			_logger.error(err);
-			failed && failed.call(that, err);
-			db && db.close();
-			return;
-		}
-		db.dropCollection(name, function(err, col) {
-			if (err) {
-				_logger.error(err);
-				db.close();
-				failed && failed.call(that, err);
+			return findOneGroup({id:groupId});
+		}).done(function(evt){
+			if(!evt){
 				return;
 			}
-			db && db.close();
-			logger.dismissgrouplog(name, function() {
-				succeed && succeed.call(that, result);
-			}, function() {
-				_logger.error("log dissmiss group " + name + " failed!");
-				failed && failed.call(that, err);
-			});
+			deferred.resolve(evt.doc);
+			evt.db.close();
 		});
+	}).catch(function(){
+		deferred.reject();
 	});
-};
-module.exports.checkUniqGName = function(name, succeed, failed) {
-	var that = this;
-	client.connect(url, function(err, db) {
-		if (err) {
-			_logger.error(err);
-			db && db.close();
-			failed && failed.call(that, err);
-			return;
-		}
-		db.collection(name, {
-			"strict": true
-		}, function(err, col) {
-			if (err) {
-				_logger.error(err);
-				db && db.close();
-				succeed && succeed.call(that, col);
-				return;
-			}
-			db && db.close();
-			failed && failed.call(that, err);
-		});
-	});
-};
-module.exports.checkCaptain = function(name, word, succeed, failed) {
-	var that = this;
-	client.connect(url, function(err, db) {
-		if (err) {
-			db && db.close();
-			failed && failed.call(that, err);
-			_logger.error(err);
-			return;
-		}
-		db.collection(name, {
-			"strict": true
-		}, function(err, col) {
-			if (err) {
-				_logger.error(err);
-				failed && failed.call(that, "group not exit");
-				return;
-			}
-			var filter = {
-				type: "captain",
-				word: word
-			};
-			findDoc(col, filter, {
-				fields: {
-					brief: 1
-				}
-			}, function(result) {
-				db && db.close();
-				succeed && succeed.call(that, "succeed");
-			}, function(err) {
-				_logger.error(err);
-				db && db.close();
-				failed && failed.call(that, "wrong word");
-			}, that);
-		});
-	});
-};
-module.exports.addMember = function(name, memberInfo, succeed, failed) {
-	var that = this;
-	client.connect(url, function(err, db) {
-		if (err) {
-			_logger.error(err);
-			db && db.close();
-			failed && failed.call(that, err);
-			return;
-		}
-		db.collection(name, {
-			"strict": true
-		}, function(err, col) {
-			if (err) {
-				_logger.error(err);
-				db && db.close();
-				failed && failed.call(that, err);
-				return;
-			}
-			if (Array.isArray(memberInfo)) {
-				db && db.close();
-				failed && failed.call(that, "memberInfo cannot be a Array");
-			}
-			memberInfo.money = memberInfo.money || 0;
-			memberInfo.name = memberInfo.name;
-			memberInfo.type = "member";
-			var datetime = new Date().getTime();
-			memberInfo.lastRechargeTime = datetime;
-			memberInfo.lastConsumeTime = -1;
-			insertDoc(col, [memberInfo], function(result) {
-				db && db.close();
-				succeed && succeed.call(that, result);
-			}, function(err) {
-				_logger.error(err);
-				db && db.close();
-				err.mName = memberInfo.name;
-				failed && failed.call(that, err);
-			}, that);
-		});
-	});
-};
-module.exports.removeMember = function(gName, mName, succeed, failed) {
-	var that = this;
-	client.connect(url, function(err, db) {
-		if (err) {
-			_logger.error(err);
-			db && db.close();
-			failed && failed.call(that, err);
-			return;
-		}
-		db.collection(gName, {
-			"strict": true
-		}, function(err, col) {
-			if (err) {
-				_logger.error(err);
-				db && db.close();
-				failed && failed.call(that, err);
-				return;
-			}
-			var query = {
-				type: "member",
-				name: mName
-			};
-			removeDoc(col, query, function(result) {
-				db && db.close();
-				succeed && succeed.call(that, result);
-			}, function(err) {
-				_logger.error(err);
-				db && db.close();
-				err.mName = mName;
-				failed && failed.call(that, err);
-			}, that);
-		});
-	});
-};
-module.exports.checkUniqMName = function(gName, mName, succeed, failed) {
-	var that = this;
-	client.connect(url, function(err, db) {
-		if (err) {
-			_logger.error(err);
-			db && db.close();
-			failed && failed.call(that, err);
-			return;
-		}
-		db.collection(gName, {
-			"strict": true
-		}, function(err, col) {
-			if (err) {
-				_logger.error(err);
-				db && db.close();
-				failed && failed.call(that, {
-					message: gName + " is not exit!"
-				});
-			} else {
-				findDoc(col, {
-					"type": "member",
-					"name": mName
-				}, {
-					fields: {
-						name: 1
+	return findGroupByIdPromise;
+}
+
+function findGroupByCreator(provider,userId){
+	var deferred = when.defer(),
+		findGroupByMember = deferred.promise;
+	findGroup({creator:{provider:provider,user_id:userId}})
+		.then(function(docs){
+			var results =[];
+			for(var i = 0, len = docs.length; i < len; i++){
+				var doc = docs[i];
+				var members = doc.members,
+					grant;
+				for(var j = 0, len0 = members.length; j < len0; j++){
+					if(members[j].user.provider === provider && members[j].user.user_id === userId){
+						grant = members[j].grant;
+						break;
 					}
-				}, function() {
-					db && db.close();
-					failed && failed.call(that, {
-						message: mName + " is already exit in group:" + gName
-					});
-				}, function(err) {
-					_logger.error(err);
-					db && db.close();
-					succeed && succeed.call(that);
-				}, that);
+				}
+				var result = {id:docs[i].id,groupName:docs[i].gname,members:docs[i].members.length,grant:grant};
+				results.push(result);
+			}
+			deferred.resolve(results);
+		}).catch(function(err){
+			deferred.reject(err);
+		});
+	return findGroupByMember;
+}
+
+function findGroupByMember(provider,userId){
+	var deferred = when.defer(),
+		findGroupByMember = deferred.promise;
+	findGroup({"members.user.provider":provider,"members.user.user_id":userId})
+		.then(function(docs){
+			var results =[];
+			for(var i = 0, len = docs.length; i < len; i++){
+				var doc = docs[i];
+				var members = doc.members,
+					grant;
+				for(var j = 0, len0 = members.length; j < len0; j++){
+					if(members[j].user.provider === provider && members[j].user.user_id === userId){
+						grant = members[j].grant;
+						break;
+					}
+				}
+				var result = {id:docs[i].id,groupName:docs[i].gname,members:docs[i].members.length,grant:grant};
+				results.push(result);
+			}
+			deferred.resolve(results);
+		}).catch(function(err){
+			deferred.reject(err);
+		});
+	return findGroupByMember;
+}
+
+function findGroupByUser(provider,userId){
+	var deferred = when.defer(),
+		findGroupByUserPromise = deferred.promise;
+	findGroup({$or:[{creator:{provider:provider,user_id:userId}},
+		{"members.user.provider":provider,"members.user.user_id":userId}]})
+		.then(function(docs){
+			var results =[];
+			for(var i = 0, len = docs.length; i < len; i++){
+				var doc = docs[i];
+				var members = doc.members,
+					grant;
+				for(var j = 0, len0 = members.length; j < len0; j++){
+					if(members[j].user.provider === provider && members[j].user.user_id === userId){
+						grant = members[j].grant;
+						break;
+					}
+				}
+				var result = {id:docs[i].id,groupName:docs[i].gname,members:docs[i].members.length,grant:grant};
+				results.push(result);
+			}
+			deferred.resolve(results);
+	}).catch(function(err){
+			deferred.reject(err);
+		});
+	return findGroupByUserPromise;
+}
+
+function deleteGroup(groupId,provider,user_id){
+	var deferred = when.defer(),
+		deleteGroupPromise = deferred.promise;
+	var operate = OPERATE.Manage;
+	checkGrant(operate,groupId,provider,user_id).then(function(){
+		DbUtil.connect().then(function(db){
+			return DbUtil.getCollection(db, COL);
+		}).catch(function(err){
+			deferred.reject(err);
+		}).then(function(evt){
+			if(!evt){
 				return;
 			}
+			return DbUtil.deleteDoc(evt.db,evt.col,{id:groupId});
+		}).done(function(evt){
+			if(!evt){
+				return;
+			}
+			deferred.resolve(evt.doc);
+			evt.db.close();
 		});
+	}).catch(function(){
+		deferred.reject();
 	});
-};
-module.exports.updateMoney = function(name, isConsume, memberInfo, succeed, failed) {
-	if (isNaN(memberInfo.money)) {
-		var err="no money info!"
-		failed && failed.call(this, {
-			error: err
-		});
-		_logger.error(err);
-		return;
+	return deleteGroupPromise;
+}
+
+/*********************  成员操作  **********************/
+//新加的团员权限默认为最低权限
+function addMember(groupId,provider,userId,userInfo,money){
+	var updateDoc = {$push:{members:{user:userInfo,money:money,grant:GRANT.TeamMember,state:'normal'}}};
+	return updateMember(OPERATE.Manage,{id:groupId},groupId, provider,userId,updateDoc);
+}
+
+//删除团员实际上不是真的删掉，只是把团员的state属性改成delete状态
+function deleteMember(groupId,provider,userId,userInfo){
+	var queryDoc = {id:groupId,'members.user.provider':userInfo.provider,'members.user.user_id':userInfo.userId},
+		updateDoc = {'members.$.state':'delete'};
+	return updateMember(OPERATE.View,queryDoc,groupId, provider,userId,updateDoc);
+}
+
+//更新成员的余额,userInfoes的信息应该是这样：[{provider:'a',user_id:1,money:10},{provider:'b',user_id:2,money:100}];
+function updateMoney(groupId,provider,userId,userInfoes){
+	var deferred = when.defer(),
+		updateMoneyPromise = deferred.promise;
+	var promises = [];
+	for(var i = 0, len = userInfoes.length; i < len; i++){
+		var userInfo = userInfoes[i];
+		var queryDoc = {id:groupId,'members.user.provider':userInfo.provider,'members.user.user_id':userInfo.userId},
+			updateDoc = {'members.$.money':userInfo.money};
+		var promise = updateMember(OPERATE.View,queryDoc,groupId, provider,userId,updateDoc);
+		promises.push(promise);
 	}
-	var that = this;
-	_logger.fatal('updating money!');
-	client.connect(url, function(err, db) {
-		if (err) {
-			db && db.close();
-			_logger.error(err);
-			failed && failed.call(that, err);
+	when.all(promises).then(function(){
+		deferred.resolve();
+	}).catch(function(){
+		deferred.reject();
+		console.log('update Money failed.date:'+new Date().getTime());
+	});
+	return updateMoneyPromise;
+}
+
+/*************** 内部的函数 *****************/
+function createGroupCollection(db){
+	var deferred = when.defer();
+	DbUtil.createCollection(db,COL).then(function(evt){
+		deferred.resolve({db:evt.db,col:evt.col});
+	}).catch(function(evt){
+		deferred.rejected({db:evt.db,err:evt.err});
+	});
+	return deferred.promise;
+}
+function updateMember(operate,queryDoc, groupId, provider,userId,updateDoc){
+	var deferred = when.defer(),
+		updateMemberPromise = deferred.promise;
+	checkGrant(operate,groupId,provider,userId).then(function(){
+		DbUtil.connect().then(function(db){
+			return DbUtil.getCollection(db, COL);
+		}).catch(function(evt){
+			deferred.reject(evt);
+		}).then(function(evt){
+			return DbUtil.updateDoc(evt.db,evt.col,queryDoc,updateDoc);
+		}).done(function(evt){
+			deferred.resolve(evt.doc);
+			evt.db.close;
+		}).catch(function(evt){
+			deferred.reject(evt);
+			evt.db.close;
+		});
+	}).catch(function(){
+		deferred.reject();
+	});
+	return updateMemberPromise;
+}
+function findGroup(query){
+	var deferred = when.defer(),
+		findGroupPromise = deferred.promise;
+	DbUtil.connect().then(function(db){
+		return DbUtil.getCollection(db, COL);
+	}).catch(function(err){
+		deferred.reject(err);
+	}).then(function(evt){
+		if(!evt){
 			return;
 		}
-		db.collection(name, {
-			"strict": true
-		}, function(err, col) {
-			if (err) {
-				db && db.close();
-				_logger.error(err);
-				failed && failed.call(that, err);
-				return;
-			}
-			findDoc(col, {
-				"type": "member",
-				"name": memberInfo.name
-			}, {
-				fields: {
-					name: 1,
-					money: 1
-				}
-			}, function(result) {
-				_logger.fatal("update money find document success!");
-				var money = Number(memberInfo.money);
-				var datetime = memberInfo.datetime || new Date().getTime();
-				//避免使用+号以防止字符串连�?
-				result.money -= (-money);
-				if (isConsume) {
-					result.lastConsumeTime = datetime;
-				} else {
-					result.lastRechargeTime = datetime;
-				}
-				delete result._id;
-				updateDoc(col, {
-					"type": "member",
-					"name": result.name
-				}, result, function(result) {
-					db && db.close();
-					_logger.fatal("update money find document {name:"+name+"} and update success!");
-					succeed && succeed.call(that, result);
-				}, function(err) {
-					db && db.close();					
-					err.mName = memberInfo.name;
-					_logger.error(err);
-					failed && failed.call(that, err);
-				}, that);
-			}, function(err) {
-				db && db.close();
-				err.mName = memberInfo.name;
-				_logger.error(err);
-				failed && failed.call(that, err);
-			}, that);
-		});
-	});
-};
-module.exports.queryMemberInfo = function(name, succeed, failed) {
-	var that = this;
-	client.connect(url, function(err, db) {
-		if (err) {
-			_logger.error(err);
-			db && db.close();
-			failed && failed.call(that, err);
+		return DbUtil.queryDoc(evt.db,evt.col,query);
+	}).done(function(evt){
+		if(!evt){
 			return;
 		}
-		db.collection(name, {
-			"strict": true
-		}, function(err, col) {
-			if (err) {
-				_logger.error(err);
-				db && db.close();
-				failed && failed.call(that, err);
-				return;
-			}
-			col.find({
-				"type": "member"
-			}).toArray(function(err, docs) {
-				if (err) {
-					_logger.error("find membersInfo failed!");
-					db && db.close();
-					failed && failed.call(that, err);
-				} else {
-					_logger.fatal("find membersInfo!");
-					db && db.close();
-					succeed && succeed.call(that, docs);
-				}
-			});
-		});
+		deferred.resolve(evt.docs);
+		evt.db.close();
 	});
+	return findGroupPromise;
+}
+function findOneGroup(query,options){
+	var deferred = when.defer(),
+		findOneGroupPromise = deferred.promise;
+	DbUtil.connect().then(function(db){
+		return DbUtil.getCollection(db, COL);
+	}).catch(function(err){
+		deferred.reject(err);
+	}).then(function(evt){
+		if(!evt){
+			return;
+		}
+		return DbUtil.queryOneDoc(evt.db,evt.col,query,options);
+	}).done(function(evt){
+		if(!evt){
+			return;
+		}
+		deferred.resolve(evt.doc);
+		evt.db.close();
+	});
+	return findOneGroupPromise;
+}
+function insertGroup(promise, deferred,groupInfo){
+	promise.then(function(evt){
+		if(!evt){
+			return;
+		}
+		return DbUtil.insertDoc(evt.db,evt.col,[userInfo]);
+	}).done(function(evt){
+		if(!evt){
+			return;
+		}
+		var type = evt.type,
+			db = evt.db,
+			doc = evt.doc;
+		if(type === 'insert'){
+			deferred.resolve(doc);
+		}
+		db.close();
+	});
+}
+
+function checkGrant(operate,groupId,provider,userId){
+	var deferred = when.defer(),
+		checkGrantPromise = deferred.promise;
+	DbUtil.connect().then(function(db){
+		return DbUtil.getCollection(db, COL);
+	}).catch(function(err){
+		deferred.reject(err);
+	}).then(function(evt){
+		if(!evt){
+			return;
+		}
+		var grants = [];
+		for(grant in OPERATE_GRANT_MAP[operate]){
+			var queryGrant = {'members.grant': grant};
+			grants.push(queryGrant);
+		}
+		var filter = {id:groupId,'members.user.provider':provider,'members.user.user_id':userId,$or:grants};
+		return DbUtil.queryDoc(evt.db,evt.col,filter);
+	}).done(function(evt){
+		if(!evt){
+			return;
+		}
+		deferred.resolve(evt.doc);
+		evt.db.close();
+	}).catch(function(evt){
+		if(!evt){
+			return;
+		}
+		deferred.resolve(evt.doc);
+		evt.db.close();
+	});
+	return checkGrantPromise;
+}
+
+module.exports = {
+	addGroup: addGroup,
+	findGroupByMember: findGroupByMember,
+	findGroupByCreator: findGroupByCreator,
+	findGroupByUser: findGroupByUser,
+	findGroupById: findGroupById,
+	deleteGroup: deleteGroup,
+	addMember:addMember,
+	deleteMember:deleteMember,
+	updateMoney: updateMoney,
+	OPERATE:OPERATE
 };
-
-function insertDoc(collection, docs, succeed, failed, scope) {
-	try {
-		collection.insertMany(docs, function(err, result) {
-			if (err) {
-				_logger.error("insert doc falied!");
-				failed && failed.call(scope, err);
-			} else {
-				_logger.fatal("insert doc!");
-				succeed && succeed.call(scope, result);
-			}
-		});
-	} catch (e) {
-		_logger.error(e.message);
-		failed && failed.call(scope, e.message);
-	}
-}
-
-function updateDoc(collection, query, setDoc, succeed, failed, scope) {
-	try {
-		collection.updateOne(query, {
-			$set: setDoc
-		}, function(err, result) {
-			if (err) {
-				_logger.error("update doc falied!");
-				failed && failed.call(scope, err);
-			} else {
-				_logger.fatal("update doc!");
-				succeed && succeed.call(scope, result);
-			}
-		});
-	} catch (e) {
-		_logger.error(e.message);
-		failed && failed.call(scope, e.message);
-	}
-}
-
-function removeDoc(collection, query, succeed, failed, scope) {
-	try {
-		collection.remove(query, function(err, result) {
-			if (err) {
-				_logger.error("remove doc falied!");
-				failed && failed.call(scope, err);
-			} else {
-				_logger.fatal("remove doc!");
-				succeed && succeed.call(scope, result);
-			}
-		});
-	} catch (e) {
-		_logger.error(e.message);
-		failed && failed.call(scope, e.message);
-	}
-}
-
-function findDoc(collection, query, options, succeed, failed, scope) {
-	try {
-		collection.findOne(query, options, function(err, result) {
-			if (err || !result) {
-				_logger.error("find doc falied!");
-				failed && failed.call(scope, err);
-			} else if (result) {
-				_logger.fatal("find doc!");
-				succeed && succeed.call(scope, result);
-			}
-		});
-	} catch (e) {
-		_logger.error(e.message);
-		failed && failed.call(scope, e.message);
-	}
-}
-
-function guid() {
-	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-		var r = Math.random() * 16 | 0,
-			v = c == 'x' ? r : (r & 0x3 | 0x8);
-		return v.toString(16);
-	});
-}

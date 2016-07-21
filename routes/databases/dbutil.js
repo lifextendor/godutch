@@ -19,7 +19,6 @@ function connecting2DB(){
     client.connect(url, function(err, db) {
         if(err){
             deferred.reject(err);
-            db.close();
             return deferred.promise;
         }
         deferred.resolve(db);
@@ -78,11 +77,10 @@ function insertDocument(db,collection, docs) {
     return deferred.promise;
 }
 
-function updateDocument(db,collection, query, setDoc) {
+function updateDocument(db,collection, query, updateDoc) {
     var deferred = when.defer();
-    collection.updateOne(query, {
-        $set: setDoc
-    }, function(err, doc) {
+    updateDoc.$currentDate = {lastModified: true};
+    collection.updateOne(query, updateDoc, function(err, doc) {
         if (err) {
             deferred.reject({db:db,err:err});
             return deferred.promise;
@@ -104,7 +102,19 @@ function deleteDocument(db,collection, query) {
     return deferred.promise;
 }
 
-function queryDocument(db,collection, query, options) {
+function queryDocument(db,collection, query) {
+    var deferred = when.defer();
+    collection.find(query, function(err, docs) {
+        if (err) {
+            deferred.reject({db:db,err:err});
+            return deferred.promise;
+        }
+        deferred.resolve({db:db,docs:docs,type:'query'});
+    });
+    return deferred.promise;
+}
+
+function queryOneDocument(db,collection, query, options) {
     var deferred = when.defer();
     collection.findOne(query, options, function(err, doc) {
         if (err) {
@@ -124,7 +134,8 @@ module.exports = {
     insertDoc:insertDocument,
     updateDoc:updateDocument,
     deleteDoc:deleteDocument,
-    queryDoc:queryDocument
+    queryDoc:queryDocument,
+    queryOneDoc:queryOneDocument
 };
 
 
