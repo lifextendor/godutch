@@ -2,6 +2,7 @@
 	gid:'',
 	gname:'',
 	gdescription:'',
+    creator:{provider:'qq',user_id:1},
 	members:[uid0,uid1,uid2]
 },{
 	gid:'',

@@ -167,36 +167,40 @@ function deleteGroup(groupId,provider,user_id){
 }
 
 /*********************  成员操作  **********************/
-//新加的团员权限默认为最低权限
-function addMember(groupId,provider,userId,userInfo,money){
-	var updateDoc = {$push:{members:{user:userInfo,money:money,grant:GRANT.TeamMember,state:'normal'}}};
-	return updateMember(OPERATE.Manage,{id:groupId},groupId, provider,userId,updateDoc);
+//新加的团员权限默认为最低权限,memberInfo应该至少拥有这样的属性：{provider:'a',user_id:1}
+function addMember(groupId,provider,userId,memberInfo,money){
+	var updateDoc = {$push:{members:{user:memberInfo,money:money,grant:GRANT.TeamMember,state:'normal'}}};
+	return updateMemberWithCheck(OPERATE.Manage,{id:groupId},groupId, provider,userId,updateDoc);
 }
 
-//删除团员实际上不是真的删掉，只是把团员的state属性改成delete状态
-function deleteMember(groupId,provider,userId,userInfo){
-	var queryDoc = {id:groupId,'members.user.provider':userInfo.provider,'members.user.user_id':userInfo.userId},
+//删除团员实际上不是真的删掉，只是把团员的state属性改成delete状态,userInfo应该至少拥有这样的属性：{provider:'a',user_id:1}
+function deleteMember(groupId,provider,userId,memberInfo){
+	var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.userId},
 		updateDoc = {'members.$.state':'delete'};
-	return updateMember(OPERATE.View,queryDoc,groupId, provider,userId,updateDoc);
+	return updateMemberWithCheck(OPERATE.View,queryDoc,groupId, provider,userId,updateDoc);
 }
 
-//更新成员的余额,userInfoes的信息应该是这样：[{provider:'a',user_id:1,money:10},{provider:'b',user_id:2,money:100}];
-function updateMoney(groupId,provider,userId,userInfoes){
+//更新成员的余额,memberInfos的信息应该是这样：[{provider:'a',user_id:1,money:10},{provider:'b',user_id:2,money:100}];
+function updateMoney(groupId,provider,userId,memberInfos){
 	var deferred = when.defer(),
 		updateMoneyPromise = deferred.promise;
-	var promises = [];
-	for(var i = 0, len = userInfoes.length; i < len; i++){
-		var userInfo = userInfoes[i];
-		var queryDoc = {id:groupId,'members.user.provider':userInfo.provider,'members.user.user_id':userInfo.userId},
-			updateDoc = {'members.$.money':userInfo.money};
-		var promise = updateMember(OPERATE.View,queryDoc,groupId, provider,userId,updateDoc);
-		promises.push(promise);
-	}
-	when.all(promises).then(function(){
-		deferred.resolve();
+	checkGrant(OPERATE.Count,groupId,provider,userId).then(function(){
+		var promises = [];
+		for(var i = 0, len = memberInfos.length; i < len; i++){
+			var memberInfo = memberInfos[i];
+			var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.userId},
+				updateDoc = {'members.$.money':memberInfo.money};
+			var promise = updateMember(queryDoc, updateDoc);
+			promises.push(promise);
+		}
+		when.all(promises).then(function(){
+			deferred.resolve();
+		}).catch(function(){
+			deferred.reject();
+			console.log('update Money failed.date:'+new Date().getTime());
+		});
 	}).catch(function(){
 		deferred.reject();
-		console.log('update Money failed.date:'+new Date().getTime());
 	});
 	return updateMoneyPromise;
 }
@@ -211,7 +215,7 @@ function createGroupCollection(db){
 	});
 	return deferred.promise;
 }
-function updateMember(operate,queryDoc, groupId, provider,userId,updateDoc){
+function updateMemberWithCheck(operate,queryDoc, groupId, provider,userId,updateDoc){
 	var deferred = when.defer(),
 		updateMemberPromise = deferred.promise;
 	checkGrant(operate,groupId,provider,userId).then(function(){
@@ -233,6 +237,25 @@ function updateMember(operate,queryDoc, groupId, provider,userId,updateDoc){
 	});
 	return updateMemberPromise;
 }
+function updateMember(queryDoc, updateDoc){
+	var deferred = when.defer(),
+		updateMemberPromise = deferred.promise;
+	DbUtil.connect().then(function(db){
+		return DbUtil.getCollection(db, COL);
+	}).catch(function(evt){
+		deferred.reject(evt);
+	}).then(function(evt){
+		return DbUtil.updateDoc(evt.db,evt.col,queryDoc,updateDoc);
+	}).done(function(evt){
+		deferred.resolve(evt.doc);
+		evt.db.close;
+	}).catch(function(evt){
+		deferred.reject(evt);
+		evt.db.close;
+	});
+	return updateMemberPromise;
+}
+
 function findGroup(query){
 	var deferred = when.defer(),
 		findGroupPromise = deferred.promise;
@@ -338,6 +361,5 @@ module.exports = {
 	deleteGroup: deleteGroup,
 	addMember:addMember,
 	deleteMember:deleteMember,
-	updateMoney: updateMoney,
-	OPERATE:OPERATE
+	updateMoney: updateMoney
 };
