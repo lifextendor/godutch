@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Group = require('./databases/group');
+var Message = require('./databases/message');
 var Verify = require('./util/verify');
 
 router.put('/creategroup', function (req, res, next) {
@@ -29,7 +30,7 @@ router.put('/creategroup', function (req, res, next) {
             res.send({result:'failure',operate:'creategroup'});
         }
     }else{
-        res.send({result:'failure',operate:'creategroup'});
+        res.send({result:'failure',operate:'unlogin'});
     }
 });
 
@@ -46,11 +47,11 @@ router.post('/dropgroup', function (req, res, next) {
             res.send({result:'failure',operate:'dropgroup'});
         });
     }else{
-        res.send({result:'failure',operate:'dropgroup'});
+        res.send({result:'failure',operate:'unlogin'});
     }
 });
 
-router.get('/findgroup',function(req, res, next) {
+router.get('/groups',function(req, res, next) {
     var user = req.user;
     if(user){
         var provider = user.provider;
@@ -61,7 +62,23 @@ router.get('/findgroup',function(req, res, next) {
             res.send({result:'failure',operate:'findgroup'});
         });
     }else{
-        res.send({result:'failure',operate:'findgroup'});
+        res.send({result:'failure',operate:'unlogin'});
+    }
+});
+
+router.get('/group/:id',function(req, res, next) {
+    var user = req.user;
+    if(user){
+        var provider = user.provider;
+        var user_id = user.id || user.userID;
+        var groupId = req.params.id;
+        Group.findGroupById(groupId, provider,user_id).then(function(groups){
+            res.send({result:groups,operate:'findgroupbyid'});
+        }).catch(function(){
+            res.send({result:'failure',operate:'findgroupbyid'});
+        });
+    }else{
+        res.send({result:'failure',operate:'unlogin'});
     }
 });
 
@@ -80,7 +97,7 @@ router.put('/addmember',function(req, res, next) {
             res.send({result:'failure',operate:'addmember'});
         });
     }else{
-        res.send({result:'failure',operate:'addmember'});
+        res.send({result:'failure',operate:'unlogin'});
     }
 });
 
@@ -97,7 +114,7 @@ router.post('/deletemember',function(req, res, next) {
             res.send({result:'failure',operate:'deletemember'});
         });
     }else{
-        res.send({result:'failure',operate:'deletemember'});
+        res.send({result:'failure',operate:'unlogin'});
     }
 });
 
@@ -115,7 +132,62 @@ router.put('/updatemoney',function(req, res, next) {
             res.send({result:'failure',operate:'updatemoney'});
         });
     }else{
-        res.send({result:'failure',operate:'updatemoney'});
+        res.send({result:'failure',operate:'unlogin'});
+    }
+});
+
+//授权操作
+router.put('/authorize',function(req, res, next) {
+    var user = req.user;
+    if(user) {
+        var provider = user.provider;
+        var user_id = user.id || user.userID;
+        var reqBody = req.body;
+        var groupId = reqBody.groupId,
+            memberInfo = reqBody.member;
+        Group.authorize(groupId,provider,user_id,memberInfo).then(function(){
+            res.send({result:'success',operate:'authorize'});
+        }).catch(function(){
+            res.send({result:'failure',operate:'authorize'});
+        });
+    }else{
+        res.send({result:'failure',operate:'unlogin'});
+    }
+});
+
+//取消授权操作
+router.put('/deauthorize',function(req, res, next) {
+    var user = req.user;
+    if(user) {
+        var provider = user.provider;
+        var user_id = user.id || user.userID;
+        var reqBody = req.body;
+        var groupId = reqBody.groupId,
+            memberInfo = reqBody.member;
+        Group.deauthorize(groupId,provider,user_id,memberInfo).then(function(){
+            res.send({result:'success',operate:'deauthorize'});
+        }).catch(function(){
+            res.send({result:'failure',operate:'deauthorize'});
+        });
+    }else{
+        res.send({result:'failure',operate:'unlogin'});
+    }
+});
+
+//邀请用户加入团
+router.post('/invite',function(req, res, next) {
+    var user = req.user;
+    if(user) {
+        var reqBody = req.body;
+        var groupId = reqBody.groupId,
+            userId = reqBody.userId;
+        Message.createMessage({type:'invite',groupid:groupId,userid:userId,readed:false}).then(function(){
+            res.send({result:'success',operate:'invite'});
+        }).catch(function(){
+            res.send({result:'failure',operate:'invite'});
+        })
+    }else{
+        res.send({result:'failure',operate:'unlogin'});
     }
 });
 

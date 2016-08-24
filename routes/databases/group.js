@@ -9,7 +9,7 @@ var GRANT = {
 var OPERATE = {
 	View:'VIEW', //查看团及余额和接收消息,和退出团
 	Count:'COUNT',//更新团的余额信息
-	Manage:'MANAGE' //团员管理，删除团,
+	Manage:'MANAGE' //团员管理，删除团,授权副团长,
 };
 
 var OPERATE_GRANT_MAP = {
@@ -19,6 +19,9 @@ var OPERATE_GRANT_MAP = {
 };
 
 /*************** Group操作 ****************/
+/**
+ * 添加团
+ * */
 function addGroup(groupInfo){
 	var deferred = when.defer(),
 		addGroupPromise = deferred.promise;
@@ -32,7 +35,9 @@ function addGroup(groupInfo){
 	insertGroup(getGroupColPromise,deferred, groupInfo);
 	return addGroupPromise;
 }
-
+/**
+ * 根据ID查找团
+ * */
 function findGroupById(groupId,provider,userId){
 	var deferred = when.defer(),
 		findGroupByIdPromise = deferred.promise;
@@ -59,7 +64,9 @@ function findGroupById(groupId,provider,userId){
 	});
 	return findGroupByIdPromise;
 }
-
+/**
+ * 根据创建者查找团
+ * */
 function findGroupByCreator(provider,userId){
 	var deferred = when.defer(),
 		findGroupByMember = deferred.promise;
@@ -85,7 +92,9 @@ function findGroupByCreator(provider,userId){
 		});
 	return findGroupByMember;
 }
-
+/**
+ * 根据成员查找团
+ * */
 function findGroupByMember(provider,userId){
 	var deferred = when.defer(),
 		findGroupByMember = deferred.promise;
@@ -111,7 +120,9 @@ function findGroupByMember(provider,userId){
 		});
 	return findGroupByMember;
 }
-
+/**
+ * 根据用户（即创建者或者成员）查找团
+ * */
 function findGroupByUser(provider,userId){
 	var deferred = when.defer(),
 		findGroupByUserPromise = deferred.promise;
@@ -138,7 +149,9 @@ function findGroupByUser(provider,userId){
 		});
 	return findGroupByUserPromise;
 }
-
+/**
+ * 删除团
+ * */
 function deleteGroup(groupId,provider,user_id){
 	var deferred = when.defer(),
 		deleteGroupPromise = deferred.promise;
@@ -167,20 +180,43 @@ function deleteGroup(groupId,provider,user_id){
 }
 
 /*********************  成员操作  **********************/
-//新加的团员权限默认为最低权限,memberInfo应该至少拥有这样的属性：{provider:'a',user_id:1}
+/**
+ * 添加成员
+ * 成员权限默认为最低权限,memberInfo应该至少拥有这样的属性：{provider:'a',user_id:1}
+ * */
 function addMember(groupId,provider,userId,memberInfo,money){
 	var updateDoc = {$push:{members:{user:memberInfo,money:money,grant:GRANT.TeamMember,state:'normal'}}};
 	return updateMemberWithCheck(OPERATE.Manage,{id:groupId},groupId, provider,userId,updateDoc);
 }
 
-//删除团员实际上不是真的删掉，只是把团员的state属性改成delete状态,userInfo应该至少拥有这样的属性：{provider:'a',user_id:1}
+/**
+ * 删除成员
+ * 成员实际上不是真的删掉，只是把团员的state属性改成delete状态,userInfo应该至少拥有这样的属性：{provider:'a',user_id:1}
+ * */
 function deleteMember(groupId,provider,userId,memberInfo){
 	var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.userId},
 		updateDoc = {'members.$.state':'delete'};
 	return updateMemberWithCheck(OPERATE.View,queryDoc,groupId, provider,userId,updateDoc);
 }
 
-//更新成员的余额,memberInfos的信息应该是这样：[{provider:'a',user_id:1,money:10},{provider:'b',user_id:2,money:100}];
+/**
+ * 授权成员为副团长
+ * */
+function authorizeToBeViceCapTain(groupId,provider,userId,memberInfo){
+	return authorize(groupId,provider,userId,memberInfo,false);
+}
+
+/**
+ * 收回副团长的授权
+ * */
+function deauthorizeViceCapTain(groupId,provider,userId,memberInfo){
+	return authorize(groupId,provider,userId,memberInfo,true);
+}
+
+/**
+ * 更新成员余额
+ * 成员的余额,memberInfos的信息应该是这样：[{provider:'a',user_id:1,money:10},{provider:'b',user_id:2,money:100}];
+ * */
 function updateMoney(groupId,provider,userId,memberInfos){
 	var deferred = when.defer(),
 		updateMoneyPromise = deferred.promise;
@@ -205,7 +241,18 @@ function updateMoney(groupId,provider,userId,memberInfos){
 	return updateMoneyPromise;
 }
 
+
 /*************** 内部的函数 *****************/
+/**
+ * 授权或取消授权成员为副团长
+ * */
+function authorize(groupId,provider,userId,memberInfo,reverse){
+	var grant = reverse ? GRANT.TeamMember : GRANT.ViceCapTain;
+	var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.userId},
+		updateDoc = {'members.$.grant':grant};
+	//只有团长有权限执行此操作
+	return updateMemberWithCheck(OPERATE.Manage,queryDoc,groupId, provider,userId,updateDoc);
+}
 function createGroupCollection(db){
 	var deferred = when.defer();
 	DbUtil.createCollection(db,COL).then(function(evt){
@@ -303,7 +350,7 @@ function insertGroup(promise, deferred,groupInfo){
 		if(!evt){
 			return;
 		}
-		return DbUtil.insertDoc(evt.db,evt.col,[userInfo]);
+		return DbUtil.insertDoc(evt.db,evt.col,[groupInfo]);
 	}).done(function(evt){
 		if(!evt){
 			return;
@@ -361,5 +408,7 @@ module.exports = {
 	deleteGroup: deleteGroup,
 	addMember:addMember,
 	deleteMember:deleteMember,
-	updateMoney: updateMoney
+	updateMoney: updateMoney,
+	authorize: authorizeToBeViceCapTain,
+	deauthorize: deauthorizeViceCapTain
 };

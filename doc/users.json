@@ -1,18 +1,12 @@
 [{
-	uname:'',
-	uid:'',
-	utype:'qq',
-	nick:''
+  id:123,
+  provider:'qq',
+  user_id:'1',
+  nick:'a'
 },
 {
-	uname:'',
-	uid:'',
-	utype:'wechat',
-	nick:''
-},{
-	uname:'',
-	uid:'',
-	upassword:'',
-	utype:'godutch',
-	nick:''
+  id:124,
+  provider:'wechat',
+  user_id:'1',
+  nick:'b
 }]

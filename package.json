@@ -3,14 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "database": {
-    "db_host": "127.0.0.1",
+    "db_host": "192.168.10.103",
     "db_port": "27017",
     "db_name": "godutch",
     "username": "",
     "password": ""
   },
   "deploy_host": "http://localhost:18080",
-  "auth_host": "http://localhost:8081",
+  "auth_host": "http://192.168.10.103:8081",
   "auth": {
     "qq": {
       "app_id": "101318755",

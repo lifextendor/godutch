@@ -1,0 +1,13 @@
+[{
+  "id":1,
+  "type":"invite",
+  "groupid":1,
+  "userid":1,
+  "readed":true
+},{
+  "id":2,
+  "type":"count book",
+  "groupid":1,
+  "userid":1,
+  "readed":false
+}]
