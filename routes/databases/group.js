@@ -189,6 +189,11 @@ function addMember(groupId,provider,userId,memberInfo,money){
 	return updateMemberWithCheck(OPERATE.Manage,{id:groupId},groupId, provider,userId,updateDoc);
 }
 
+function addMemberByInvite(groupId,memberInfo,money){
+	var updateDoc = {$push:{members:{user:memberInfo,money:money,grant:GRANT.TeamMember,state:'normal'}}};
+	return updateMember({id:groupId},updateDoc);
+}
+
 /**
  * 删除成员
  * 成员实际上不是真的删掉，只是把团员的state属性改成delete状态,userInfo应该至少拥有这样的属性：{provider:'a',user_id:1}
@@ -266,21 +271,13 @@ function updateMemberWithCheck(operate,queryDoc, groupId, provider,userId,update
 	var deferred = when.defer(),
 		updateMemberPromise = deferred.promise;
 	checkGrant(operate,groupId,provider,userId).then(function(){
-		DbUtil.connect().then(function(db){
-			return DbUtil.getCollection(db, COL);
+		updateMember(queryDoc,updateDoc).then(function(doc){
+			deferred.resolve(doc);
 		}).catch(function(evt){
 			deferred.reject(evt);
-		}).then(function(evt){
-			return DbUtil.updateDoc(evt.db,evt.col,queryDoc,updateDoc);
-		}).done(function(evt){
-			deferred.resolve(evt.doc);
-			evt.db.close;
-		}).catch(function(evt){
-			deferred.reject(evt);
-			evt.db.close;
 		});
-	}).catch(function(){
-		deferred.reject();
+	}).catch(function(evt){
+		deferred.reject(evt);
 	});
 	return updateMemberPromise;
 }
@@ -407,6 +404,7 @@ module.exports = {
 	findGroupById: findGroupById,
 	deleteGroup: deleteGroup,
 	addMember:addMember,
+	addMemberByInvite:addMemberByInvite,
 	deleteMember:deleteMember,
 	updateMoney: updateMoney,
 	authorize: authorizeToBeViceCapTain,

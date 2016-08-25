@@ -191,4 +191,32 @@ router.post('/invite',function(req, res, next) {
     }
 });
 
+//同意邀请
+router.post('message/:id/reply/:type',function(req, res, next){
+    var user = req.user;
+    if(user) {
+         var messageId = req.params.id;
+         var replyType = req.params.type;
+        if(replyType === 'agree'){
+            Message.findMessageById(messageId).then(function(){
+                Message.updateMessageState(messageId,true).then(function(){
+                    res.send({result:'success',operate:'reply agree'});
+                }).catch(function(){
+                    res.send({result:'failure',operate:'reply agree'});
+                });
+            }).catch(function(){
+                res.send({result:'failure',operate:'reply agree'});
+            })
+        }else{
+            Message.updateMessageState(messageId,true).then(function(){
+                res.send({result:'success',operate:'reply reject'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'reply reject'});
+            });
+        }
+    }else{
+        res.send({result:'failure',operate:'unlogin'});
+    }
+});
+
 module.exports = router;

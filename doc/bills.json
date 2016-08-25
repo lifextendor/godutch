@@ -1,14 +1,16 @@
 [{
-	bid:'',
-	gid:'',
-	datetime:'',
-	money:'',
-	members:[uid0,uid0]
+	"id":1,
+	"groupid":1,
+	"datetime":"",
+	"money":"",
+	"members":[0,1], //userId
+  "Remarks":"eat"
 },{
-	bid:'',
-	gid:'',
-	datetime:'',
-	money:'',
-	members:[uid0]
+  "id":2,
+  "groupid":1,
+  "datetime":"",
+  "money":"",
+  "members":[0,1], //userId
+  "Remarks":"buy food"
 }
 ]

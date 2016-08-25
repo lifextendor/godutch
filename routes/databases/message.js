@@ -37,6 +37,28 @@ function findMessage(provider,userId,isReaded){
     return findMessagePromise;
 }
 
+function findMessageById(messageId){
+    var deferred = when.defer(),
+        findMessageByIdPromise = deferred.promise;
+    DbUtil.connect().then(function(db){
+        return DbUtil.getCollection(db, COL);
+    }).catch(function(err){
+        deferred.reject(err);
+    }).then(function(evt){
+        if(!evt){
+            return;
+        }
+        return DbUtil.queryDoc(evt.db,evt.col,{id:messageId,readed:false});
+    }).done(function(evt){
+        if(!evt){
+            return;
+        }
+        deferred.resolve(evt.doc);
+        evt.db.close();
+    });
+    return findMessageByIdPromise;
+}
+
 function updateMessageState(messageId,isReaded){
     var deferred = when.defer(),
         updateMessageStatePromise = deferred.promise;
@@ -91,5 +113,6 @@ function insertMessage(promise, deferred,message){
 module.exports = {
     createMessage: createMessage,
     findMessage: findMessage,
+    findMessageById: findMessageById,
     updateMessageState: updateMessageState
 };
