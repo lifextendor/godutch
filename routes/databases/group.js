@@ -182,7 +182,7 @@ function deleteGroup(groupId,provider,user_id){
 /*********************  成员操作  **********************/
 /**
  * 添加成员
- * 成员权限默认为最低权限,memberInfo应该至少拥有这样的属性：{provider:'a',user_id:1}
+ * 成员权限默认为最低权限,memberInfo应该至少拥有这样的属性：{user_id:1}
  * */
 function addMember(groupId,provider,userId,memberInfo,money){
 	var updateDoc = {$push:{members:{user:memberInfo,money:money,grant:GRANT.TeamMember,state:'normal'}}};
@@ -201,7 +201,20 @@ function addMemberByInvite(groupId,memberInfo,money){
 function deleteMember(groupId,provider,userId,memberInfo){
 	var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.userId},
 		updateDoc = {'members.$.state':'delete'};
-	return updateMemberWithCheck(OPERATE.View,queryDoc,groupId, provider,userId,updateDoc);
+	return updateMemberWithCheck(OPERATE.Manage,queryDoc,groupId, provider,userId,updateDoc);
+}
+
+/**
+ * 离开团队
+ * @param groupId 团队Id
+ * @param provider 用户的提供者
+ * @param userId 用户在提供者处的ID
+ * @returns {*}
+ */
+function leaveGroup(groupId,provider,userId){
+	var queryDoc = {id:groupId,'members.user.provider':provider,'members.user.user_id':userId},
+		updateDoc = {'members.$.state':'delete'};
+	return updateMember(queryDoc, updateDoc);
 }
 
 /**
@@ -220,8 +233,12 @@ function deauthorizeViceCapTain(groupId,provider,userId,memberInfo){
 
 /**
  * 更新成员余额
- * 成员的余额,memberInfos的信息应该是这样：[{provider:'a',user_id:1,money:10},{provider:'b',user_id:2,money:100}];
- * */
+ * @param groupId 团ID
+ * @param provider 用户的提供者
+ * @param userId 用户在提供者处的id
+ * @param memberInfos 成员的余额,memberInfos的信息应该是这样：[{provider:'a',user_id:1,money:10},{provider:'b',user_id:2,money:100}];
+ * @returns {*}
+ */
 function updateMoney(groupId,provider,userId,memberInfos){
 	var deferred = when.defer(),
 		updateMoneyPromise = deferred.promise;
@@ -406,6 +423,7 @@ module.exports = {
 	addMember:addMember,
 	addMemberByInvite:addMemberByInvite,
 	deleteMember:deleteMember,
+	leaveGroup:leaveGroup,
 	updateMoney: updateMoney,
 	authorize: authorizeToBeViceCapTain,
 	deauthorize: deauthorizeViceCapTain

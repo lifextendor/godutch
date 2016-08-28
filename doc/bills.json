@@ -3,14 +3,14 @@
 	"groupid":1,
 	"datetime":"",
 	"money":"",
-	"members":[0,1], //userId
+	"members":[{"provider":"qq","user_id":1},{"provider":"qq","user_id":2}],
   "Remarks":"eat"
 },{
   "id":2,
   "groupid":1,
   "datetime":"",
   "money":"",
-  "members":[0,1], //userId
+  "members":[{"provider":"qq","user_id":1},{"provider":"qq","user_id":2}],
   "Remarks":"buy food"
 }
 ]

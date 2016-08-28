@@ -2,6 +2,11 @@ var DbUtil = require('./dbutil');
 var when = require('when');
 var COL = 'bills';
 
+/**
+ * 创建帐单
+ * @param bill 帐单信息，比如:{id:1,groupid:1,members:[0,1],money:100,datetime:122221313}
+ * @returns {*}
+ */
 function createBill(bill){
     var deferred = when.defer(),
         createBillPromise = deferred.promise;
@@ -15,7 +20,15 @@ function createBill(bill){
     return createBillPromise;
 }
 
-function findBillByDateTime(userId,from,to){
+/**
+ * 通过用户及时间来查询帐单
+ * @param provider 用户的提供者
+ * @param userId 用户在提供者处的ID
+ * @param from  开始时间
+ * @param to  结束时间
+ * @returns {*}
+ */
+function findBillByDateTime(provider,userId,from,to){
     var deferred = when.defer(),
         findBillPromise = deferred.promise;
     DbUtil.connect().then(function(db){
@@ -26,7 +39,7 @@ function findBillByDateTime(userId,from,to){
         if(!evt){
             return;
         }
-        var queryDoc = {'members':userId,'datetime':{'$gt':from,'$lt':to}};
+        var queryDoc = {'members.$.provider':provider,'members.$.user_id':userId,'datetime':{'$gt':from,'$lt':to}};
         return DbUtil.queryDoc(evt.db,evt.col,queryDoc);
     }).done(function(evt){
         if(!evt){
@@ -38,6 +51,11 @@ function findBillByDateTime(userId,from,to){
     return findBillPromise;
 }
 
+/**
+ * 通过帐单ID来查询帐单
+ * @param billId 帐单ID
+ * @returns {*}
+ */
 function findBillById(billId){
     var deferred = when.defer(),
         findBillByIdPromise = deferred.promise;

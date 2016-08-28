@@ -6,7 +6,10 @@ var Users = require('./databases/user');
 require('../auth');
 var TITLE = 'godutch';
 
-/* GET home page. */
+/**
+ * 首页
+ * 假如未登录则是登录页面，登录之后是用户工作台
+ */
 router.get('/', function(req, res, next) {
     var headers = req.headers;
     var root = 'http://' + headers.host;
@@ -32,14 +35,10 @@ router.get('/', function(req, res, next) {
     }
 });
 
-//测试react-bootstrap
-router.get('/test', function(req, res, next) {
-    res.render('test');
-});
-
-
-
-
+/**
+ * qq登录
+ * rest相对地址："/auth/qq",http方法为:“GET”
+ */
 router.get('/auth/qq', function (req, res, next) {
     req.session = req.session || {};
     req.session.authState = crypto.createHash('sha1')
@@ -70,7 +69,9 @@ router.get('/auth/qq/callback', function (req, res, next) {
     });
 
 /**
- * godutch 自己实现的一个oauth2服务
+ * godutch登录
+ * godutch为本网站自己实现的一个oauth2服务
+ * rest相对地址为:"/auth/godutch",http方法为:“GET”
  */
 router.get('/auth/godutch', passport.authenticate('oauth2'));
 
@@ -79,7 +80,11 @@ router.get('/auth/godutch/callback',
     function(req, res) {
         // Successful authentication, redirect home.
         res.redirect('/');
-    });
+    }
+);
+
+//TODO 差一个微信登录
+router.get('/auth/wechat');
 
 router.get('/logout', function(req, res){
     req.logout();

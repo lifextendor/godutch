@@ -1,6 +1,7 @@
 var GROUP_TYPE = {
-    NORMAL:'normal',
-    ACOUNT_BOOK:'accountBook'
+    NORMAL:'normal', //吃饭团帐本
+    BILL:'bill', //合租帐本
+    FUND:'fund' //活动经费
 };
 module.exports = {
     verfyGroup:function(group){
@@ -14,7 +15,7 @@ module.exports = {
         return result;
     },
     getGroupType:function(type){
-        if(type !== GROUP_TYPE.ACOUNT_BOOK){
+        if(type !== GROUP_TYPE.BILL && type !== GROUP_TYPE.FUND){
             return GROUP_TYPE.NORMAL;
         }
         return type;
