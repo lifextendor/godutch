@@ -1,0 +1,73 @@
+.row {
+  margin-left: 0;
+  margin-right: 0; }
+
+.back {
+  background: #ececec; }
+
+.title {
+  font-size: 5rem;
+  font-family: "Microsoft Yahei";
+  font-weight: 700;
+  color: #777; }
+
+div {
+  text-align: center; }
+
+.mid {
+  font-size: 3rem;
+  font-family: "Microsoft Yahei";
+  font-weight: 600;
+  color: #2db7f5; }
+
+.back-img {
+  margin-top: 20%; }
+
+.login {
+  margin-top: 1rem; }
+
+.qq-img {
+  margin-right: 0.5rem; }
+
+.weixin-img {
+  margin-left: 0.5rem; }
+
+.note {
+  background-image: url(../images/pen.png);
+  position: relative;
+  background: #58a;
+  /* Fallback */
+  background: linear-gradient(-150deg, transparent 1.5em, #fff 0);
+  border-radius: .5em;
+  margin-top: 20px; }
+  @media only screen and (min-width: 414px) {
+    .note {
+      margin-left: 5%;
+      margin-right: 5%; } }
+  @media only screen and (min-width: 768px) {
+    .note {
+      margin-left: 10%;
+      margin-right: 10%; } }
+  @media only screen and (min-width: 992px) {
+    .note {
+      margin-left: 20%;
+      margin-right: 20%; } }
+  @media only screen and (min-width: 1280px) {
+    .note {
+      margin-left: 25%;
+      margin-right: 25%; } }
+
+.note::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: linear-gradient(to left bottom, transparent 50%, rgba(0, 0, 0, 0.2) 0, rgba(0, 0, 0, 0.4)) 100% 0 no-repeat;
+  width: 1.73em;
+  height: 3em;
+  transform: translateY(-1.3em) rotate(-30deg);
+  transform-origin: bottom right;
+  border-bottom-left-radius: inherit;
+  box-shadow: -0.2em 0.2em 0.3em -0.1em rgba(0, 0, 0, 0.15); }
+
+/*# sourceMappingURL=login.css.map */
