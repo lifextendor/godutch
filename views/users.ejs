@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/users.css' />
+    <link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/javascript/users.js"></script>
 </head>
-<body style="width: 100%; height: 768px;margin: 0;padding: 0">
-<div style="text-align: center;width: 100%;height: 100%;background-image: url('/images/back.jpg')">
-    <div>
-        <img src="/images/logo_n.png" alt="" style="margin-top: 10%;width: 100px;height: 100px;">
+<body class="back">
+<div class="note">
+<div class="row">
+    <div class="col-md-offset-4 col-md-4">
+        <img class="back-img" src="/images/logo_n.png" >
         <div>
-            <span style="font-size: 2.2em;font-family: '楷体 Bold Oblique', 楷体;font-weight: 700;font-style: oblique;color: #4C4B4B;">一种生活方式</span>
+            <span class="title">一种生活方式</span>
         </div>
     </div>
-    <div>
-        <span style="font-size: 3em;font-family: '微软雅黑 Bold', 微软雅黑;font-weight: 700;font-style: normal;color: #2D2C2C">让组团记账更简单</span></div>
-    <div style="margin-top: 20px;">
-        <img src="/images/qq.png" alt="" onclick="window.open('<%= root%>/auth/qq')" style="cursor: pointer;width: 50px;height: 50px;margin-right: 10px;">
-        <img src="/images/line.png" alt="">
-        <img src="/images/weixin.png" alt="" onclick="window.open('<%= root%>/auth/godutch')" style="cursor: pointer;width: 50px;height: 50px;margin-left: 10px">
+    <div class="col-md-offset-4 col-md-4">
+        <span class="mid">让组团记账更简单</span></div>
+    <div class="login col-md-offset-4 col-md-4">
+        <img class="load qq-img" src="/images/qq.png"  onclick="window.open('<%= root%>/auth/qq','_self')">
+        <img class="split-img" src="/images/line.png" >
+        <img class="load weixin-img" src="/images/weixin.png"  onclick="window.open('<%= root%>/index','_self')">
     </div>
+</div>
 </div>
 </body>
 </html>

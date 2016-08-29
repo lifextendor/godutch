@@ -1,24 +1,17 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/index.css' />
-</head>
-<body>
-<div class="back">
-    <div class="back-up">
-        <img class="back-img" src="/images/logo_n.png" >
-        <div>
-            <span>一种生活方式</span>
-        </div>
-    </div>
-    <div>
-        <span class="back-mid">让组团记账更简单</span></div>
-    <div class="back-down">
-        <img class="qq-img" src="/images/qq.png"  onclick="window.open('<%= root%>/auth/qq')">
-        <img src="/images/line.png" >
-        <img class="weixin-img" src="/images/weixin.png"  onclick="window.open('<%= root%>/auth/godutch')">
-    </div>
-</div>
-</body>
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/main.css"> 
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://cdn.staticfile.org/pubsub-js/1.5.3/pubsub.js"></script>
+    <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+  </head>
+  <body data-spy="scroll">
+    <div id="react-content"></div> 
+    <!-- <script src="http://localhost:8080/webpack-dev-server.js"></script> -->
+    <script src="/javascript/bundle.js"></script>
+  </body>
 </html>

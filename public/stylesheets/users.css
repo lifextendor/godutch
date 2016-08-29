@@ -31,9 +31,11 @@ div {
 
 .weixin-img {
   margin-left: 0.5rem; }
+.load:hover{
+  cursor:pointer;
+}
 
 .note {
-  background-image: url(../images/pen.png);
   position: relative;
   background: #58a;
   /* Fallback */
@@ -70,4 +72,3 @@ div {
   border-bottom-left-radius: inherit;
   box-shadow: -0.2em 0.2em 0.3em -0.1em rgba(0, 0, 0, 0.15); }
 
-/*# sourceMappingURL=login.css.map */

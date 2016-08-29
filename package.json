@@ -2,6 +2,7 @@
   "name": "godutch",
   "version": "0.0.0",
   "private": true,
+  "main": "godutch/public/javascript/mian.js",
   "database": {
     "db_host": "192.168.10.103",
     "db_port": "27017",
@@ -27,7 +28,25 @@
     }
   },
   "scripts": {
+    "build": "webpack",
     "start": "node ./bin/www.js"
+  },
+  "devDependencies": {
+    "antd": "^1.0.0-beta.10",
+    "babel-core": "^6.10.4",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-antd": "^0.4.1",
+    "babel-plugin-transform-runtime": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.11.1",
+    "babel-runtime": "^6.9.2",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "node-sass": "^3.8.0",
+    "sass-loader": "^4.0.0",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -44,6 +63,15 @@
     "passport-oauth2": "^1.3.0",
     "passport-tqq": "0.0.2",
     "serve-favicon": "~2.3.0",
-    "when": "^3.7.7"
+    "when": "^3.7.7",
+    "bootstrap": "^3.3.6",
+    "jquery": "^3.1.0",
+    "less-loader": "^2.2.3",
+    "react": "^15.2.1",
+    "react-bootstrap": "^0.29.5",
+    "react-dom": "^15.2.1",
+    "react-hot-loader": "^1.3.0",
+    "react-router": "^2.6.0",
+    "webpack-dev-server": "^1.14.1"
   }
 }
