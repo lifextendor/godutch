@@ -1,0 +1,56 @@
+.navbar-fixed-top{
+    box-shadow: 0px 3px 5px #C1C1C1;
+}
+.col-logo{
+    // margin-left: -24px;
+}
+.page-wrapper {
+    background: #ececec;    
+}
+.nav-hamburger {
+    height: 40px;
+    padding: 0 10px;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 2px;
+    font-size: 1.125rem;
+    line-height: 50px;
+}
+#main-nav .navbar-nav {
+    display: table;
+    width: 100%;
+    margin: 0;
+    padding-left: 0;
+    background: #fff;
+    box-shadow: -5px -5px 4px rgba(0,0,0,.05);    
+    li{
+		font-size: 14px;
+	    position: relative;
+	    display: table-cell;
+	    width: 25%;
+	    margin: 0;
+	    padding: 0;
+	    text-align: center;
+        padding-top: 8px;
+	    a{
+	    	margin-top: -10px;
+    		font-size: x-small;
+	    }
+    }
+}
+.my-search{
+    line-height: 4em;
+}
+.nav-hamburger{
+    border: 0;
+    font-size: 1.75rem;
+    a{
+        color: #000000;
+    }
+}
+.nav-message{
+    font-size: 1.75rem;
+}
+.nav .open>a:hover {
+    background-color: #e7e7e7; 
+}
