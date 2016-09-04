@@ -182,7 +182,7 @@ router.put('/group/:id/authorize',function(req, res, next) {
         var provider = user.provider;
         var user_id = user.id || user.userID;
         var reqBody = req.body;
-        var groupId = reqBody.groupId,
+        var groupId = req.params.id,
             memberInfo = reqBody.member;
         Group.authorize(groupId,provider,user_id,memberInfo).then(function(){
             res.send({result:'success',operate:'authorize'});
@@ -205,7 +205,7 @@ router.put('/group/:id/deauthorize',function(req, res, next) {
         var provider = user.provider;
         var user_id = user.id || user.userID;
         var reqBody = req.body;
-        var groupId = reqBody.groupId,
+        var groupId = req.params.id,
             memberInfo = reqBody.member;
         Group.deauthorize(groupId,provider,user_id,memberInfo).then(function(){
             res.send({result:'success',operate:'deauthorize'});
@@ -228,7 +228,7 @@ router.post('/group/:id/invite',function(req, res, next) {
         var provider = user.provider;
         var user_id = user.id || user.userID;
         var reqBody = req.body;
-        var groupId = reqBody.groupId,
+        var groupId = req.params.id,
             userInfo = reqBody.userInfo,
             message = {
                 type:'invite',
