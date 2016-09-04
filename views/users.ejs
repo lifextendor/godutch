@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/users.css' />
+    <link rel='stylesheet' href='/stylesheets/font.css' />
     <link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css">
     <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="/javascript/users.js"></script>
@@ -12,18 +13,20 @@
 <body class="back">
 <div class="note">
 <div class="row">
-    <div class="col-md-offset-4 col-md-4">
+    <div class="col-md-offset-3 col-md-6">
         <img class="back-img" src="/images/logo_n.png" >
         <div>
             <span class="title">一种生活方式</span>
         </div>
     </div>
-    <div class="col-md-offset-4 col-md-4">
+    <div class="col-md-offset-3 col-md-6">
         <span class="mid">让组团记账更简单</span></div>
-    <div class="login col-md-offset-4 col-md-4">
-        <img class="load qq-img" src="/images/qq.png"  onclick="window.open('<%= root%>/auth/qq','_self')">
-        <img class="split-img" src="/images/line.png" >
-        <img class="load weixin-img" src="/images/weixin.png"  onclick="window.open('<%= root%>/auth/godutch','_self')">
+    <div class="login col-md-offset-3 col-md-6">
+        <a class="qq cmn-icon cmn-icons cmn-icons_logo-qq" href="#" onclick="window.open('<%= root%>/auth/qq','_self')"></a>
+        <!-- <img class="load qq-img" src="/images/qq.png"  onclick="window.open('<%= root%>/auth/qq','_self')"> -->
+        <img class="split" src="/images/line.png" >
+        <a class="chat cmn-icon cmn-icons cmn-icons_logo-wechat" href="#" onclick="window.open('<%= root%>/auth/godutch','_self')"></a>
+        <!-- <img class="load weixin-img" src="/images/weixin.png"  onclick="window.open('<%= root%>/auth/godutch','_self')"> -->
     </div>
 </div>
 </div>

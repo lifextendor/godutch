@@ -1,6 +1,6 @@
 //创建团
 import React from 'react';
-import {Card, Form, Input, Button, Checkbox, message } from 'antd';
+import {Card, Form, Input, Select, Button, Checkbox, message } from 'antd';
 const FormItem = Form.Item;
 
 class createTeam extends React.Component{
@@ -24,11 +24,12 @@ class createTeam extends React.Component{
 
           message.success('操作成功!');
          $.ajax({
-            url: this.props.url,
+            url: "/users/creategroup",
             dataType: 'json',
-            type: 'POST',
+            type: 'put',
             data: values,
             success: function(data) {
+                console.log("提交成功");
                 //跳转到团组，添加团员
             }.bind(this),
             error: function(xhr, status, err) {
@@ -38,37 +39,47 @@ class createTeam extends React.Component{
         });        
     }
     userExists(rule, value, callback) {
-      debugger
-        if (!value) {
-          callback();
-        } else {
-          $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            type: 'POST',
-            data: value,
-            success: function(data) {
-                console.log(data);
-            }.bind(this),
-            error: function(xhr, status, err) {
-                callback([new Error('抱歉，该用户名已被占用。')]);
-            }.bind(this)
-        });
-      }
+      // debugger
+      //   if (!value) {
+      //     callback();
+      //   } else {
+      //     $.ajax({
+      //       url: this.props.url,
+      //       dataType: 'json',
+      //       type: 'POST',
+      //       data: value,
+      //       success: function(data) {
+      //           console.log(data);
+      //       }.bind(this),
+      //       error: function(xhr, status, err) {
+      //           callback([new Error('抱歉，该团队名已被占用。')]);
+      //       }.bind(this)
+      //   });
+      // }
     }
+    // handleSelectChange(value){
+    //   this.props.form.validateFields.type=value;
+    // }
     render() {  
         const { getFieldProps, getFieldError, isFieldValidating } = this.props.form;
-        const nameProps = getFieldProps('name', {
+        const nameProps = getFieldProps('gname', {
           rules: [
             { required: true, min: 2, max: 4, message: '用户名至少为 2 个字符' },
-            { validator: this.userExists },
+            // { validator: this.userExists },
           ],
         });
-        const textareaProps = getFieldProps('textarea', {
+        const textareaProps = getFieldProps('description', {
           rules: [
             { required: true, message: '真的不打算写点什么吗？' },
           ],
         });
+
+        const texttypeProps = getFieldProps('type', {
+          rules: [
+            { required: true},
+          ],
+        });
+
         const formItemLayout = {
           labelCol: { span: 7 },
           wrapperCol: { span: 12 },
@@ -81,15 +92,25 @@ class createTeam extends React.Component{
                               {...formItemLayout}
                               label="团名称"
                               hasFeedback
-                              help={isFieldValidating('name') ? '校验中...' : (getFieldError('name') || []).join(', ')}
+                              // help={isFieldValidating('name') ? '校验中...' : (getFieldError('name') || []).join(', ')}
                             >
-                              <Input {...nameProps} placeholder="实时校验，输入 JasonWood 看看" />
+                              <Input {...nameProps} placeholder="团队名称" name="gname"/>
+                            </FormItem>
+                            <FormItem
+                              {...formItemLayout}
+                              label="类型"
+                            >
+                              <Select {...texttypeProps} size="large" defaultValue="normal" name="type">
+                                <Option value="normal">吃饭团账本</Option>
+                                <Option value="bill">合租账本</Option>
+                                <Option value="fund">活动经费</Option>
+                              </Select>
                             </FormItem>
                             <FormItem
                               {...formItemLayout}
                               label="简介"
                             >
-                              <Input {...textareaProps} type="textarea" placeholder="随便写" id="textarea" name="textarea" />
+                              <Input {...textareaProps} type="textarea" placeholder="随便写" name="description"/>
                             </FormItem>
 
                             <FormItem wrapperCol={{ span: 12, offset: 7 }}>
