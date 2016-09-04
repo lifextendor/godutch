@@ -42,16 +42,14 @@ router.put('/creategroup', function (req, res, next) {
 
 /**
  * 删除团队
- * rest服务相对地址："/users/dropgroup"，http方法为:“POST”
- * 请求体必须包含groupId信息
+ * rest服务相对地址："/users/group/1/dropgroup"，其中的1为团Id，http方法为:“POST”
  */
-router.post('/dropgroup', function (req, res, next) {
+router.post('/group/:id/dropgroup', function (req, res, next) {
     var user = req.user;
     if(user){
         var provider = user.provider;
         var user_id = user.id || user.userID;
-        var reqBody = req.body;
-        var groupId = reqBody.groupId;
+        var groupId = req.params.id;
         Group.deleteGroup(groupId,provider,user_id).then(function(){
             res.send({result:'success',operate:'dropgroup'});
         }).catch(function(){
@@ -103,15 +101,15 @@ router.get('/group/:id',function(req, res, next) {
 
 /**
  * 删除用户
- * rest服务相对地址："/users/deletemember"，http方法为:“POST”
- * 请求参数如下：{groupId:1,member:{provider:'qq',user_id:1}}
+ * rest服务相对地址："/users/group/1/deletemember"，其中1为团Id，http方法为:“POST”
+ * 请求参数如下：{member:{provider:'qq',user_id:1}}
  */
-router.post('/deletemember',function(req, res, next) {
+router.post('/group/:id/deletemember',function(req, res, next) {
     if(user) {
         var provider = user.provider;
         var user_id = user.id || user.userID;
         var reqBody = req.body;
-        var groupId = reqBody.groupId,
+        var groupId = req.params.id,
             memberInfo = reqBody.member;
         Group.deleteMember(groupId,provider,user_id,memberInfo).then(function(){
             res.send({result:'success',operate:'deletemember'});
@@ -125,15 +123,14 @@ router.post('/deletemember',function(req, res, next) {
 
 /**
  * 退出团
- * rest服务相对地址："/users/leave"，http方法为:“POST”
+ * rest服务相对地址："/users/group/1/leave"，其中1为团Id，http方法为:“POST”
  * 请求参数包含groupId
  */
-router.post('/leave',function(req, res, next) {
+router.post('/group/:id/leave',function(req, res, next) {
     if(user) {
         var provider = user.provider;
         var user_id = user.id || user.userID;
-        var reqBody = req.body,
-            groupId = reqBody.groupId;
+        var groupId = req.params.id;
         Group.leaveGroup(groupId,provider,user_id).then(function(){
             res.send({result:'success',operate:'leave'});
         }).catch(function(){
@@ -146,16 +143,16 @@ router.post('/leave',function(req, res, next) {
 
 /**
  * 算账
- * rest服务相对地址："/users/updatemoney"，http方法为:“PUT”
+ * rest服务相对地址："/users/group/1/updatemoney"，其中1为团Id，http方法为:“PUT”
  * 请求参数如下：{total:10,members:[{provider:'qq',user_id:1,money:10}],dataTime:121321313}
  */
-router.put('/updatemoney',function(req, res, next) {
+router.put('/group/:id/updatemoney',function(req, res, next) {
     var user = req.user;
     if(user){
         var provider = user.provider;
         var user_id = user.id || user.userID;
         var reqBody = req.body;
-        var groupId = reqBody.groupId,
+        var groupId = req.params.id,
             memberInfos = reqBody.memberInfos,
             totalMoney = memberInfos.total,
             members = memberInfos.members,
@@ -176,10 +173,10 @@ router.put('/updatemoney',function(req, res, next) {
 
 /**
  * 授权为副团长
- * rest服务相对地址："/users/authorize"，http方法为:“PUT”
- * 请求参数，比如：{groupId:1,member:{provider:'qq',user_id:1}}
+ * rest服务相对地址："/users/group/1/authorize"，其中1为团Id，http方法为:“PUT”
+ * 请求参数，比如：{member:{provider:'qq',user_id:1}}
  */
-router.put('/authorize',function(req, res, next) {
+router.put('/group/:id/authorize',function(req, res, next) {
     var user = req.user;
     if(user) {
         var provider = user.provider;
@@ -199,10 +196,10 @@ router.put('/authorize',function(req, res, next) {
 
 /**
  * 取消副团长的授权
- * rest服务相对地址："/users/deauthorize"，http方法为:“PUT”
+ * rest服务相对地址："/users/group/1/deauthorize"，其中1为团Id，http方法为:“PUT”
  * 请求参数，比如：{groupId:1,member:{provider:'qq',user_id:1}}
  */
-router.put('/deauthorize',function(req, res, next) {
+router.put('/group/:id/deauthorize',function(req, res, next) {
     var user = req.user;
     if(user) {
         var provider = user.provider;
@@ -222,10 +219,10 @@ router.put('/deauthorize',function(req, res, next) {
 
 /**
  * 邀请用户加入团
- * rest服务相对地址："/users/invite"，http方法为:“POST”
- * 请求参数，比如：{groupId:1,userInfo:{provider:'qq',user_id:1}}
+ * rest服务相对地址："/users/group/1/invite"，其中1为团Id，http方法为:“POST”
+ * 请求参数，比如：{userInfo:{provider:'qq',user_id:1}}
  */
-router.post('/invite',function(req, res, next) {
+router.post('/group/:id/invite',function(req, res, next) {
     var user = req.user;
     if(user) {
         var provider = user.provider;
@@ -253,7 +250,7 @@ router.post('/invite',function(req, res, next) {
  * 查询未读消息
  * rest服务相对地址："/users/messages"，http方法为:“GET”
  */
-router.get('messages',function(req, res, next){
+router.get('/messages',function(req, res, next){
     var user = req.user;
     if(user) {
         var provider = user.provider;
