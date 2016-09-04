@@ -17,19 +17,27 @@ router.get('/', function(req, res, next) {
      if(user){
          var provider = user.provider;
          var user_id = user.id || user.userID;
-         Users.findUser(provider,user_id).then(function(userInfo){
-             res.render('index',{title:TITLE,user:userInfo.user_name,root:root});
-         }).catch(function(){
-             var userInfo = user._json;
-             userInfo.provider = provider;
-             userInfo.user_id = user_id;
-             userInfo.user_name = user.name || user.nickname;
-             Users.addUser(userInfo).then(function(userInfo){
+         try{
+             Users.findUser(provider,user_id).then(function(userInfo){
+                 console.log('name--------------:'+userInfo.user_name);
+                 console.log(userInfo);
                  res.render('index',{title:TITLE,user:userInfo.user_name,root:root});
              }).catch(function(){
-                 res.render('users',{title:TITLE,root:root});
+                 var userInfo = user._json;
+                 userInfo.provider = provider;
+                 userInfo.user_id = user_id;
+                 userInfo.user_name = user.name || user.nickname;
+                 console.log('-----------------add:');
+                 console.log(userInfo);
+                 Users.addUser(userInfo).then(function(userInfo){
+                     res.render('index',{title:TITLE,user:userInfo.user_name,root:root});
+                 }).catch(function(){
+                     res.render('users',{title:TITLE,root:root});
+                 });
              });
-         });
+         }catch(e){
+             console.log(e);
+         }
      }else{
          res.render('users',{title:TITLE,root:root});
      }

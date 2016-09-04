@@ -18,20 +18,25 @@ router.put('/creategroup', function (req, res, next) {
         var reqBody = req.body;
         var type = reqBody.type;
         if(Verify.verfyGroup(reqBody)){
-            var gName = reqBody.gname,
-                description = reqBody.description,
-                creator = {provider:provider,user_id:user_id},
-                groupInfo = {
-                    gname:gName,
-                    type: Verify.getGroupType(type),
-                    description: description,
-                    creator:creator
-                };
-            Group.addGroup(groupInfo).then(function(){
-                res.send({result:'success',operate:'creategroup'});
-            }).catch(function(){
-                res.send({result:'failure',operate:'creategroup'});
-            });
+            try{
+                var gName = reqBody.gname,
+                    description = reqBody.description,
+                    creator = {provider:provider,user_id:user_id},
+                    groupInfo = {
+                        gname:gName,
+                        type: Verify.getGroupType(type),
+                        description: description,
+                        creator:creator
+                    };
+                Group.addGroup(groupInfo).then(function(){
+                    res.send({result:'success',operate:'creategroup'});
+                }).catch(
+                    function(){
+                        res.send({result:'failure',operate:'creategroup'});
+                    });
+            }catch(e){
+                console.log(e);
+            }
         }else{
             res.send({result:'failure',operate:'creategroup'});
         }
@@ -50,11 +55,15 @@ router.post('/group/:id/dropgroup', function (req, res, next) {
         var provider = user.provider;
         var user_id = user.id || user.userID;
         var groupId = req.params.id;
-        Group.deleteGroup(groupId,provider,user_id).then(function(){
-            res.send({result:'success',operate:'dropgroup'});
-        }).catch(function(){
-            res.send({result:'failure',operate:'dropgroup'});
-        });
+        try{
+            Group.deleteGroup(groupId,provider,user_id).then(function(){
+                res.send({result:'success',operate:'dropgroup'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'dropgroup'});
+            });
+        }catch(e){
+            console.log(e);
+        }
     }else{
         res.send({result:'failure',operate:'unlogin'});
     }
@@ -69,11 +78,15 @@ router.get('/groups',function(req, res, next) {
     if(user){
         var provider = user.provider;
         var user_id = user.id || user.userID;
-        Group.findGroupByUser(provider,user_id).then(function(groups){
-            res.send({result:groups,operate:'findgroup'});
-        }).catch(function(){
-            res.send({result:'failure',operate:'findgroup'});
-        });
+        try{
+            Group.findGroupByUser(provider,user_id).then(function(groups){
+                res.send({result:groups,operate:'findgroup'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'findgroup'});
+            });
+        }catch(e){
+            console.log(e);
+        }
     }else{
         res.send({result:'failure',operate:'unlogin'});
     }
@@ -89,11 +102,15 @@ router.get('/group/:id',function(req, res, next) {
         var provider = user.provider;
         var user_id = user.id || user.userID;
         var groupId = req.params.id;
-        Group.findGroupById(groupId, provider,user_id).then(function(groups){
-            res.send({result:groups,operate:'findgroupbyid'});
-        }).catch(function(){
-            res.send({result:'failure',operate:'findgroupbyid'});
-        });
+        try{
+            Group.findGroupById(groupId, provider,user_id).then(function(groups){
+                res.send({result:groups,operate:'findgroupbyid'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'findgroupbyid'});
+            });
+        }catch(e){
+            console.log(e);
+        }
     }else{
         res.send({result:'failure',operate:'unlogin'});
     }
@@ -111,11 +128,15 @@ router.post('/group/:id/deletemember',function(req, res, next) {
         var reqBody = req.body;
         var groupId = req.params.id,
             memberInfo = reqBody.member;
-        Group.deleteMember(groupId,provider,user_id,memberInfo).then(function(){
-            res.send({result:'success',operate:'deletemember'});
-        }).catch(function(){
-            res.send({result:'failure',operate:'deletemember'});
-        });
+        try{
+            Group.deleteMember(groupId,provider,user_id,memberInfo).then(function(){
+                res.send({result:'success',operate:'deletemember'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'deletemember'});
+            });
+        }catch(e){
+            console.log(e);
+        }
     }else{
         res.send({result:'failure',operate:'unlogin'});
     }
@@ -131,11 +152,15 @@ router.post('/group/:id/leave',function(req, res, next) {
         var provider = user.provider;
         var user_id = user.id || user.userID;
         var groupId = req.params.id;
-        Group.leaveGroup(groupId,provider,user_id).then(function(){
-            res.send({result:'success',operate:'leave'});
-        }).catch(function(){
-            res.send({result:'failure',operate:'leave'});
-        });
+        try{
+            Group.leaveGroup(groupId,provider,user_id).then(function(){
+                res.send({result:'success',operate:'leave'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'leave'});
+            });
+        }catch(e){
+            console.log(e);
+        }
     }else{
         res.send({result:'failure',operate:'unlogin'});
     }
@@ -157,15 +182,19 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
             totalMoney = memberInfos.total,
             members = memberInfos.members,
             dateTime = memberInfos.dateTime;
-        Group.updateMoney(groupId,provider,user_id,memberInfos).then(function(){
-            Bill.createBill({groupid:groupId,datetime:dateTime,members:members,money:totalMoney}).then(function(){
-                res.send({result:'success',operate:'updatemoney'});
+        try{
+            Group.updateMoney(groupId,provider,user_id,memberInfos).then(function(){
+                Bill.createBill({groupid:groupId,datetime:dateTime,members:members,money:totalMoney}).then(function(){
+                    res.send({result:'success',operate:'updatemoney'});
+                }).catch(function(){
+                    res.send({result:'failure',operate:'createBill'});
+                });
             }).catch(function(){
-                res.send({result:'failure',operate:'createBill'});
+                res.send({result:'failure',operate:'updatemoney'});
             });
-        }).catch(function(){
-            res.send({result:'failure',operate:'updatemoney'});
-        });
+        }catch(e){
+            console.log(e);
+        }
     }else{
         res.send({result:'failure',operate:'unlogin'});
     }
@@ -184,11 +213,15 @@ router.put('/group/:id/authorize',function(req, res, next) {
         var reqBody = req.body;
         var groupId = req.params.id,
             memberInfo = reqBody.member;
-        Group.authorize(groupId,provider,user_id,memberInfo).then(function(){
-            res.send({result:'success',operate:'authorize'});
-        }).catch(function(){
-            res.send({result:'failure',operate:'authorize'});
-        });
+        try{
+            Group.authorize(groupId,provider,user_id,memberInfo).then(function(){
+                res.send({result:'success',operate:'authorize'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'authorize'});
+            });
+        }catch(e){
+            console.log(e);
+        }
     }else{
         res.send({result:'failure',operate:'unlogin'});
     }
@@ -207,11 +240,15 @@ router.put('/group/:id/deauthorize',function(req, res, next) {
         var reqBody = req.body;
         var groupId = req.params.id,
             memberInfo = reqBody.member;
-        Group.deauthorize(groupId,provider,user_id,memberInfo).then(function(){
-            res.send({result:'success',operate:'deauthorize'});
-        }).catch(function(){
-            res.send({result:'failure',operate:'deauthorize'});
-        });
+        try{
+            Group.deauthorize(groupId,provider,user_id,memberInfo).then(function(){
+                res.send({result:'success',operate:'deauthorize'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'deauthorize'});
+            });
+        }catch(e){
+            console.log(e);
+        }
     }else{
         res.send({result:'failure',operate:'unlogin'});
     }
@@ -236,11 +273,15 @@ router.post('/group/:id/invite',function(req, res, next) {
                 userinfo:userInfo,
                 readed:false
             };
-        Message.createMessage(groupId,provider,user_id,message).then(function(){
-            res.send({result:'success',operate:'invite'});
-        }).catch(function(){
-            res.send({result:'failure',operate:'invite'});
-        })
+        try{
+            Message.createMessage(groupId,provider,user_id,message).then(function(){
+                res.send({result:'success',operate:'invite'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'invite'});
+            });
+        }catch(e){
+            console.log(e);
+        }
     }else{
         res.send({result:'failure',operate:'unlogin'});
     }
@@ -255,11 +296,15 @@ router.get('/messages',function(req, res, next){
     if(user) {
         var provider = user.provider;
         var user_id = user.id || user.userID;
-        Message.findMessage(provider,user_id,false).then(function(messages){
-            res.send({result:messages,operate:'messages'});
-        }).catch(function(){
-            res.send({result:'failure',operate:'messages'});
-        })
+        try{
+            Message.findMessage(provider,user_id,false).then(function(messages){
+                res.send({result:messages,operate:'messages'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'messages'});
+            });
+        }catch(e){
+            console.log(e);
+        }
     }else{
         res.send({result:'failure',operate:'unlogin'});
     }
@@ -274,11 +319,15 @@ router.get('message/:id',function(req, res, next){
     var user = req.user;
     if(user) {
         var messageId = req.params.id;
-        Message.findMessageById(messageId).then(function(){
-            res.send({result:'success',operate:'get massege by id'});
-        }).catch(function(){
-            res.send({result:'failure',operate:'get massege by id'});
-        })
+        try{
+            Message.findMessageById(messageId).then(function(){
+                res.send({result:'success',operate:'get massege by id'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'get massege by id'});
+            });
+        }catch(e){
+            console.log(e);
+        }
     }else{
         res.send({result:'failure',operate:'unlogin'});
     }
@@ -294,18 +343,22 @@ router.get('message/:id/reply/:type',function(req, res, next){
     if(user) {
          var messageId = req.params.id,
              replyType = req.params.type;
-        if(replyType === 'agree'){
-            Message.findMessageById(messageId).then(function(){
-                res.send({result:'success',operate:'reply agree'});
-            }).catch(function(){
-                res.send({result:'failure',operate:'reply agree'});
-            })
-        }else{
-            Message.updateMessageState(messageId,true).then(function(){
-                res.send({result:'success',operate:'reply reject'});
-            }).catch(function(){
-                res.send({result:'failure',operate:'reply reject'});
-            });
+        try{
+            if(replyType === 'agree'){
+                Message.findMessageById(messageId).then(function(){
+                    res.send({result:'success',operate:'reply agree'});
+                }).catch(function(){
+                    res.send({result:'failure',operate:'reply agree'});
+                })
+            }else{
+                Message.updateMessageState(messageId,true).then(function(){
+                    res.send({result:'success',operate:'reply reject'});
+                }).catch(function(){
+                    res.send({result:'failure',operate:'reply reject'});
+                });
+            }
+        }catch(e){
+            console.log(e);
         }
     }else{
         res.send({result:'failure',operate:'unlogin'});
@@ -324,11 +377,15 @@ router.get('bills/from/:from/to/:to',function(req, res, next){
             user_id = user.id || user.userID,
             from = req.params.from,
             to = req.params.to;
-        Bill.findBillByDateTime(provider,user_id,from,to).then(function(){
-            res.send({result:'success',operate:'getbill'});
-        }).catch(function(){
-            res.send({result:'failure',operate:'getbill'});
-        });
+        try{
+            Bill.findBillByDateTime(provider,user_id,from,to).then(function(){
+                res.send({result:'success',operate:'getbill'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'getbill'});
+            });
+        }catch(e){
+            console.log(e);
+        }
     }else{
         res.send({result:'failure',operate:'unlogin'});
     }

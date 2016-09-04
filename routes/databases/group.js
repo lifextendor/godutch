@@ -25,7 +25,7 @@ var OPERATE_GRANT_MAP = {
 function addGroup(groupInfo){
 	var deferred = when.defer(),
 		addGroupPromise = deferred.promise;
-	groupInfo.members = [{user:creator,money:0,grant:GRANT.Captain}];
+	groupInfo.members = [{user:groupInfo.creator,money:0,grant:GRANT.Captain}];
 	var getGroupColPromise = DbUtil.connect().then(function(db){
 		return DbUtil.getCollection(db, COL);
 	}).catch(function(evt){

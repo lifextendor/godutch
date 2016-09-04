@@ -31,7 +31,7 @@ function findUser(provider,userId){
         if(!evt){
             return;
         }
-        deferred.resolve(evt.doc);
+        deferred.resolve(evt.docs);
         evt.db.close();
     });
     return findUserPromise;
