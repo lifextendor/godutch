@@ -2,7 +2,6 @@ var DbUtil = require('./dbutil');
 var when = require('when');
 var COL = 'messages';
 
-//TODO 增加权限信息，只有团长，副团长可以创建消息
 /**
  *
  * @param message

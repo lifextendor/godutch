@@ -6,11 +6,12 @@ import {Link} from 'react-router';
 import '../stylesheets/nav.scss';
 
 var username='name';
+var rootPath = window.rootPath
 
 class nav extends React.Component{ 
   constructor(props) {
         super(props);
-        this.state={username:username};   
+        this.state={username:username,rootPath:rootPath};
     }   
   loadCommentsFromServer() {
         // $.ajax({
@@ -29,9 +30,6 @@ class nav extends React.Component{
     componentDidMount(){
         this.loadCommentsFromServer();
     }
-    signOut(){
-      window.open('<%= root%>/logout','_self');      
-    }  
     render() { 
       const { style, size, placeholder } = this.props;
       return  <header>
@@ -56,7 +54,7 @@ class nav extends React.Component{
                       <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav navbar-right">                       
                           <li><a href="#">{username}</a></li>
-                          <li><a href="#" onClick={this.signOut}>退出</a></li>
+                          <li><a href={this.state.rootPath+'/logout'}>退出</a></li>
                            <li><a href="#">反馈</a></li> 
                         </ul>
                       </div>
@@ -69,7 +67,7 @@ class nav extends React.Component{
                         </a>
                         <ul className="dropdown-menu pull-right">                       
                           <li><a href="#">{username}</a></li>
-                          <li><a href="#" onClick={this.signOut}>退出</a></li>
+                          <li><a href={this.state.rootPath+'/logout'}>退出</a></li>
                           <li><a href="#">反馈</a></li> 
                         </ul>
                       </div>               
