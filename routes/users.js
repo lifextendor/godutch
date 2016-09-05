@@ -402,7 +402,7 @@ router.get('bills/from/:from/to/:to',function(req, res, next){
 
 /**
  * 创建反馈信息
- * rest服务相对地址："/users/createfeedback"，http方法为:“PUT”
+ * rest服务相对地址："/users/feedback"，http方法为:“PUT”
  * 请求体需要包含：content——反馈内容，比如：{content:'找不到创建团的功能'}
  */
 router.put('feedback',function(req, res, next){
