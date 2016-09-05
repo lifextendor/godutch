@@ -7,7 +7,7 @@ var GROUP_TYPE = {
     FUND:'fund' //活动经费
 };
 module.exports = {
-    verfyGroup:function(group){
+    verifyGroup:function(group){
         var result = true;
         if(group){
             result = result && (group.gname !== '');

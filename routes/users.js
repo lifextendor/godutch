@@ -3,7 +3,6 @@ var router = express.Router();
 var Group = require('./databases/group');
 var Message = require('./databases/message');
 var Bill = require('./databases/bill');
-var Verify = require('./util/verify');
 var Util = require('./util');
 
 /**
@@ -18,7 +17,7 @@ router.put('/creategroup', function (req, res, next) {
         var user_id = user.id || user.userID;
         var reqBody = req.body;
         var type = reqBody.type;
-        if(Verify.verfyGroup(reqBody)){
+        if(Util.verifyGroup(reqBody)){
             try{
                 var gName = reqBody.gname,
                     description = reqBody.description,
@@ -26,7 +25,7 @@ router.put('/creategroup', function (req, res, next) {
                     groupInfo = {
                         id:Util.getGuid(),
                         gname:gName,
-                        type: Verify.getGroupType(type),
+                        type: Util.getGroupType(type),
                         description: description,
                         creator:creator
                     };
