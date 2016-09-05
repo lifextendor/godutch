@@ -3,6 +3,7 @@ var router = express.Router();
 var Group = require('./databases/group');
 var Message = require('./databases/message');
 var Bill = require('./databases/bill');
+var Feedback = require('./databases/feedback');
 var Util = require('./util');
 
 /**
@@ -390,6 +391,39 @@ router.get('bills/from/:from/to/:to',function(req, res, next){
                 res.send({result:'success',operate:'getbill'});
             }).catch(function(){
                 res.send({result:'failure',operate:'getbill'});
+            });
+        }catch(e){
+            console.log(e);
+        }
+    }else{
+        res.send({result:'failure',operate:'unlogin'});
+    }
+});
+
+/**
+ * 创建反馈信息
+ * rest服务相对地址："/users/createfeedback"，http方法为:“PUT”
+ * 请求体需要包含：content——反馈内容，比如：{content:'找不到创建团的功能'}
+ */
+router.put('feedback',function(req, res, next){
+    var user = req.user;
+    if(user) {
+        var provider = user.provider,
+            user_id = user.id || user.userID;
+        var reqBody = req.body;
+        var content = reqBody.content;
+        try{
+            var feedback ={
+                "id":Util.getGuid(),
+                "user":{"provider":provider,"user_id":user_id},
+                "datetime":new Date().getTime(),
+                "content":content,
+                "readed":false
+            };
+            Feedback.createFeedback(feedback).then(function(){
+                res.send({result:'success',operate:'create feedback'});
+            }).catch(function(){
+                res.send({result:'failure',operate:'create feedback'});
             });
         }catch(e){
             console.log(e);
