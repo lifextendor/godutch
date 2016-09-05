@@ -1,8 +1,8 @@
-let path = require('path');
-let node_modules = path.resolve(__dirname, 'node_modules');
-let pathToReact = path.resolve(node_modules, 'react/dist/react.min.js');
-let ExtractTextPlugin = require('extract-text-webpack-plugin');
-let CommonsChunkPlugin=require('webpack/lib/optimize/CommonsChunkPlugin');
+var path = require('path');
+var node_modules = path.resolve(__dirname, 'node_modules');
+var pathToReact = path.resolve(node_modules, 'react/dist/react.min.js');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var CommonsChunkPlugin=require('webpack/lib/optimize/CommonsChunkPlugin');
 
 module.exports = {
     entry: [

@@ -26,12 +26,12 @@ function findUser(provider,userId){
         if(!evt){
             return;
         }
-        return DbUtil.queryDoc(evt.db,evt.col,{provider:provider,user_id:userId});
+        return DbUtil.queryOneDoc(evt.db,evt.col,{provider:provider,user_id:userId});
     }).done(function(evt){
         if(!evt){
             return;
         }
-        deferred.resolve(evt.docs);
+        deferred.resolve(evt.doc);
         evt.db.close();
     });
     return findUserPromise;

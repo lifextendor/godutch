@@ -104,7 +104,7 @@ function deleteDocument(db,collection, query) {
 
 function queryDocument(db,collection, query) {
     var deferred = when.defer();
-    collection.find(query, function(err, docs) {
+    collection.find(query).toArray(function(err, docs) {
         if (err) {
             deferred.reject({db:db,err:err});
             return deferred.promise;
