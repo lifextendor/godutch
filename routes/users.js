@@ -4,6 +4,7 @@ var Group = require('./databases/group');
 var Message = require('./databases/message');
 var Bill = require('./databases/bill');
 var Verify = require('./util/verify');
+var Util = require('./util');
 
 /**
  * 创建团队
@@ -23,6 +24,7 @@ router.put('/creategroup', function (req, res, next) {
                     description = reqBody.description,
                     creator = {provider:provider,user_id:user_id},
                     groupInfo = {
+                        id:Util.getGuid(),
                         gname:gName,
                         type: Verify.getGroupType(type),
                         description: description,
@@ -184,7 +186,13 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
             dateTime = memberInfos.dateTime;
         try{
             Group.updateMoney(groupId,provider,user_id,memberInfos).then(function(){
-                Bill.createBill({groupid:groupId,datetime:dateTime,members:members,money:totalMoney}).then(function(){
+                Bill.createBill({
+                    id:Util.getGuid(),
+                    groupid:groupId,
+                    datetime:dateTime,
+                    members:members,
+                    money:totalMoney
+                }).then(function(){
                     res.send({result:'success',operate:'updatemoney'});
                 }).catch(function(){
                     res.send({result:'failure',operate:'createBill'});
@@ -268,6 +276,7 @@ router.post('/group/:id/invite',function(req, res, next) {
         var groupId = req.params.id,
             userInfo = reqBody.userInfo,
             message = {
+                id:Util.getGuid(),
                 type:'invite',
                 groupid:groupId,
                 userinfo:userInfo,
