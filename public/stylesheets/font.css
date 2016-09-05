@@ -1,0 +1,446 @@
+.cmn-icon {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    outline: 0
+}
+
+@font-face {
+    font-family: baikeFont_css;
+    src: url(http://baike.bdimg.com/static/wiki-common/css/resource/font/css_5fca69c.eot?#iefix);
+    src: url(http://baike.bdimg.com/static/wiki-common/css/resource/font/css_5fca69c.eot?#iefix) format('embedded-opentype'),url(http://baike.bdimg.com/static/wiki-common/css/resource/font/css_5e54325.woff2) format('woff2'),url(http://baike.bdimg.com/static/wiki-common/css/resource/font/css_9fe6d4e.woff) format('woff'),url(http://baike.bdimg.com/static/wiki-common/css/resource/font/css_ee4e4e2.ttf) format('truetype'),url(resource/font/css.otf) format('opentype'),url(http://baike.bdimg.com/static/wiki-common/css/resource/font/css_164deb3.svg) format('svg');
+    font-weight: 400;
+    font-style: normal
+}
+
+.cmn-icons {
+    font-family: baikeFont_css;
+    font-weight: 400;
+    font-style: normal
+}
+
+.cmn-icons_logo-baidu {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe600;")}
+
+.cmn-icons_logo-baidu:before {
+    content: '\e600'
+}
+
+.cmn-icons_logo-bai {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe601;")}
+
+.cmn-icons_logo-bai:before {
+    content: '\e601'
+}
+
+.cmn-icons_logo-du {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe602;")}
+
+.cmn-icons_logo-du:before {
+    content: '\e602'
+}
+
+.cmn-icons_logo-baike {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe603;")}
+
+.cmn-icons_logo-baike:before {
+    content: '\e603'
+}
+
+.cmn-icons_navbar-usercenter {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe604;")}
+
+.cmn-icons_navbar-usercenter:before {
+    content: '\e604'
+}
+
+.cmn-icons_footer-fresh {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe605;")}
+
+.cmn-icons_footer-fresh:before {
+    content: '\e605'
+}
+
+.cmn-icons_footer-question {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe606;")}
+
+.cmn-icons_footer-question:before {
+    content: '\e606'
+}
+
+.cmn-icons_footer-suggestion {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe607;")}
+
+.cmn-icons_footer-suggestion:before {
+    content: '\e607'
+}
+
+.cmn-icons_close {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe608;")}
+
+.cmn-icons_close:before {
+    content: '\e608'
+}
+
+.cmn-icons_circle {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe609;")}
+
+.cmn-icons_circle:before {
+    content: '\e609'
+}
+
+.cmn-icons_double-down {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe610;")}
+
+.cmn-icons_double-down:before {
+    content: '\e610'
+}
+
+.cmn-icons_double-up {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe611;")}
+
+.cmn-icons_double-up:before {
+    content: '\e611'
+}
+
+.cmn-icons_logo-qzone {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe612;")}
+
+.cmn-icons_logo-qzone:before {
+    content: '\e612'
+}
+
+.cmn-icons_logo-sina-weibo {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe613;")}
+
+.cmn-icons_logo-sina-weibo:before {
+    content: '\e613'
+}
+
+.cmn-icons_logo-tencent-weibo {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe614;")}
+
+.cmn-icons_logo-tencent-weibo:before {
+    content: '\e614'
+}
+
+.cmn-icons_logo-tieba {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe615;")}
+
+.cmn-icons_logo-tieba:before {
+    content: '\e615'
+}
+
+.cmn-icons_cog {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe616;")}
+
+.cmn-icons_cog:before {
+    content: '\e616'
+}
+
+.cmn-icons_tadpole {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe617;")}
+
+.cmn-icons_tadpole:before {
+    content: '\e617'
+}
+
+.cmn-icons_dialog-warning {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe618;")}
+
+.cmn-icons_dialog-warning:before {
+    content: '\e618'
+}
+
+.cmn-icons_dialog-question {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe619;")}
+
+.cmn-icons_dialog-question:before {
+    content: '\e619'
+}
+
+.cmn-icons_dialog-check {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe620;")}
+
+.cmn-icons_dialog-check:before {
+    content: '\e620'
+}
+
+.cmn-icons_dialog-error {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe621;")}
+
+.cmn-icons_dialog-error:before {
+    content: '\e621'
+}
+
+.cmn-icons_arrow-l {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe622;")}
+
+.cmn-icons_arrow-l:before {
+    content: '\e622'
+}
+
+.cmn-icons_arrow-r {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe623;")}
+
+.cmn-icons_arrow-r:before {
+    content: '\e623'
+}
+
+.cmn-icons_arrow-l-2 {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe624;")}
+
+.cmn-icons_arrow-l-2:before {
+    content: '\e624'
+}
+
+.cmn-icons_arrow-r-2 {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe625;")}
+
+.cmn-icons_arrow-r-2:before {
+    content: '\e625'
+}
+
+.cmn-icons_arrow-t {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe626;")}
+
+.cmn-icons_arrow-t:before {
+    content: '\e626'
+}
+
+.cmn-icons_arrow-b {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe627;")}
+
+.cmn-icons_arrow-b:before {
+    content: '\e627'
+}
+
+.cmn-icons_calendar {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe628;")}
+
+.cmn-icons_calendar:before {
+    content: '\e628'
+}
+
+.cmn-icons_task {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe629;")}
+
+.cmn-icons_task:before {
+    content: '\e629'
+}
+
+.cmn-icons_award {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe630;")}
+
+.cmn-icons_award:before {
+    content: '\e630'
+}
+
+.cmn-icons_userbar-down {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe631;")}
+
+.cmn-icons_userbar-down:before {
+    content: '\e631'
+}
+
+.cmn-icons_userbar-up {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe632;")}
+
+.cmn-icons_userbar-up:before {
+    content: '\e632'
+}
+
+.cmn-icons_userbar-shop {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe633;")}
+
+.cmn-icons_userbar-shop:before {
+    content: '\e633'
+}
+
+.cmn-icons_userbar-message {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe634;")}
+
+.cmn-icons_userbar-message:before {
+    content: '\e634'
+}
+
+.cmn-icons_userbar-new {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe635;")}
+
+.cmn-icons_userbar-new:before {
+    content: '\e635'
+}
+
+.cmn-icons_marker-authentication {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe636;")}
+
+.cmn-icons_marker-authentication:before {
+    content: '\e636'
+}
+
+.cmn-icons_marker-authority {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe637;")}
+
+.cmn-icons_marker-authority:before {
+    content: '\e637'
+}
+
+.cmn-icons_marker-complex {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe638;")}
+
+.cmn-icons_marker-complex:before {
+    content: '\e638'
+}
+
+.cmn-icons_marker-created {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe639;")}
+
+.cmn-icons_marker-created:before {
+    content: '\e639'
+}
+
+.cmn-icons_marker-featured {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe640;")}
+
+.cmn-icons_marker-featured:before {
+    content: '\e640'
+}
+
+.cmn-icons_marker-good {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe641;")}
+
+.cmn-icons_marker-good:before {
+    content: '\e641'
+}
+
+.cmn-icons_marker-simple-authentication {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe642;")}
+
+.cmn-icons_marker-simple-authentication:before {
+    content: '\e642'
+}
+
+.cmn-icons_marker-simple-authority {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe643;")}
+
+.cmn-icons_marker-simple-authority:before {
+    content: '\e643'
+}
+
+.cmn-icons_marker-simple-complex {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe644;")}
+
+.cmn-icons_marker-simple-complex:before {
+    content: '\e644'
+}
+
+.cmn-icons_marker-simple-created {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe645;")}
+
+.cmn-icons_marker-simple-created:before {
+    content: '\e645'
+}
+
+.cmn-icons_marker-simple-featured {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe646;")}
+
+.cmn-icons_marker-simple-featured:before {
+    content: '\e646'
+}
+
+.cmn-icons_marker-simple-good {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe647;")}
+
+.cmn-icons_marker-simple-good:before {
+    content: '\e647'
+}
+
+.cmn-icons_arrow-l-3 {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe648;")}
+
+.cmn-icons_arrow-l-3:before {
+    content: '\e648'
+}
+
+.cmn-icons_arrow-r-3 {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe649;")}
+
+.cmn-icons_arrow-r-3:before {
+    content: '\e649'
+}
+
+.cmn-icons_marker-simple-covered {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe650;")}
+
+.cmn-icons_marker-simple-covered:before {
+    content: '\e650'
+}
+
+.cmn-icons_logo-qq {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe651;")}
+
+.cmn-icons_logo-qq:before {
+    content: '\e651'
+}
+
+.cmn-icons_logo-wechat {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe652;")}
+
+.cmn-icons_logo-wechat:before {
+    content: '\e652'
+}
+
+.cmn-icons_play {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe653;")}
+
+.cmn-icons_play:before {
+    content: '\e653'
+}
+
+.cmn-icons_videoPlayer-play {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe654;")}
+
+.cmn-icons_videoPlayer-play:before {
+    content: '\e654'
+}
+
+.cmn-icons_videoPlayer-pause {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe655;")}
+
+.cmn-icons_videoPlayer-pause:before {
+    content: '\e655'
+}
+
+.cmn-icons_videoPlayer-volume {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe656;")}
+
+.cmn-icons_videoPlayer-volume:before {
+    content: '\e656'
+}
+
+.cmn-icons_share {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe657;")}
+
+.cmn-icons_share:before {
+    content: '\e657'
+}
+
+.cmn-icons_marker-simple-wap {
+    *zoom:expression(this.runtimeStyle["zoom"] = "1",this.innerHTML += "&#xe658;")}
+
+.cmn-icons_marker-simple-wap:before {
+    content: '\e658'
+}
+
+.cmn-icons_logo-bai,.cmn-icons_logo-baike {
+    color: #e10602
+}
+
+.cmn-icons_logo-du {
+    color: #2932e1
+}
