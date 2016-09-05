@@ -43366,6 +43366,19 @@
 	    }
 
 	    (0, _createClass3.default)(teamManage, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            this.serverRequest = _jquery2.default.get("/users/groups", function (result) {
+	                debugger;
+	                this.setState({});
+	            }.bind(this));
+	        }
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	            this.serverRequest.abort();
+	        }
+	    }, {
 	        key: 'confirm',
 	        value: function confirm(e) {
 	            _message2.default.success('点击了确定');

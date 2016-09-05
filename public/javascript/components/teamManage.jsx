@@ -30,10 +30,20 @@ class teamManage extends React.Component{
         super(props);
         this.state={username: this.props.params.username, teamlist: teamlist}; 
     }
-    confirm(e) {
-      message.success('点击了确定');
+    componentDidMount() {
+        this.serverRequest = $.get("/users/groups", function (result) {
+            debugger
+          this.setState({
+            
+          });
+        }.bind(this));
     }
-
+    componentWillUnmount() {
+        this.serverRequest.abort();
+    }
+    confirm(e) {
+        message.success('点击了确定');
+    }
     cancel(e) {
       message.error('点击了取消');
     }
