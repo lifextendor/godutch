@@ -30,7 +30,7 @@
   "scripts": {
     "build": "webpack",
     "start": "node ./bin/www.js",
-    "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build"
+    "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base --port 8081 build"
   },
   "devDependencies": {
     "antd": "^1.0.0-beta.10",

@@ -83,7 +83,14 @@ function findGroupByCreator(provider,userId){
 						break;
 					}
 				}
-				var result = {id:docs[i].id,groupName:docs[i].gname,members:docs[i].members.length,grant:grant};
+				var result = {
+					id:docs[i].id,
+					groupName:docs[i].gname,
+					members:docs[i].members.length,
+					description:docs[i].description,
+					createTime:docs[i].createtime,
+					grant:grant
+				};
 				results.push(result);
 			}
 			deferred.resolve(results);
@@ -111,7 +118,14 @@ function findGroupByMember(provider,userId){
 						break;
 					}
 				}
-				var result = {id:docs[i].id,groupName:docs[i].gname,members:docs[i].members.length,grant:grant};
+				var result = {
+					id:docs[i].id,
+					groupName:docs[i].gname,
+					members:docs[i].members.length,
+					description:docs[i].description,
+					createTime:docs[i].createtime,
+					grant:grant
+				};
 				results.push(result);
 			}
 			deferred.resolve(results);
@@ -140,7 +154,14 @@ function findGroupByUser(provider,userId){
 						break;
 					}
 				}
-				var result = {id:docs[i].id,groupName:docs[i].gname,members:docs[i].members.length,grant:grant};
+				var result = {
+					id:docs[i].id,
+					groupName:docs[i].gname,
+					members:docs[i].members.length,
+					description:docs[i].description,
+					createTime:docs[i].createtime,
+					grant:grant
+				};
 				results.push(result);
 			}
 			deferred.resolve(results);
@@ -364,6 +385,7 @@ function insertGroup(promise, deferred,groupInfo){
 		if(!evt){
 			return;
 		}
+		groupInfo.createtime = new Date().getTime();
 		return DbUtil.insertDoc(evt.db,evt.col,[groupInfo]);
 	}).done(function(evt){
 		if(!evt){
@@ -401,13 +423,7 @@ function checkGrant(operate,groupId,provider,userId){
 		if(!evt){
 			return;
 		}
-		deferred.resolve(evt.doc);
-		evt.db.close();
-	}).catch(function(evt){
-		if(!evt){
-			return;
-		}
-		deferred.resolve(evt.doc);
+		deferred.resolve(evt.docs);
 		evt.db.close();
 	});
 	return checkGrantPromise;
