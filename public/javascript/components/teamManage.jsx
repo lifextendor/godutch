@@ -48,15 +48,7 @@ class teamManage extends React.Component{
                     var date = new Date(data.result[i].createTime);
                     data.result[i].createTime=date.getFullYear()+"年"+date.getMonth()+"月"+date.getDate()+"日";
                 }
-                this.state=({teamlist:data.result});
-                // debugger
-                // if (data===null) {
-                //     this.state=({teamlist:teamlist});
-                // }
-                // else{
-                //     this.state=({teamlist:data.result});
-                // }  
-                              
+                this.state=({teamlist:data.result});         
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -105,6 +97,7 @@ class teamManage extends React.Component{
                 boss[i]="hidden";
                 number[i]="ok";
             }
+            debugger
             // permissions[i]=list.grant?"ok":"hidden";
         }, this)}
         return  <div style={{ background: '#ECECEC'}}>                    
@@ -117,9 +110,11 @@ class teamManage extends React.Component{
                                 <Panel header={list.groupName} key={i}>                                    
                                     <p>创于:{list.createTime}</p>
                                     <p>简介:{list.description}</p>
-                                    <Popconfirm className={number[i]} title="确定要退出这个团吗？" onConfirm={this.exitGroupYes.bind(this,list.id)} onCancel={this.exitGroupNo.bind(this)}>
+                                    <div className={number[i]} style={{display: 'inline'}}>
+                                    <Popconfirm title="确定要退出这个团吗？" onConfirm={this.exitGroupYes.bind(this,list.id)} onCancel={this.exitGroupNo.bind(this)}>
                                     <Button className="tool-button" type="primary" >退团</Button>
                                     </Popconfirm>
+                                    </div>
                                     <div className={boss[i]} style={{display: 'inline'}}>
                                     &nbsp;
                                     <Popconfirm title="确定要解散这个团吗？" onConfirm={this.exitGroupYes.bind(this)} onCancel={this.exitGroupYes.bind(this)}>
