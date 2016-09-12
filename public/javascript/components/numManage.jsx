@@ -7,24 +7,7 @@ const Panel = Collapse.Panel;
 var myList=[
     {name:"张三",power:"团长"}, 
     {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团长"},
-    {name:"李四",power:"团员"},
-    {name:"王五",power:"团员"}
+    {name:"张三",power:"团员"}
     ];
 
 class numManage extends React.Component{ 

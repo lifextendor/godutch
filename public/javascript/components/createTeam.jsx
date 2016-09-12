@@ -11,10 +11,16 @@ class createTeam extends React.Component{
     constructor(props) {
         super(props);   
     }
-    openNotificationWithIcon(message) {
-      return notification[message]({
+    succesMessage() {
+      return notification['success']({
           message: '成功',
-          description: '创建组成功！',
+          description: '操作成功！',
+        });
+    }
+    failMessage() {
+      return notification['error']({
+          message: '失败',
+          description: '操作失败！',
         });
     } 
     handleReset(e) {
@@ -33,20 +39,21 @@ class createTeam extends React.Component{
           console.log(values);
 
           message.success('操作成功!');
-         $.ajax({
+          $.ajax({
             url: "/users/creategroup",
             dataType: 'json',
             type: 'put',
             data: values,
             success: function(data) {
                 console.log("提交成功");
-                openNotificationWithIcon("success");
+                succesMessage();
                 //跳转到团组，添加团员
             }.bind(this),
             error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
+                console.log(this.props.url, status, err.toString());
+                failMessage();
             }.bind(this)
-        });
+          });
         });        
     }
     userExists(rule, value, callback) {
