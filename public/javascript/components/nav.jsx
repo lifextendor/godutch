@@ -55,7 +55,7 @@ class nav extends React.Component{
                         <ul className="nav navbar-nav navbar-right">                       
                           <li><a href="#">{username}</a></li>
                           <li><a href={this.state.rootPath+'/logout'}>退出</a></li>
-                           <li><a href="#">反馈</a></li> 
+                          <li><Link to="feedback">反馈</Link></li>
                         </ul>
                       </div>
                     </div>
@@ -68,7 +68,7 @@ class nav extends React.Component{
                         <ul className="dropdown-menu pull-right">                       
                           <li><a href="#">{username}</a></li>
                           <li><a href={this.state.rootPath+'/logout'}>退出</a></li>
-                          <li><a href="#">反馈</a></li> 
+                          <li><Link to="feedback">反馈</Link></li>
                         </ul>
                       </div>               
                     </div>

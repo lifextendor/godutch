@@ -9,6 +9,7 @@ import createTeam from './components/createTeam';
 import teamManage from './components/teamManage';
 import numManage from './components/numManage';
 import billManage from './components/billManage';
+import feedback from './components/feedback';
 import './stylesheets/index.scss'
 
 class App extends React.Component{ 
@@ -36,6 +37,7 @@ ReactDOM.render((
             <Route path="teamManage/:username" component={teamManage} /> 
             <Route path="numManage/:id/:power" component={numManage} />
             <Route path="billManage/:username" component={billManage} />
+            <Route path="feedback" component={feedback} />
         </Route>
     </Router>
 ), document.getElementById('react-content'));  

@@ -6,36 +6,21 @@ import $ from 'jquery';
 import '../stylesheets/teamManage.scss'
 const Panel = Collapse.Panel;
 
-var teamlist=[
-    {name:"团1",num:"8",id:"1",ishead:true}, 
-    {name:"团1",num:"8",id:"2",ishead:true},
-    {name:"团1",num:"8",id:"3",ishead:true},
-    {name:"团1",num:"8",id:"4",ishead:true},
-    {name:"团1",num:"8",id:"5",ishead:false},
-    {name:"团1",num:"8",id:"6",ishead:false},
-    {name:"团1",num:"8",id:"7",ishead:false},
-    {name:"团1",num:"8",id:"8",ishead:false},
-    {name:"团1",num:"8",id:"9",ishead:false},
-    {name:"团1",num:"8",id:"10",ishead:false},
-    {name:"团1",num:"8",id:"11",ishead:false},
-    {name:"团1",num:"8",id:"12",ishead:false},
-    {name:"团1",num:"8",id:"13",ishead:false},
-    {name:"团1",num:"8",id:"14",ishead:false},
-    {name:"团2",num:"9",id:"15",ishead:false},
-    {name:"团3",num:"10",id:"16",ishead:false}
-    ]; 
+// var teamlist=[
+//     {name:"团1",num:"8",id:"1",ishead:true}, 
+//     {name:"团1",num:"8",id:"2",ishead:true},
+//     {name:"团3",num:"10",id:"16",ishead:false}
+//     ]; 
 
 class teamManage extends React.Component{ 
     constructor(props) {
         super(props);
-        this.state={username: this.props.params.username, teamlist: teamlist}; 
+        this.state={username: this.props.params.username}; 
     }
     componentDidMount() {
         this.serverRequest = $.get("/users/groups", function (result) {
             debugger
-          this.setState({
-            
-          });
+          this.setState({teamlist:result});
         }.bind(this));
     }
     componentWillUnmount() {
