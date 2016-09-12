@@ -218,7 +218,7 @@
 		}
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, "?http://localhost:8080"))
+	/* WEBPACK VAR INJECTION */}.call(exports, "?http://localhost:8081"))
 
 /***/ },
 /* 3 */
@@ -7701,7 +7701,7 @@
 
 	var _teamManage2 = _interopRequireDefault(_teamManage);
 
-	var _numManage = __webpack_require__(590);
+	var _numManage = __webpack_require__(586);
 
 	var _numManage2 = _interopRequireDefault(_numManage);
 
@@ -36194,7 +36194,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// 引入React-Router模块
-	var username = 'name'; //导航栏
+	var username = window.userName; //导航栏
 
 	var rootPath = window.rootPath;
 
@@ -38433,11 +38433,19 @@
 	  }
 
 	  (0, _createClass3.default)(createTeam, [{
-	    key: 'openNotificationWithIcon',
-	    value: function openNotificationWithIcon(message) {
-	      return _notification2.default[message]({
+	    key: 'succesMessage',
+	    value: function succesMessage() {
+	      return _notification2.default['success']({
 	        message: '成功',
-	        description: '创建组成功！'
+	        description: '操作成功！'
+	      });
+	    }
+	  }, {
+	    key: 'errorMessage',
+	    value: function errorMessage() {
+	      return _notification2.default['error']({
+	        message: '失败',
+	        description: '操作失败！'
 	      });
 	    }
 	  }, {
@@ -38454,14 +38462,10 @@
 	      e.preventDefault();
 	      this.props.form.validateFields(function (errors, values) {
 	        if (!!errors) {
+	          _this2.errorMessage();
 	          console.log('Errors in form!!!');
 	          return;
 	        }
-
-	        console.log('Submit!!!');
-	        console.log(values);
-
-	        message.success('操作成功!');
 	        $.ajax({
 	          url: "/users/creategroup",
 	          dataType: 'json',
@@ -38469,11 +38473,11 @@
 	          data: values,
 	          success: function (data) {
 	            console.log("提交成功");
-	            openNotificationWithIcon("success");
-	            //跳转到团组，添加团员
+	            this.succesMessage();
 	          }.bind(_this2),
 	          error: function (xhr, status, err) {
-	            console.error(this.props.url, status, err.toString());
+	            console.log(this.props.url, status, err.toString());
+	            this.errorMessage();
 	          }.bind(_this2)
 	        });
 	      });
@@ -50777,12 +50781,6 @@
 
 	var _button2 = _interopRequireDefault(_button);
 
-	var _css4 = __webpack_require__(574);
-
-	var _message = __webpack_require__(577);
-
-	var _message2 = _interopRequireDefault(_message);
-
 	var _getPrototypeOf = __webpack_require__(76);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -50803,9 +50801,15 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _css5 = __webpack_require__(578);
+	var _css4 = __webpack_require__(505);
 
-	var _collapse = __webpack_require__(581);
+	var _notification = __webpack_require__(508);
+
+	var _notification2 = _interopRequireDefault(_notification);
+
+	var _css5 = __webpack_require__(574);
+
+	var _collapse = __webpack_require__(577);
 
 	var _collapse2 = _interopRequireDefault(_collapse);
 
@@ -50815,22 +50819,22 @@
 
 	var _reactRouter = __webpack_require__(332);
 
-	var _jquery = __webpack_require__(587);
+	var _jquery = __webpack_require__(583);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	__webpack_require__(588);
+	__webpack_require__(584);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	//团队管理
 	var Panel = _collapse2.default.Panel;
+	_notification2.default.config({
+	    top: 60,
+	    duration: 3
+	});
 
-	// var teamlist=[
-	//     {name:"团1",num:"8",id:"1",ishead:true}, 
-	//     {name:"团1",num:"8",id:"2",ishead:true},
-	//     {name:"团3",num:"10",id:"16",ishead:false}
-	//     ]; 
+	var teamlist = [{ grant: "no", groupName: "还没有团组" }];
 
 	var teamManage = function (_React$Component) {
 	    (0, _inherits3.default)(teamManage, _React$Component);
@@ -50845,12 +50849,51 @@
 	    }
 
 	    (0, _createClass3.default)(teamManage, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            this.serverRequest = _jquery2.default.get("/users/groups", function (result) {
-	                debugger;
-	                this.setState({ teamlist: result });
-	            }.bind(this));
+	        key: 'succesMessage',
+	        value: function succesMessage() {
+	            return _notification2.default['success']({
+	                message: '成功',
+	                description: '操作成功！'
+	            });
+	        }
+	    }, {
+	        key: 'errorMessage',
+	        value: function errorMessage() {
+	            return _notification2.default['error']({
+	                message: '失败',
+	                description: '操作失败！'
+	            });
+	        }
+	    }, {
+	        key: 'infoMessage',
+	        value: function infoMessage() {
+	            return _notification2.default['info']({
+	                message: '提示',
+	                description: '取消失败！'
+	            });
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {
+	            _jquery2.default.ajax({
+	                url: "/users/groups",
+	                dataType: 'json',
+	                type: 'get',
+	                async: false,
+	                success: function (data) {
+	                    this.state = { teamlist: data.result };
+	                    // debugger
+	                    // if (data===null) {
+	                    //     this.state=({teamlist:teamlist});
+	                    // }
+	                    // else{
+	                    //     this.state=({teamlist:data.result});
+	                    // }  
+	                }.bind(this),
+	                error: function (xhr, status, err) {
+	                    console.error(this.props.url, status, err.toString());
+	                }.bind(this)
+	            });
 	        }
 	    }, {
 	        key: 'componentWillUnmount',
@@ -50858,39 +50901,48 @@
 	            this.serverRequest.abort();
 	        }
 	    }, {
-	        key: 'confirm',
-	        value: function confirm(e) {
-	            _message2.default.success('点击了确定');
+	        key: 'deleteGroup',
+	        value: function deleteGroup(e) {}
+	    }, {
+	        key: 'exitGroup',
+	        value: function exitGroup(e) {}
+	    }, {
+	        key: 'exitGroupYes',
+	        value: function exitGroupYes(id) {
+	            _jquery2.default.ajax({
+	                url: "/users/group/" + id + "/dropgroup",
+	                dataType: 'json',
+	                type: 'POST',
+	                success: function (data) {
+	                    // this.setState({data: data});
+	                    this.componentWillMount({ teamlist: this.state.teamlist });
+	                    this.setState();
+	                    this.succesMessage();
+	                }.bind(this),
+	                error: function (xhr, status, err) {
+	                    console.log(this.props.url, status, err.toString());
+	                    this.errorMessage();
+	                }.bind(this)
+	            });
 	        }
 	    }, {
-	        key: 'cancel',
-	        value: function cancel(e) {
-	            _message2.default.error('点击了取消');
-	        }
-	        // handleCommentSubmit: function(comment) {
-	        //     alert("确认提交");
-	        //     $.ajax({
-	        //         url: this.props.url,
-	        //         dataType: 'json',
-	        //         type: 'POST',
-	        //         data: comment,
-	        //         success: function(data) {
-	        //             this.setState({data: data});
-	        //         }.bind(this),
-	        //         error: function(xhr, status, err) {
-	        //             this.setState({data: comments});
-	        //             console.error(this.props.url, status, err.toString());
-	        //         }.bind(this)
-	        //     });
-	        // }
-
+	        key: 'exitGroupNo',
+	        value: function exitGroupNo(e) {}
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var permissions = [];
+	            var boss = [];
+	            var number = [];
 	            {
 	                this.state.teamlist.map(function (list, i) {
-	                    permissions[i] = list.ishead ? "hidden" : "ok";
+	                    if (list.grant === "CAPTAIN") {
+	                        boss[i] = "ok";
+	                        number[i] = "hidden";
+	                    } else {
+	                        boss[i] = "hidden";
+	                        number[i] = "ok";
+	                    }
+	                    // permissions[i]=list.grant?"ok":"hidden";
 	                }, this);
 	            }
 	            return _react2.default.createElement(
@@ -50911,11 +50963,11 @@
 	                                this.state.teamlist.map(function (list, i) {
 	                                    return _react2.default.createElement(
 	                                        Panel,
-	                                        { header: list.name, key: i },
+	                                        { header: list.groupName, key: i },
 	                                        _react2.default.createElement(
 	                                            'p',
 	                                            null,
-	                                            '创于2016年7月1日'
+	                                            '创于'
 	                                        ),
 	                                        _react2.default.createElement(
 	                                            'p',
@@ -50924,7 +50976,7 @@
 	                                        ),
 	                                        _react2.default.createElement(
 	                                            _popconfirm2.default,
-	                                            { title: '确定要退出这个团吗？', onConfirm: this.confirm.bind(this), onCancel: this.cancel.bind(this) },
+	                                            { className: number[i], title: '确定要退出这个团吗？', onConfirm: this.exitGroupYes.bind(this, list.id), onCancel: this.exitGroupNo.bind(this) },
 	                                            _react2.default.createElement(
 	                                                _button2.default,
 	                                                { className: 'tool-button', type: 'primary' },
@@ -50933,11 +50985,11 @@
 	                                        ),
 	                                        _react2.default.createElement(
 	                                            'div',
-	                                            { className: permissions[i], style: { display: 'inline' } },
+	                                            { className: boss[i], style: { display: 'inline' } },
 	                                            ' ',
 	                                            _react2.default.createElement(
 	                                                _popconfirm2.default,
-	                                                { title: '确定要退出解散这个团吗？', onConfirm: this.confirm.bind(this), onCancel: this.cancel.bind(this) },
+	                                                { title: '确定要解散这个团吗？', onConfirm: this.exitGroupYes.bind(this), onCancel: this.exitGroupYes.bind(this) },
 	                                                _react2.default.createElement(
 	                                                    _button2.default,
 	                                                    { className: 'tool-button', type: 'primary' },
@@ -50951,7 +51003,7 @@
 	                                            { className: 'tool-button', type: 'primary' },
 	                                            _react2.default.createElement(
 	                                                _reactRouter.Link,
-	                                                { to: 'numManage/' + i + '/' + permissions[i] },
+	                                                { to: 'numManage' },
 	                                                '查看团员'
 	                                            )
 	                                        ),
@@ -50961,7 +51013,7 @@
 	                                            { className: 'tool-button', type: 'primary' },
 	                                            _react2.default.createElement(
 	                                                _reactRouter.Link,
-	                                                { to: 'numManage/' + i + '/' + permissions[i] },
+	                                                { to: 'numManage' },
 	                                                '邀请团成员'
 	                                            )
 	                                        )
@@ -50976,6 +51028,8 @@
 	    }]);
 	    return teamManage;
 	}(_react2.default.Component);
+	// teamManage.defaultProps={teamlist:teamManage};//设置默认属性
+
 
 	exports.default = teamManage;
 
@@ -51685,145 +51739,11 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	var _react = __webpack_require__(162);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _rcNotification = __webpack_require__(509);
-
-	var _rcNotification2 = _interopRequireDefault(_rcNotification);
-
-	var _icon = __webpack_require__(401);
-
-	var _icon2 = _interopRequireDefault(_icon);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var defaultDuration = 1.5;
-	var defaultTop = void 0;
-	var messageInstance = void 0;
-	var key = 1;
-	var prefixCls = 'ant-message';
-
-	function getMessageInstance() {
-	  messageInstance = messageInstance || _rcNotification2["default"].newInstance({
-	    prefixCls: prefixCls,
-	    transitionName: 'move-up',
-	    style: { top: defaultTop } });
-	  return messageInstance;
-	}
-
-	function notice(content) {
-	  var duration = arguments.length <= 1 || arguments[1] === undefined ? defaultDuration : arguments[1];
-	  var type = arguments[2];
-	  var onClose = arguments[3];
-
-	  var iconType = {
-	    info: 'info-circle',
-	    success: 'check-circle',
-	    error: 'cross-circle',
-	    warning: 'exclamation-circle',
-	    loading: 'loading'
-	  }[type];
-
-	  var instance = getMessageInstance();
-	  instance.notice({
-	    key: key,
-	    duration: duration,
-	    style: {},
-	    content: _react2["default"].createElement(
-	      'div',
-	      { className: prefixCls + '-custom-content ' + prefixCls + '-' + type },
-	      _react2["default"].createElement(_icon2["default"], { type: iconType }),
-	      _react2["default"].createElement(
-	        'span',
-	        null,
-	        content
-	      )
-	    ),
-	    onClose: onClose
-	  });
-	  return function () {
-	    var target = key++;
-	    return function () {
-	      instance.removeNotice(target);
-	    };
-	  }();
-	}
-
-	exports["default"] = {
-	  info: function info(content, duration, onClose) {
-	    return notice(content, duration, 'info', onClose);
-	  },
-	  success: function success(content, duration, onClose) {
-	    return notice(content, duration, 'success', onClose);
-	  },
-	  error: function error(content, duration, onClose) {
-	    return notice(content, duration, 'error', onClose);
-	  },
-
-	  // Departed usage, please use warning()
-	  warn: function warn(content, duration, onClose) {
-	    return notice(content, duration, 'warning', onClose);
-	  },
-	  warning: function warning(content, duration, onClose) {
-	    return notice(content, duration, 'warning', onClose);
-	  },
-	  loading: function loading(content, duration, onClose) {
-	    return notice(content, duration, 'loading', onClose);
-	  },
-	  config: function config(options) {
-	    if ('top' in options) {
-	      defaultTop = options.top;
-	    }
-	    if ('duration' in options) {
-	      defaultDuration = options.duration;
-	    }
-	    if ('prefixCls' in options) {
-	      prefixCls = options.prefixCls;
-	    }
-	  },
-	  destroy: function destroy() {
-	    if (messageInstance) {
-	      messageInstance.destroy();
-	      messageInstance = null;
-	    }
-	  }
-	};
-	module.exports = exports['default'];
-
-/***/ },
-/* 578 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	__webpack_require__(397);
-
-	__webpack_require__(579);
-
-/***/ },
-/* 579 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 580 */,
-/* 581 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
 	exports["default"] = undefined;
 
 	var _class, _temp;
 
-	var _rcCollapse = __webpack_require__(582);
+	var _rcCollapse = __webpack_require__(578);
 
 	var _rcCollapse2 = _interopRequireDefault(_rcCollapse);
 
@@ -51862,7 +51782,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 582 */
+/* 578 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51873,7 +51793,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _Collapse = __webpack_require__(583);
+	var _Collapse = __webpack_require__(579);
 
 	var _Collapse2 = _interopRequireDefault(_Collapse);
 
@@ -51881,7 +51801,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 583 */
+/* 579 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51898,11 +51818,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Panel = __webpack_require__(584);
+	var _Panel = __webpack_require__(580);
 
 	var _Panel2 = _interopRequireDefault(_Panel);
 
-	var _openAnimationFactory = __webpack_require__(586);
+	var _openAnimationFactory = __webpack_require__(582);
 
 	var _openAnimationFactory2 = _interopRequireDefault(_openAnimationFactory);
 
@@ -52045,7 +51965,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 584 */
+/* 580 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52066,7 +51986,7 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _PanelContent = __webpack_require__(585);
+	var _PanelContent = __webpack_require__(581);
 
 	var _PanelContent2 = _interopRequireDefault(_PanelContent);
 
@@ -52146,7 +52066,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 585 */
+/* 581 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52210,7 +52130,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 586 */
+/* 582 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52261,7 +52181,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 587 */
+/* 583 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*eslint-disable no-unused-vars*/
@@ -62341,14 +62261,14 @@
 
 
 /***/ },
-/* 588 */
+/* 584 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 589 */,
-/* 590 */
+/* 585 */,
+/* 586 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -62375,9 +62295,9 @@
 
 	var _button2 = _interopRequireDefault(_button);
 
-	var _css4 = __webpack_require__(574);
+	var _css4 = __webpack_require__(587);
 
-	var _message = __webpack_require__(577);
+	var _message = __webpack_require__(590);
 
 	var _message2 = _interopRequireDefault(_message);
 
@@ -62401,9 +62321,9 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _css5 = __webpack_require__(578);
+	var _css5 = __webpack_require__(574);
 
-	var _collapse = __webpack_require__(581);
+	var _collapse = __webpack_require__(577);
 
 	var _collapse2 = _interopRequireDefault(_collapse);
 
@@ -62537,6 +62457,140 @@
 	exports.default = numManage;
 
 /***/ },
+/* 587 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	__webpack_require__(397);
+
+	__webpack_require__(588);
+
+/***/ },
+/* 588 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 589 */,
+/* 590 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(162);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _rcNotification = __webpack_require__(509);
+
+	var _rcNotification2 = _interopRequireDefault(_rcNotification);
+
+	var _icon = __webpack_require__(401);
+
+	var _icon2 = _interopRequireDefault(_icon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var defaultDuration = 1.5;
+	var defaultTop = void 0;
+	var messageInstance = void 0;
+	var key = 1;
+	var prefixCls = 'ant-message';
+
+	function getMessageInstance() {
+	  messageInstance = messageInstance || _rcNotification2["default"].newInstance({
+	    prefixCls: prefixCls,
+	    transitionName: 'move-up',
+	    style: { top: defaultTop } });
+	  return messageInstance;
+	}
+
+	function notice(content) {
+	  var duration = arguments.length <= 1 || arguments[1] === undefined ? defaultDuration : arguments[1];
+	  var type = arguments[2];
+	  var onClose = arguments[3];
+
+	  var iconType = {
+	    info: 'info-circle',
+	    success: 'check-circle',
+	    error: 'cross-circle',
+	    warning: 'exclamation-circle',
+	    loading: 'loading'
+	  }[type];
+
+	  var instance = getMessageInstance();
+	  instance.notice({
+	    key: key,
+	    duration: duration,
+	    style: {},
+	    content: _react2["default"].createElement(
+	      'div',
+	      { className: prefixCls + '-custom-content ' + prefixCls + '-' + type },
+	      _react2["default"].createElement(_icon2["default"], { type: iconType }),
+	      _react2["default"].createElement(
+	        'span',
+	        null,
+	        content
+	      )
+	    ),
+	    onClose: onClose
+	  });
+	  return function () {
+	    var target = key++;
+	    return function () {
+	      instance.removeNotice(target);
+	    };
+	  }();
+	}
+
+	exports["default"] = {
+	  info: function info(content, duration, onClose) {
+	    return notice(content, duration, 'info', onClose);
+	  },
+	  success: function success(content, duration, onClose) {
+	    return notice(content, duration, 'success', onClose);
+	  },
+	  error: function error(content, duration, onClose) {
+	    return notice(content, duration, 'error', onClose);
+	  },
+
+	  // Departed usage, please use warning()
+	  warn: function warn(content, duration, onClose) {
+	    return notice(content, duration, 'warning', onClose);
+	  },
+	  warning: function warning(content, duration, onClose) {
+	    return notice(content, duration, 'warning', onClose);
+	  },
+	  loading: function loading(content, duration, onClose) {
+	    return notice(content, duration, 'loading', onClose);
+	  },
+	  config: function config(options) {
+	    if ('top' in options) {
+	      defaultTop = options.top;
+	    }
+	    if ('duration' in options) {
+	      defaultDuration = options.duration;
+	    }
+	    if ('prefixCls' in options) {
+	      prefixCls = options.prefixCls;
+	    }
+	  },
+	  destroy: function destroy() {
+	    if (messageInstance) {
+	      messageInstance.destroy();
+	      messageInstance = null;
+	    }
+	  }
+	};
+	module.exports = exports['default'];
+
+/***/ },
 /* 591 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -62594,7 +62648,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _jquery = __webpack_require__(587);
+	var _jquery = __webpack_require__(583);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 

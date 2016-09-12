@@ -17,7 +17,7 @@ var teamlist=[
 class teamManage extends React.Component{ 
     constructor(props) {
         super(props);
-        this.state={username: this.props.params.username,teamlist:teamlist}; 
+        this.state={username: this.props.params.username}; 
     }
     succesMessage() {
       return notification['success']({
@@ -25,10 +25,16 @@ class teamManage extends React.Component{
           description: '操作成功！',
         });
     }
-    failMessage() {
+    errorMessage() {
       return notification['error']({
           message: '失败',
           description: '操作失败！',
+        });
+    }
+    infoMessage() {
+      return notification['info']({
+          message: '提示',
+          description: '取消失败！',
         });
     } 
     componentWillMount(){
@@ -38,7 +44,19 @@ class teamManage extends React.Component{
             type: 'get',
             async: false,
             success: function(data) {
+                for (var i = data.result.length - 1; i >= 0; i--) {
+                    var date = new Date(data.result[i].createTime);
+                    data.result[i].createTime=date.getFullYear()+"年"+date.getMonth()+"月"+date.getDate()+"日";
+                }
                 this.state=({teamlist:data.result});
+                // debugger
+                // if (data===null) {
+                //     this.state=({teamlist:teamlist});
+                // }
+                // else{
+                //     this.state=({teamlist:data.result});
+                // }  
+                              
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -55,19 +73,20 @@ class teamManage extends React.Component{
       
     }
     exitGroupYes(id) {
-        debugger
         $.ajax({
             url: "/users/group/"+id+"/dropgroup",
             dataType: 'json',
             type: 'POST',
             success: function(data) {
-                debugger
                 // this.setState({data: data});
+                debugger
+                this.componentWillMount();
+                this.setState({teamlist:this.state.teamlist});
                 this.succesMessage();
             }.bind(this),
             error: function(xhr, status, err) {
                 console.log(this.props.url, status, err.toString());
-                this.failMessage();
+                this.errorMessage();
             }.bind(this)
         });
         
@@ -76,9 +95,17 @@ class teamManage extends React.Component{
       
     }    
     render(){        
-        var permissions=[];         
+        var boss=[];
+        var number=[];          
         {this.state.teamlist.map(function(list, i) {
-            permissions[i]=list.grant?"hidden":"ok";
+            if (list.grant==="CAPTAIN") {
+                boss[i]="ok";
+                number[i]="hidden";
+            }else{
+                boss[i]="hidden";
+                number[i]="ok";
+            }
+            // permissions[i]=list.grant?"ok":"hidden";
         }, this)}
         return  <div style={{ background: '#ECECEC'}}>                    
                     <Card className="main-panel" title="团队" bordered={false}>                        
@@ -87,22 +114,22 @@ class teamManage extends React.Component{
                             <Collapse accordion>
                              {this.state.teamlist.map(function(list, i) {
                             return (
-                                <Panel header={list.groupName} key={i}>
-                                    <p>创于2016年7月1日</p>
-                                    <p>简介：啦啦啦</p>
-                                    <Popconfirm title="确定要退出这个团吗？" onConfirm={this.exitGroupYes.bind(this,list.id)} onCancel={this.exitGroupNo.bind(this)}>
+                                <Panel header={list.groupName} key={i}>                                    
+                                    <p>创于:{list.createTime}</p>
+                                    <p>简介:{list.description}</p>
+                                    <Popconfirm className={number[i]} title="确定要退出这个团吗？" onConfirm={this.exitGroupYes.bind(this,list.id)} onCancel={this.exitGroupNo.bind(this)}>
                                     <Button className="tool-button" type="primary" >退团</Button>
                                     </Popconfirm>
-                                    <div className={permissions[i]} style={{display: 'inline'}}>
+                                    <div className={boss[i]} style={{display: 'inline'}}>
                                     &nbsp;
-                                    <Popconfirm title="确定要退出解散这个团吗？" onConfirm={this.exitGroupYes.bind(this)} onCancel={this.exitGroupYes.bind(this)}>
+                                    <Popconfirm title="确定要解散这个团吗？" onConfirm={this.exitGroupYes.bind(this)} onCancel={this.exitGroupYes.bind(this)}>
                                     <Button className="tool-button" type="primary">解散团</Button>
                                     </Popconfirm>
                                     </div>
                                     &nbsp;                                    
-                                    <Button className="tool-button" type="primary"><Link to={'numManage/'+i+'/'+permissions[i]}>查看团员</Link></Button>
+                                    <Button className="tool-button" type="primary"><Link to="numManage">查看团员</Link></Button>
                                      &nbsp;                                    
-                                    <Button className="tool-button" type="primary"><Link to={'numManage/'+i+'/'+permissions[i]}>邀请团成员</Link></Button>                                  
+                                    <Button className="tool-button" type="primary"><Link to="numManage">邀请团成员</Link></Button>                                  
                                 </Panel>
                                 );
                             }, this)} 
@@ -113,5 +140,5 @@ class teamManage extends React.Component{
                 </div>            
     }
 }
-teamManage.defaultProps={teamlist:teamManage};//设置默认属性
+// teamManage.defaultProps={teamlist:teamManage};//设置默认属性
 export default teamManage;

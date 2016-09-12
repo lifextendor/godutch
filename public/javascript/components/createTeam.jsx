@@ -17,7 +17,7 @@ class createTeam extends React.Component{
           description: '操作成功！',
         });
     }
-    failMessage() {
+    errorMessage() {
       return notification['error']({
           message: '失败',
           description: '操作失败！',
@@ -31,14 +31,10 @@ class createTeam extends React.Component{
         e.preventDefault();
         this.props.form.validateFields((errors, values) => {
           if (!!errors) {
+            this.errorMessage();
             console.log('Errors in form!!!');
             return;
           }
-
-          console.log('Submit!!!');
-          console.log(values);
-
-          message.success('操作成功!');
           $.ajax({
             url: "/users/creategroup",
             dataType: 'json',
@@ -46,12 +42,11 @@ class createTeam extends React.Component{
             data: values,
             success: function(data) {
                 console.log("提交成功");
-                succesMessage();
-                //跳转到团组，添加团员
+                this.succesMessage();
             }.bind(this),
             error: function(xhr, status, err) {
                 console.log(this.props.url, status, err.toString());
-                failMessage();
+                this.errorMessage();
             }.bind(this)
           });
         });        
