@@ -29,7 +29,8 @@
   },
   "scripts": {
     "build": "webpack",
-    "start": "node ./bin/www.js"
+    "start": "node ./bin/www.js",
+    "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build"
   },
   "devDependencies": {
     "antd": "^1.0.0-beta.10",

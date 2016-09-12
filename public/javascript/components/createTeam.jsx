@@ -1,12 +1,22 @@
 //创建团
 import React from 'react';
-import {Card, Form, Input, Select, Button, Checkbox, message } from 'antd';
+import {Card, Form, Input, Select, Button, Checkbox, notification } from 'antd';
 const FormItem = Form.Item;
+notification.config({
+      top: 60,
+      duration: 3,
+    }) 
 
-class createTeam extends React.Component{
+class createTeam extends React.Component{  
     constructor(props) {
         super(props);   
     }
+    openNotificationWithIcon(message) {
+      return notification[message]({
+          message: '成功',
+          description: '创建组成功！',
+        });
+    } 
     handleReset(e) {
         e.preventDefault();
         this.props.form.resetFields();
@@ -30,6 +40,7 @@ class createTeam extends React.Component{
             data: values,
             success: function(data) {
                 console.log("提交成功");
+                openNotificationWithIcon("success");
                 //跳转到团组，添加团员
             }.bind(this),
             error: function(xhr, status, err) {
