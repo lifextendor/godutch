@@ -50881,14 +50881,11 @@
 	                type: 'get',
 	                async: false,
 	                success: function (data) {
+	                    for (var i = data.result.length - 1; i >= 0; i--) {
+	                        var date = new Date(data.result[i].createTime);
+	                        data.result[i].createTime = date.getFullYear() + "年" + date.getMonth() + "月" + date.getDate() + "日";
+	                    }
 	                    this.state = { teamlist: data.result };
-	                    // debugger
-	                    // if (data===null) {
-	                    //     this.state=({teamlist:teamlist});
-	                    // }
-	                    // else{
-	                    //     this.state=({teamlist:data.result});
-	                    // }  
 	                }.bind(this),
 	                error: function (xhr, status, err) {
 	                    console.error(this.props.url, status, err.toString());
@@ -50915,8 +50912,9 @@
 	                type: 'POST',
 	                success: function (data) {
 	                    // this.setState({data: data});
-	                    this.componentWillMount({ teamlist: this.state.teamlist });
-	                    this.setState();
+	                    debugger;
+	                    this.componentWillMount();
+	                    this.setState({ teamlist: this.state.teamlist });
 	                    this.succesMessage();
 	                }.bind(this),
 	                error: function (xhr, status, err) {
@@ -50942,6 +50940,7 @@
 	                        boss[i] = "hidden";
 	                        number[i] = "ok";
 	                    }
+	                    debugger;
 	                    // permissions[i]=list.grant?"ok":"hidden";
 	                }, this);
 	            }
@@ -50967,20 +50966,26 @@
 	                                        _react2.default.createElement(
 	                                            'p',
 	                                            null,
-	                                            '创于'
+	                                            '创于:',
+	                                            list.createTime
 	                                        ),
 	                                        _react2.default.createElement(
 	                                            'p',
 	                                            null,
-	                                            '简介：啦啦啦'
+	                                            '简介:',
+	                                            list.description
 	                                        ),
 	                                        _react2.default.createElement(
-	                                            _popconfirm2.default,
-	                                            { className: number[i], title: '确定要退出这个团吗？', onConfirm: this.exitGroupYes.bind(this, list.id), onCancel: this.exitGroupNo.bind(this) },
+	                                            'div',
+	                                            { className: number[i], style: { display: 'inline' } },
 	                                            _react2.default.createElement(
-	                                                _button2.default,
-	                                                { className: 'tool-button', type: 'primary' },
-	                                                '退团'
+	                                                _popconfirm2.default,
+	                                                { title: '确定要退出这个团吗？', onConfirm: this.exitGroupYes.bind(this, list.id), onCancel: this.exitGroupNo.bind(this) },
+	                                                _react2.default.createElement(
+	                                                    _button2.default,
+	                                                    { className: 'tool-button', type: 'primary' },
+	                                                    '退团'
+	                                                )
 	                                            )
 	                                        ),
 	                                        _react2.default.createElement(
@@ -68878,11 +68883,19 @@
 	    }
 
 	    (0, _createClass3.default)(feedback, [{
-	        key: 'openNotificationWithIcon',
-	        value: function openNotificationWithIcon() {
+	        key: 'succesMessage',
+	        value: function succesMessage() {
 	            return _notification2.default['success']({
 	                message: '成功',
-	                description: '反馈意见提交成功！'
+	                description: '操作成功！'
+	            });
+	        }
+	    }, {
+	        key: 'errorMessage',
+	        value: function errorMessage() {
+	            return _notification2.default['error']({
+	                message: '失败',
+	                description: '操作失败！'
 	            });
 	        }
 	    }, {
@@ -68890,7 +68903,20 @@
 	        value: function handleSubmit(e) {
 	            e.preventDefault();
 	            console.log('收到表单值：', this.props.form.getFieldsValue());
-	            this.openNotificationWithIcon();
+	            $.ajax({
+	                url: "/users/feedback",
+	                dataType: 'json',
+	                type: 'put',
+	                data: this.props.form.getFieldsValue(),
+	                success: function (data) {
+	                    console.log("提交成功");
+	                    this.succesMessage();
+	                }.bind(this),
+	                error: function (xhr, status, err) {
+	                    console.log(this.props.url, status, err.toString());
+	                    this.errorMessage();
+	                }.bind(this)
+	            });
 	        }
 	    }, {
 	        key: 'render',
@@ -68927,7 +68953,7 @@
 	                                    wrapperCol: { span: 24 },
 	                                    help: '客观，留下点什么嘛'
 	                                },
-	                                _react2.default.createElement(_input2.default, (0, _extends3.default)({ type: 'textarea', rows: '12', placeholder: '随便写' }, getFieldProps('feedback', { initialValue: '' })))
+	                                _react2.default.createElement(_input2.default, (0, _extends3.default)({ type: 'content', rows: '12', placeholder: '随便写' }, getFieldProps('content', { initialValue: '' })))
 	                            ),
 	                            _react2.default.createElement(
 	                                FormItem,

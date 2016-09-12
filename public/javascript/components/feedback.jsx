@@ -8,16 +8,39 @@ notification.config({
     }) 
 
 class feedback extends React.Component{  
-    openNotificationWithIcon() {
+    succesMessage() {
       return notification['success']({
           message: '成功',
-          description: '反馈意见提交成功！',
+          description: '操作成功！',
+        });
+    }
+    errorMessage() {
+      return notification['error']({
+          message: '失败',
+          description: '操作失败！',
         });
     } 
     handleSubmit(e) {
         e.preventDefault();
         console.log('收到表单值：', this.props.form.getFieldsValue());
-        this.openNotificationWithIcon();
+        if (this.props.form.getFieldsValue().content==="") {
+          this.errorMessage();
+          return;  
+        }
+        $.ajax({
+            url: "/users/feedback",
+            dataType: 'json',
+            type: 'put',
+            data: this.props.form.getFieldsValue(),
+            success: function(data) {
+                console.log("提交成功");
+                this.succesMessage();
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.log(this.props.url, status, err.toString());
+                this.errorMessage();
+            }.bind(this)
+          });        
     }           
     render(){        
         const { getFieldProps } = this.props.form;
@@ -33,7 +56,7 @@ class feedback extends React.Component{
                           wrapperCol={{ span: 24 }}
                           help="客观，留下点什么嘛"
                         >
-                          <Input type="textarea" rows="12" placeholder="随便写" {...getFieldProps('feedback', { initialValue: '' })}/>
+                          <Input type="textarea" rows="12" placeholder="随便写" {...getFieldProps('content', { initialValue: '' })}/>
                         </FormItem>
                         <FormItem  style={{ marginTop: 24 }}>
                           <Button type="primary" onClick={this.handleSubmit.bind(this)}>提交</Button>
