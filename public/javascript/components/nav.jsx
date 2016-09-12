@@ -5,7 +5,7 @@ import { Button, Icon, Badge } from 'antd';
 import {Link} from 'react-router';
 import '../stylesheets/nav.scss';
 
-var username='name';
+var username=window.userName;
 var rootPath = window.rootPath
 
 class nav extends React.Component{ 
