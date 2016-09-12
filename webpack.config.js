@@ -6,8 +6,8 @@ var CommonsChunkPlugin=require('webpack/lib/optimize/CommonsChunkPlugin');
 
 module.exports = {
     entry: [
-      'webpack/hot/dev-server',
-      'webpack-dev-server/client?http://localhost:8080',
+       'webpack/hot/dev-server',
+       'webpack-dev-server/client?http://localhost:8080',
       path.resolve(__dirname, 'public/javascript/main.js')
     ],
     output:{
