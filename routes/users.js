@@ -34,18 +34,18 @@ router.put('/creategroup', function (req, res, next) {
                     res.send({result:'success',operate:'creategroup'});
                 }).catch(
                     function(){
-                        res.sendStatus(403);
+                        res.sendStatus(500);
                         res.send({result:'failure',operate:'creategroup'});
                     });
             }catch(e){
                 console.log(e);
             }
         }else{
-            res.sendStatus(403);
+            res.sendStatus(500);
             res.send({result:'failure',operate:'creategroup'});
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -64,14 +64,14 @@ router.post('/group/:id/dropgroup', function (req, res, next) {
             Group.deleteGroup(groupId,provider,user_id).then(function(){
                 res.send({result:'success',operate:'dropgroup'});
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'dropgroup'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -89,14 +89,14 @@ router.get('/groups',function(req, res, next) {
             Group.findGroupByUser(provider,user_id).then(function(groups){
                 res.send({result:groups,operate:'findgroup'});
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'findgroup'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -115,14 +115,14 @@ router.get('/group/:id',function(req, res, next) {
             Group.findGroupById(groupId, provider,user_id).then(function(groups){
                 res.send({result:groups,operate:'findgroupbyid'});
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'findgroupbyid'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -144,14 +144,14 @@ router.post('/group/:id/deletemember',function(req, res, next) {
             Group.deleteMember(groupId,provider,user_id,memberInfo).then(function(){
                 res.send({result:'success',operate:'deletemember'});
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'deletemember'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -171,14 +171,14 @@ router.post('/group/:id/leave',function(req, res, next) {
             Group.leaveGroup(groupId,provider,user_id).then(function(){
                 res.send({result:'success',operate:'leave'});
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'leave'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -210,18 +210,18 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
                 }).then(function(){
                     res.send({result:'success',operate:'updatemoney'});
                 }).catch(function(){
-                    res.sendStatus(403);
+                    res.sendStatus(500);
                     res.send({result:'failure',operate:'createBill'});
                 });
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'updatemoney'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -243,14 +243,14 @@ router.put('/group/:id/authorize',function(req, res, next) {
             Group.authorize(groupId,provider,user_id,memberInfo).then(function(){
                 res.send({result:'success',operate:'authorize'});
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'authorize'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -272,14 +272,14 @@ router.put('/group/:id/deauthorize',function(req, res, next) {
             Group.deauthorize(groupId,provider,user_id,memberInfo).then(function(){
                 res.send({result:'success',operate:'deauthorize'});
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'deauthorize'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -308,14 +308,14 @@ router.post('/group/:id/invite',function(req, res, next) {
             Message.createMessage(groupId,provider,user_id,message).then(function(){
                 res.send({result:'success',operate:'invite'});
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'invite'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -333,14 +333,14 @@ router.get('/messages',function(req, res, next){
             Message.findMessage(provider,user_id,false).then(function(messages){
                 res.send({result:messages,operate:'messages'});
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'messages'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -358,14 +358,14 @@ router.get('message/:id',function(req, res, next){
             Message.findMessageById(messageId).then(function(){
                 res.send({result:'success',operate:'get massege by id'});
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'get massege by id'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -385,14 +385,14 @@ router.get('message/:id/reply/:type',function(req, res, next){
                 Message.findMessageById(messageId).then(function(){
                     res.send({result:'success',operate:'reply agree'});
                 }).catch(function(){
-                    res.sendStatus(403);
+                    res.sendStatus(500);
                     res.send({result:'failure',operate:'reply agree'});
                 })
             }else{
                 Message.updateMessageState(messageId,true).then(function(){
                     res.send({result:'success',operate:'reply reject'});
                 }).catch(function(){
-                    res.sendStatus(403);
+                    res.sendStatus(500);
                     res.send({result:'failure',operate:'reply reject'});
                 });
             }
@@ -420,14 +420,14 @@ router.get('bills/from/:from/to/:to',function(req, res, next){
             Bill.findBillByDateTime(provider,user_id,from,to).then(function(){
                 res.send({result:'success',operate:'getbill'});
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'getbill'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -455,14 +455,14 @@ router.put('feedback',function(req, res, next){
             Feedback.createFeedback(feedback).then(function(){
                 res.send({result:'success',operate:'create feedback'});
             }).catch(function(){
-                res.sendStatus(403);
+                res.sendStatus(500);
                 res.send({result:'failure',operate:'create feedback'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(403);
+        res.sendStatus(500);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
