@@ -7701,23 +7701,27 @@
 
 	var _teamManage2 = _interopRequireDefault(_teamManage);
 
-	var _numManage = __webpack_require__(586);
+	var _invitation = __webpack_require__(586);
+
+	var _invitation2 = _interopRequireDefault(_invitation);
+
+	var _numManage = __webpack_require__(587);
 
 	var _numManage2 = _interopRequireDefault(_numManage);
 
-	var _billManage = __webpack_require__(591);
+	var _billManage = __webpack_require__(588);
 
 	var _billManage2 = _interopRequireDefault(_billManage);
 
-	var _feedback = __webpack_require__(653);
+	var _feedback = __webpack_require__(650);
 
 	var _feedback2 = _interopRequireDefault(_feedback);
 
-	__webpack_require__(654);
+	__webpack_require__(651);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// 引入单个页面（包括嵌套的子页面）
+	// 引入React-Router模块
 	var App = function (_React$Component) {
 	  (0, _inherits3.default)(App, _React$Component);
 
@@ -7757,7 +7761,7 @@
 	}(_react2.default.Component);
 	// 配置路由
 
-	// 引入React-Router模块
+	// 引入单个页面（包括嵌套的子页面）
 
 
 	_reactDom2.default.render(_react2.default.createElement(
@@ -7769,7 +7773,8 @@
 	    _react2.default.createElement(_reactRouter.IndexRoute, { path: '', component: _navigation2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'createTeam', component: _createTeam2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'teamManage/:username', component: _teamManage2.default }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'numManage/:id/:power', component: _numManage2.default }),
+	    _react2.default.createElement(_reactRouter.Route, { path: 'numManage/:id', component: _numManage2.default }),
+	    _react2.default.createElement(_reactRouter.Route, { path: 'invitation/:id', component: _invitation2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'billManage/:username', component: _billManage2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'feedback', component: _feedback2.default })
 	  )
@@ -50842,7 +50847,7 @@
 
 	        var _this = (0, _possibleConstructorReturn3.default)(this, (teamManage.__proto__ || (0, _getPrototypeOf2.default)(teamManage)).call(this, props));
 
-	        _this.state = { username: _this.props.params.username };
+	        _this.state = { username: _this.props.params.username, teamlist: [], modalvisible: false };
 	        return _this;
 	    }
 
@@ -50867,23 +50872,24 @@
 	        value: function infoMessage() {
 	            return _notification2.default['info']({
 	                message: '提示',
-	                description: '取消失败！'
+	                description: '取消操作！'
 	            });
 	        }
 	    }, {
-	        key: 'componentWillMount',
-	        value: function componentWillMount() {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
 	            _jquery2.default.ajax({
 	                url: "/users/groups",
 	                dataType: 'json',
 	                type: 'get',
-	                async: false,
+	                async: true,
 	                success: function (data) {
 	                    for (var i = data.result.length - 1; i >= 0; i--) {
 	                        var date = new Date(data.result[i].createTime);
 	                        data.result[i].createTime = date.getFullYear() + "年" + date.getMonth() + "月" + date.getDate() + "日";
 	                    }
-	                    this.state = { teamlist: data.result };
+	                    // this.state=({teamlist:data.result});
+	                    this.setState({ teamlist: data.result });
 	                }.bind(this),
 	                error: function (xhr, status, err) {
 	                    console.error(this.props.url, status, err.toString());
@@ -50893,25 +50899,17 @@
 	    }, {
 	        key: 'componentWillUnmount',
 	        value: function componentWillUnmount() {
-	            this.serverRequest.abort();
+	            // this.serverRequest.abort();
 	        }
 	    }, {
-	        key: 'deleteGroup',
-	        value: function deleteGroup(e) {}
-	    }, {
-	        key: 'exitGroup',
-	        value: function exitGroup(e) {}
-	    }, {
-	        key: 'exitGroupYes',
-	        value: function exitGroupYes(id) {
+	        key: 'dissolutionGroupYes',
+	        value: function dissolutionGroupYes(id) {
 	            _jquery2.default.ajax({
-	                url: "/users/group/" + id + "/dropgroup",
+	                url: "/users/group/" + id + "/leave",
 	                dataType: 'json',
 	                type: 'POST',
 	                success: function (data) {
-	                    // this.setState({data: data});
-	                    debugger;
-	                    this.componentWillMount();
+	                    this.componentDidMount();
 	                    this.setState({ teamlist: this.state.teamlist });
 	                    this.succesMessage();
 	                }.bind(this),
@@ -50922,8 +50920,36 @@
 	            });
 	        }
 	    }, {
-	        key: 'exitGroupNo',
-	        value: function exitGroupNo(e) {}
+	        key: 'exitGroupYes',
+	        value: function exitGroupYes(id) {
+	            _jquery2.default.ajax({
+	                url: "/users/group/" + id + "/dropgroup",
+	                dataType: 'json',
+	                type: 'POST',
+	                success: function (data) {
+	                    this.componentDidMount();
+	                    this.setState({ teamlist: this.state.teamlist });
+	                    this.succesMessage();
+	                }.bind(this),
+	                error: function (xhr, status, err) {
+	                    console.log(this.props.url, status, err.toString());
+	                    this.errorMessage();
+	                }.bind(this)
+	            });
+	        }
+	    }, {
+	        key: 'showModal',
+	        value: function showModal() {
+	            this.setState({ modalvisible: true });
+	        }
+	    }, {
+	        key: 'invitation',
+	        value: function invitation() {}
+	    }, {
+	        key: 'cancel',
+	        value: function cancel() {
+	            this.infoMessage();
+	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
@@ -50938,8 +50964,6 @@
 	                        boss[i] = "hidden";
 	                        number[i] = "ok";
 	                    }
-	                    debugger;
-	                    // permissions[i]=list.grant?"ok":"hidden";
 	                }, this);
 	            }
 	            return _react2.default.createElement(
@@ -50978,7 +51002,7 @@
 	                                            { className: number[i], style: { display: 'inline' } },
 	                                            _react2.default.createElement(
 	                                                _popconfirm2.default,
-	                                                { title: '确定要退出这个团吗？', onConfirm: this.exitGroupYes.bind(this, list.id), onCancel: this.exitGroupNo.bind(this) },
+	                                                { title: '确定要退出这个团吗？', onConfirm: this.exitGroupYes.bind(this, list.id), onCancel: this.cancel.bind(this) },
 	                                                _react2.default.createElement(
 	                                                    _button2.default,
 	                                                    { className: 'tool-button', type: 'primary' },
@@ -50992,7 +51016,7 @@
 	                                            ' ',
 	                                            _react2.default.createElement(
 	                                                _popconfirm2.default,
-	                                                { title: '确定要解散这个团吗？', onConfirm: this.exitGroupYes.bind(this), onCancel: this.exitGroupYes.bind(this) },
+	                                                { title: '确定要解散这个团吗？', onConfirm: this.dissolutionGroupYes.bind(this, list.id), onCancel: this.cancel.bind(this) },
 	                                                _react2.default.createElement(
 	                                                    _button2.default,
 	                                                    { className: 'tool-button', type: 'primary' },
@@ -51006,7 +51030,7 @@
 	                                            { className: 'tool-button', type: 'primary' },
 	                                            _react2.default.createElement(
 	                                                _reactRouter.Link,
-	                                                { to: 'numManage' },
+	                                                { to: 'numManage/' + list.id },
 	                                                '查看团员'
 	                                            )
 	                                        ),
@@ -51016,7 +51040,7 @@
 	                                            { className: 'tool-button', type: 'primary' },
 	                                            _react2.default.createElement(
 	                                                _reactRouter.Link,
-	                                                { to: 'numManage' },
+	                                                { to: 'invitation/' + list.id },
 	                                                '邀请团成员'
 	                                            )
 	                                        )
@@ -62277,7 +62301,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 
 	var _css = __webpack_require__(425);
@@ -62286,23 +62310,21 @@
 
 	var _card2 = _interopRequireDefault(_card);
 
-	var _css2 = __webpack_require__(564);
-
-	var _popconfirm = __webpack_require__(568);
-
-	var _popconfirm2 = _interopRequireDefault(_popconfirm);
-
-	var _css3 = __webpack_require__(430);
+	var _css2 = __webpack_require__(430);
 
 	var _button = __webpack_require__(433);
 
 	var _button2 = _interopRequireDefault(_button);
 
-	var _css4 = __webpack_require__(587);
+	var _css3 = __webpack_require__(439);
 
-	var _message = __webpack_require__(590);
+	var _input = __webpack_require__(501);
 
-	var _message2 = _interopRequireDefault(_message);
+	var _input2 = _interopRequireDefault(_input);
+
+	var _extends2 = __webpack_require__(446);
+
+	var _extends3 = _interopRequireDefault(_extends2);
 
 	var _getPrototypeOf = __webpack_require__(76);
 
@@ -62324,7 +62346,207 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _css5 = __webpack_require__(574);
+	var _css4 = __webpack_require__(505);
+
+	var _notification = __webpack_require__(508);
+
+	var _notification2 = _interopRequireDefault(_notification);
+
+	var _css5 = __webpack_require__(512);
+
+	var _form = __webpack_require__(518);
+
+	var _form2 = _interopRequireDefault(_form);
+
+	var _react = __webpack_require__(162);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var FormItem = _form2.default.Item; //创建团
+
+	_notification2.default.config({
+	  top: 60,
+	  duration: 3
+	});
+
+	var invitation = function (_React$Component) {
+	  (0, _inherits3.default)(invitation, _React$Component);
+
+	  function invitation(props) {
+	    (0, _classCallCheck3.default)(this, invitation);
+	    return (0, _possibleConstructorReturn3.default)(this, (invitation.__proto__ || (0, _getPrototypeOf2.default)(invitation)).call(this, props));
+	  }
+
+	  (0, _createClass3.default)(invitation, [{
+	    key: 'succesMessage',
+	    value: function succesMessage() {
+	      return _notification2.default['success']({
+	        message: '成功',
+	        description: '操作成功！'
+	      });
+	    }
+	  }, {
+	    key: 'errorMessage',
+	    value: function errorMessage() {
+	      return _notification2.default['error']({
+	        message: '失败',
+	        description: '操作失败！'
+	      });
+	    }
+	  }, {
+	    key: 'handleReset',
+	    value: function handleReset(e) {
+	      e.preventDefault();
+	      this.props.form.resetFields();
+	    }
+	  }, {
+	    key: 'handleSubmit',
+	    value: function handleSubmit(e) {
+	      var _this2 = this;
+
+	      e.preventDefault();
+	      this.props.form.validateFields(function (errors, values) {
+	        if (!!errors) {
+	          _this2.errorMessage();
+	          console.log('Errors in form!!!');
+	          return;
+	        }
+	        $.ajax({
+	          url: "/users/creategroup",
+	          dataType: 'json',
+	          type: 'put',
+	          data: values,
+	          success: function (data) {
+	            console.log("提交成功");
+	            this.succesMessage();
+	          }.bind(_this2),
+	          error: function (xhr, status, err) {
+	            console.log(this.props.url, status, err.toString());
+	            this.errorMessage();
+	          }.bind(_this2)
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props$form = this.props.form;
+	      var getFieldProps = _props$form.getFieldProps;
+	      var getFieldError = _props$form.getFieldError;
+	      var isFieldValidating = _props$form.isFieldValidating;
+
+	      var nameProps = getFieldProps('gname', {
+	        rules: [{ required: true, min: 2, max: 4, message: '用户名至少为 2 个字符' }]
+	      });
+	      var textareaProps = getFieldProps('description', {
+	        rules: [{ required: true, message: '真的不打算写点什么吗？' }]
+	      });
+
+	      var texttypeProps = getFieldProps('type', {
+	        rules: [{ required: true }]
+	      });
+
+	      var formItemLayout = {
+	        labelCol: { span: 7 },
+	        wrapperCol: { span: 12 }
+	      };
+	      return _react2.default.createElement(
+	        'div',
+	        { style: { background: '#ECECEC' } },
+	        _react2.default.createElement(
+	          _card2.default,
+	          { className: 'main-panel', title: '邀请团员', bordered: false },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3' },
+	            _react2.default.createElement(
+	              _form2.default,
+	              { horizontal: true, form: this.props.form },
+	              _react2.default.createElement(
+	                FormItem,
+	                (0, _extends3.default)({}, formItemLayout, {
+	                  label: '输入用户账号'
+	                }),
+	                _react2.default.createElement(_input2.default, (0, _extends3.default)({}, nameProps, { placeholder: '用户账号', name: 'gname' }))
+	              ),
+	              _react2.default.createElement(
+	                FormItem,
+	                { wrapperCol: { span: 12, offset: 7 } },
+	                _react2.default.createElement(
+	                  _button2.default,
+	                  { type: 'primary', onClick: this.handleSubmit.bind(this) },
+	                  '确定'
+	                ),
+	                '   ',
+	                _react2.default.createElement(
+	                  _button2.default,
+	                  { type: 'ghost', onClick: this.handleReset.bind(this) },
+	                  '重置'
+	                )
+	              )
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	  return invitation;
+	}(_react2.default.Component);
+
+	invitation = _form2.default.create()(invitation);
+	exports.default = invitation;
+
+/***/ },
+/* 587 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _css = __webpack_require__(425);
+
+	var _card = __webpack_require__(428);
+
+	var _card2 = _interopRequireDefault(_card);
+
+	var _css2 = __webpack_require__(564);
+
+	var _popconfirm = __webpack_require__(568);
+
+	var _popconfirm2 = _interopRequireDefault(_popconfirm);
+
+	var _css3 = __webpack_require__(430);
+
+	var _button = __webpack_require__(433);
+
+	var _button2 = _interopRequireDefault(_button);
+
+	var _getPrototypeOf = __webpack_require__(76);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(102);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(103);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(107);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(154);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _css4 = __webpack_require__(574);
 
 	var _collapse = __webpack_require__(577);
 
@@ -62351,44 +62573,103 @@
 
 	        var _this = (0, _possibleConstructorReturn3.default)(this, (numManage.__proto__ || (0, _getPrototypeOf2.default)(numManage)).call(this, props));
 
-	        _this.setState = { username: _this.props.params.username };
-	        // alert(this.props.params.id);
-	        // alert(this.props.params.power);
+	        _this.state = { id: _this.props.params.id, myList: [] };
 	        return _this;
 	    }
 
 	    (0, _createClass3.default)(numManage, [{
-	        key: 'lookNum',
-	        value: function lookNum(e) {
-	            this.setState({ layout: layout2, shownum: true });
+	        key: 'succesMessage',
+	        value: function succesMessage() {
+	            return notification['success']({
+	                message: '成功',
+	                description: '操作成功！'
+	            });
 	        }
 	    }, {
-	        key: 'confirm',
-	        value: function confirm(e) {
-	            _message2.default.info('点击了确定');
+	        key: 'errorMessage',
+	        value: function errorMessage() {
+	            return notification['error']({
+	                message: '失败',
+	                description: '操作失败！'
+	            });
+	        }
+	    }, {
+	        key: 'infoMessage',
+	        value: function infoMessage() {
+	            return notification['info']({
+	                message: '提示',
+	                description: '取消操作！'
+	            });
+	        }
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            $.ajax({
+	                url: "/users/group/" + this.props.params.id,
+	                dataType: 'json',
+	                type: 'get',
+	                async: true,
+	                success: function (data) {
+	                    debugger;
+	                    for (var i = data.result.length - 1; i >= 0; i--) {
+	                        var date = new Date(data.result[i].createTime);
+	                        data.result[i].createTime = date.getFullYear() + "年" + date.getMonth() + "月" + date.getDate() + "日";
+	                    }
+	                    this.setState({ teamlist: data.result });
+	                }.bind(this),
+	                error: function (xhr, status, err) {
+	                    console.error(this.props.url, status, err.toString());
+	                }.bind(this)
+	            });
+	        }
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	            // this.serverRequest.abort();
+	        }
+	    }, {
+	        key: 'expelGroupYes',
+	        value: function expelGroupYes(id) {
+	            $.ajax({
+	                url: "/users/group/" + id + "/deletemember",
+	                dataType: 'json',
+	                type: 'POST',
+	                member: { provider: 'qq', user_id: 1 },
+	                success: function (data) {
+	                    this.componentDidMount();
+	                    this.setState({ teamlist: this.state.teamlist });
+	                    this.succesMessage();
+	                }.bind(this),
+	                error: function (xhr, status, err) {
+	                    console.log(this.props.url, status, err.toString());
+	                    this.errorMessage();
+	                }.bind(this)
+	            });
+	        }
+	    }, {
+	        key: 'powerGroupYes',
+	        value: function powerGroupYes(id) {
+	            $.ajax({
+	                url: "/users/group/" + id + "/authorize",
+	                dataType: 'json',
+	                type: 'POST',
+	                member: { provider: 'qq', user_id: 1 },
+	                success: function (data) {
+	                    this.componentDidMount();
+	                    this.setState({ teamlist: this.state.teamlist });
+	                    this.succesMessage();
+	                }.bind(this),
+	                error: function (xhr, status, err) {
+	                    console.log(this.props.url, status, err.toString());
+	                    this.errorMessage();
+	                }.bind(this)
+	            });
 	        }
 	    }, {
 	        key: 'cancel',
-	        value: function cancel(e) {
-	            _message2.default.error('点击了取消');
+	        value: function cancel() {
+	            this.infoMessage();
 	        }
-	        // handleCommentSubmit: function(comment) {
-	        //     alert("确认提交");
-	        //     $.ajax({
-	        //         url: this.props.url,
-	        //         dataType: 'json',
-	        //         type: 'POST',
-	        //         data: comment,
-	        //         success: function(data) {
-	        //             this.setState({data: data});
-	        //         }.bind(this),
-	        //         error: function(xhr, status, err) {
-	        //             this.setState({data: comments});
-	        //             console.error(this.props.url, status, err.toString());
-	        //         }.bind(this)
-	        //     });
-	        // }
-
 	    }, {
 	        key: 'render',
 	        value: function render() {
@@ -62407,7 +62688,7 @@
 	                            _react2.default.createElement(
 	                                _collapse2.default,
 	                                { accordion: true },
-	                                this.props.myList.map(function (list, i) {
+	                                this.state.myList.map(function (list, i) {
 	                                    return _react2.default.createElement(
 	                                        Panel,
 	                                        { header: list.name, key: i },
@@ -62426,7 +62707,7 @@
 	                                            { className: this.props.params.power },
 	                                            _react2.default.createElement(
 	                                                _popconfirm2.default,
-	                                                { title: '确定要开除这个团员吗？', onConfirm: this.confirm.bind(this), onCancel: this.cancel.bind(this) },
+	                                                { title: '确定要开除这个团员吗？', onConfirm: this.expelGroupYes.bind(this), onCancel: this.cancel.bind(this) },
 	                                                _react2.default.createElement(
 	                                                    _button2.default,
 	                                                    { className: 'tool-button', type: 'primary' },
@@ -62436,7 +62717,7 @@
 	                                            ' ',
 	                                            _react2.default.createElement(
 	                                                _popconfirm2.default,
-	                                                { title: '确定要给这个团员授权吗？', onConfirm: this.confirm.bind(this), onCancel: this.cancel.bind(this) },
+	                                                { title: '确定要给这个团员授权吗？', onConfirm: this.powerGroupYes.bind(this), onCancel: this.cancel.bind(this) },
 	                                                _react2.default.createElement(
 	                                                    _button2.default,
 	                                                    { className: 'tool-button', type: 'primary' },
@@ -62455,146 +62736,13 @@
 	    }]);
 	    return numManage;
 	}(_react2.default.Component);
+	// numManage.defaultProps={myList:myList};//设置默认属性
 
-	numManage.defaultProps = { myList: myList }; //设置默认属性
+
 	exports.default = numManage;
 
 /***/ },
-/* 587 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	__webpack_require__(397);
-
-	__webpack_require__(588);
-
-/***/ },
 /* 588 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 589 */,
-/* 590 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(162);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _rcNotification = __webpack_require__(509);
-
-	var _rcNotification2 = _interopRequireDefault(_rcNotification);
-
-	var _icon = __webpack_require__(401);
-
-	var _icon2 = _interopRequireDefault(_icon);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var defaultDuration = 1.5;
-	var defaultTop = void 0;
-	var messageInstance = void 0;
-	var key = 1;
-	var prefixCls = 'ant-message';
-
-	function getMessageInstance() {
-	  messageInstance = messageInstance || _rcNotification2["default"].newInstance({
-	    prefixCls: prefixCls,
-	    transitionName: 'move-up',
-	    style: { top: defaultTop } });
-	  return messageInstance;
-	}
-
-	function notice(content) {
-	  var duration = arguments.length <= 1 || arguments[1] === undefined ? defaultDuration : arguments[1];
-	  var type = arguments[2];
-	  var onClose = arguments[3];
-
-	  var iconType = {
-	    info: 'info-circle',
-	    success: 'check-circle',
-	    error: 'cross-circle',
-	    warning: 'exclamation-circle',
-	    loading: 'loading'
-	  }[type];
-
-	  var instance = getMessageInstance();
-	  instance.notice({
-	    key: key,
-	    duration: duration,
-	    style: {},
-	    content: _react2["default"].createElement(
-	      'div',
-	      { className: prefixCls + '-custom-content ' + prefixCls + '-' + type },
-	      _react2["default"].createElement(_icon2["default"], { type: iconType }),
-	      _react2["default"].createElement(
-	        'span',
-	        null,
-	        content
-	      )
-	    ),
-	    onClose: onClose
-	  });
-	  return function () {
-	    var target = key++;
-	    return function () {
-	      instance.removeNotice(target);
-	    };
-	  }();
-	}
-
-	exports["default"] = {
-	  info: function info(content, duration, onClose) {
-	    return notice(content, duration, 'info', onClose);
-	  },
-	  success: function success(content, duration, onClose) {
-	    return notice(content, duration, 'success', onClose);
-	  },
-	  error: function error(content, duration, onClose) {
-	    return notice(content, duration, 'error', onClose);
-	  },
-
-	  // Departed usage, please use warning()
-	  warn: function warn(content, duration, onClose) {
-	    return notice(content, duration, 'warning', onClose);
-	  },
-	  warning: function warning(content, duration, onClose) {
-	    return notice(content, duration, 'warning', onClose);
-	  },
-	  loading: function loading(content, duration, onClose) {
-	    return notice(content, duration, 'loading', onClose);
-	  },
-	  config: function config(options) {
-	    if ('top' in options) {
-	      defaultTop = options.top;
-	    }
-	    if ('duration' in options) {
-	      defaultDuration = options.duration;
-	    }
-	    if ('prefixCls' in options) {
-	      prefixCls = options.prefixCls;
-	    }
-	  },
-	  destroy: function destroy() {
-	    if (messageInstance) {
-	      messageInstance.destroy();
-	      messageInstance = null;
-	    }
-	  }
-	};
-	module.exports = exports['default'];
-
-/***/ },
-/* 591 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -62609,9 +62757,9 @@
 
 	var _card2 = _interopRequireDefault(_card);
 
-	var _css2 = __webpack_require__(592);
+	var _css2 = __webpack_require__(589);
 
-	var _table = __webpack_require__(610);
+	var _table = __webpack_require__(607);
 
 	var _table2 = _interopRequireDefault(_table);
 
@@ -62843,14 +62991,16 @@
 	exports.default = billManage;
 
 /***/ },
-/* 592 */
+/* 589 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	__webpack_require__(397);
 
-	__webpack_require__(593);
+	__webpack_require__(590);
+
+	__webpack_require__(592);
 
 	__webpack_require__(595);
 
@@ -62860,7 +63010,22 @@
 
 	__webpack_require__(604);
 
-	__webpack_require__(607);
+/***/ },
+/* 590 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 591 */,
+/* 592 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	__webpack_require__(397);
+
+	__webpack_require__(593);
 
 /***/ },
 /* 593 */
@@ -62896,6 +63061,8 @@
 
 	__webpack_require__(599);
 
+	__webpack_require__(430);
+
 /***/ },
 /* 599 */
 /***/ function(module, exports) {
@@ -62912,8 +63079,6 @@
 	__webpack_require__(397);
 
 	__webpack_require__(602);
-
-	__webpack_require__(430);
 
 /***/ },
 /* 602 */
@@ -62932,6 +63097,10 @@
 
 	__webpack_require__(605);
 
+	__webpack_require__(436);
+
+	__webpack_require__(439);
+
 /***/ },
 /* 605 */
 /***/ function(module, exports) {
@@ -62945,32 +63114,11 @@
 
 	'use strict';
 
-	__webpack_require__(397);
-
-	__webpack_require__(608);
-
-	__webpack_require__(436);
-
-	__webpack_require__(439);
-
-/***/ },
-/* 608 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 609 */,
-/* 610 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 
-	var _Table = __webpack_require__(611);
+	var _Table = __webpack_require__(608);
 
 	var _Table2 = _interopRequireDefault(_Table);
 
@@ -62980,7 +63128,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 611 */
+/* 608 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -62998,23 +63146,23 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _rcTable = __webpack_require__(612);
+	var _rcTable = __webpack_require__(609);
 
 	var _rcTable2 = _interopRequireDefault(_rcTable);
 
-	var _checkbox = __webpack_require__(624);
+	var _checkbox = __webpack_require__(621);
 
 	var _checkbox2 = _interopRequireDefault(_checkbox);
 
-	var _radio = __webpack_require__(628);
+	var _radio = __webpack_require__(625);
 
 	var _radio2 = _interopRequireDefault(_radio);
 
-	var _filterDropdown = __webpack_require__(634);
+	var _filterDropdown = __webpack_require__(631);
 
 	var _filterDropdown2 = _interopRequireDefault(_filterDropdown);
 
-	var _pagination = __webpack_require__(641);
+	var _pagination = __webpack_require__(638);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
@@ -63022,7 +63170,7 @@
 
 	var _icon2 = _interopRequireDefault(_icon);
 
-	var _spin = __webpack_require__(651);
+	var _spin = __webpack_require__(648);
 
 	var _spin2 = _interopRequireDefault(_spin);
 
@@ -63030,7 +63178,7 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _util = __webpack_require__(652);
+	var _util = __webpack_require__(649);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -63928,15 +64076,15 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 612 */
+/* 609 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(613);
+	module.exports = __webpack_require__(610);
 
 /***/ },
-/* 613 */
+/* 610 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -63951,13 +64099,13 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _TableRow = __webpack_require__(614);
+	var _TableRow = __webpack_require__(611);
 
 	var _TableRow2 = _interopRequireDefault(_TableRow);
 
-	var _utils = __webpack_require__(623);
+	var _utils = __webpack_require__(620);
 
-	var _shallowequal = __webpack_require__(615);
+	var _shallowequal = __webpack_require__(612);
 
 	var _shallowequal2 = _interopRequireDefault(_shallowequal);
 
@@ -64729,7 +64877,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 614 */
+/* 611 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -64744,15 +64892,15 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _shallowequal = __webpack_require__(615);
+	var _shallowequal = __webpack_require__(612);
 
 	var _shallowequal2 = _interopRequireDefault(_shallowequal);
 
-	var _TableCell = __webpack_require__(620);
+	var _TableCell = __webpack_require__(617);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _ExpandIcon = __webpack_require__(622);
+	var _ExpandIcon = __webpack_require__(619);
 
 	var _ExpandIcon2 = _interopRequireDefault(_ExpandIcon);
 
@@ -64894,12 +65042,12 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 615 */
+/* 612 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var fetchKeys = __webpack_require__(616);
+	var fetchKeys = __webpack_require__(613);
 
 	module.exports = function shallowEqual(objA, objB, compare, compareContext) {
 
@@ -64947,7 +65095,7 @@
 	};
 
 /***/ },
-/* 616 */
+/* 613 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -64958,9 +65106,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var getNative = __webpack_require__(617),
-	    isArguments = __webpack_require__(618),
-	    isArray = __webpack_require__(619);
+	var getNative = __webpack_require__(614),
+	    isArguments = __webpack_require__(615),
+	    isArray = __webpack_require__(616);
 
 	/** Used to detect unsigned integer values. */
 	var reIsUint = /^\d+$/;
@@ -65189,7 +65337,7 @@
 
 
 /***/ },
-/* 617 */
+/* 614 */
 /***/ function(module, exports) {
 
 	/**
@@ -65332,7 +65480,7 @@
 
 
 /***/ },
-/* 618 */
+/* 615 */
 /***/ function(module, exports) {
 
 	/**
@@ -65567,7 +65715,7 @@
 
 
 /***/ },
-/* 619 */
+/* 616 */
 /***/ function(module, exports) {
 
 	/**
@@ -65753,7 +65901,7 @@
 
 
 /***/ },
-/* 620 */
+/* 617 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65766,15 +65914,15 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _objectPath = __webpack_require__(621);
+	var _objectPath = __webpack_require__(618);
 
 	var _objectPath2 = _interopRequireDefault(_objectPath);
 
-	var _shallowequal = __webpack_require__(615);
+	var _shallowequal = __webpack_require__(612);
 
 	var _shallowequal2 = _interopRequireDefault(_shallowequal);
 
-	var _ExpandIcon = __webpack_require__(622);
+	var _ExpandIcon = __webpack_require__(619);
 
 	var _ExpandIcon2 = _interopRequireDefault(_ExpandIcon);
 
@@ -65875,7 +66023,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 621 */
+/* 618 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory){
@@ -66170,7 +66318,7 @@
 
 
 /***/ },
-/* 622 */
+/* 619 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66183,7 +66331,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _shallowequal = __webpack_require__(615);
+	var _shallowequal = __webpack_require__(612);
 
 	var _shallowequal2 = _interopRequireDefault(_shallowequal);
 
@@ -66231,7 +66379,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 623 */
+/* 620 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -66297,7 +66445,7 @@
 	}
 
 /***/ },
-/* 624 */
+/* 621 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66311,7 +66459,7 @@
 
 	var _class, _temp;
 
-	var _rcCheckbox = __webpack_require__(625);
+	var _rcCheckbox = __webpack_require__(622);
 
 	var _rcCheckbox2 = _interopRequireDefault(_rcCheckbox);
 
@@ -66319,7 +66467,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Group = __webpack_require__(627);
+	var _Group = __webpack_require__(624);
 
 	var _Group2 = _interopRequireDefault(_Group);
 
@@ -66394,15 +66542,15 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 625 */
+/* 622 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(626);
+	module.exports = __webpack_require__(623);
 
 /***/ },
-/* 626 */
+/* 623 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66571,7 +66719,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 627 */
+/* 624 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66587,7 +66735,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _index = __webpack_require__(624);
+	var _index = __webpack_require__(621);
 
 	var _index2 = _interopRequireDefault(_index);
 
@@ -66711,7 +66859,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 628 */
+/* 625 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66720,15 +66868,15 @@
 	  value: true
 	});
 
-	var _radio = __webpack_require__(629);
+	var _radio = __webpack_require__(626);
 
 	var _radio2 = _interopRequireDefault(_radio);
 
-	var _group = __webpack_require__(632);
+	var _group = __webpack_require__(629);
 
 	var _group2 = _interopRequireDefault(_group);
 
-	var _radioButton = __webpack_require__(633);
+	var _radioButton = __webpack_require__(630);
 
 	var _radioButton2 = _interopRequireDefault(_radioButton);
 
@@ -66740,7 +66888,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 629 */
+/* 626 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66754,7 +66902,7 @@
 
 	var _class, _temp;
 
-	var _rcRadio = __webpack_require__(630);
+	var _rcRadio = __webpack_require__(627);
 
 	var _rcRadio2 = _interopRequireDefault(_rcRadio);
 
@@ -66832,15 +66980,15 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 630 */
+/* 627 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(631);
+	module.exports = __webpack_require__(628);
 
 /***/ },
-/* 631 */
+/* 628 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66848,7 +66996,7 @@
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var React = __webpack_require__(162);
-	var Checkbox = __webpack_require__(625);
+	var Checkbox = __webpack_require__(622);
 
 	var Radio = React.createClass({
 	  displayName: 'Radio',
@@ -66868,7 +67016,7 @@
 	module.exports = Radio;
 
 /***/ },
-/* 632 */
+/* 629 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66890,11 +67038,11 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _radio = __webpack_require__(629);
+	var _radio = __webpack_require__(626);
 
 	var _radio2 = _interopRequireDefault(_radio);
 
-	var _radioButton = __webpack_require__(633);
+	var _radioButton = __webpack_require__(630);
 
 	var _radioButton2 = _interopRequireDefault(_radioButton);
 
@@ -67018,7 +67166,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 633 */
+/* 630 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67034,7 +67182,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _radio = __webpack_require__(629);
+	var _radio = __webpack_require__(626);
 
 	var _radio2 = _interopRequireDefault(_radio);
 
@@ -67069,7 +67217,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 634 */
+/* 631 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67091,7 +67239,7 @@
 
 	var _rcMenu2 = _interopRequireDefault(_rcMenu);
 
-	var _dropdown = __webpack_require__(635);
+	var _dropdown = __webpack_require__(632);
 
 	var _dropdown2 = _interopRequireDefault(_dropdown);
 
@@ -67099,11 +67247,11 @@
 
 	var _icon2 = _interopRequireDefault(_icon);
 
-	var _checkbox = __webpack_require__(624);
+	var _checkbox = __webpack_require__(621);
 
 	var _checkbox2 = _interopRequireDefault(_checkbox);
 
-	var _radio = __webpack_require__(628);
+	var _radio = __webpack_require__(625);
 
 	var _radio2 = _interopRequireDefault(_radio);
 
@@ -67312,7 +67460,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 635 */
+/* 632 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67321,11 +67469,11 @@
 	  value: true
 	});
 
-	var _dropdown = __webpack_require__(636);
+	var _dropdown = __webpack_require__(633);
 
 	var _dropdown2 = _interopRequireDefault(_dropdown);
 
-	var _dropdownButton = __webpack_require__(640);
+	var _dropdownButton = __webpack_require__(637);
 
 	var _dropdownButton2 = _interopRequireDefault(_dropdownButton);
 
@@ -67336,7 +67484,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 636 */
+/* 633 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67352,7 +67500,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _rcDropdown = __webpack_require__(637);
+	var _rcDropdown = __webpack_require__(634);
 
 	var _rcDropdown2 = _interopRequireDefault(_rcDropdown);
 
@@ -67390,7 +67538,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 637 */
+/* 634 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67399,7 +67547,7 @@
 	  value: true
 	});
 
-	var _Dropdown = __webpack_require__(638);
+	var _Dropdown = __webpack_require__(635);
 
 	var _Dropdown2 = _interopRequireDefault(_Dropdown);
 
@@ -67409,7 +67557,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 638 */
+/* 635 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67432,7 +67580,7 @@
 
 	var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 
-	var _placements = __webpack_require__(639);
+	var _placements = __webpack_require__(636);
 
 	var _placements2 = _interopRequireDefault(_placements);
 
@@ -67593,7 +67741,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 639 */
+/* 636 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -67650,7 +67798,7 @@
 	exports["default"] = placements;
 
 /***/ },
-/* 640 */
+/* 637 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67676,7 +67824,7 @@
 
 	var _icon2 = _interopRequireDefault(_icon);
 
-	var _dropdown = __webpack_require__(636);
+	var _dropdown = __webpack_require__(633);
 
 	var _dropdown2 = _interopRequireDefault(_dropdown);
 
@@ -67760,7 +67908,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 641 */
+/* 638 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67769,7 +67917,7 @@
 	  value: true
 	});
 
-	var _Pagination = __webpack_require__(642);
+	var _Pagination = __webpack_require__(639);
 
 	var _Pagination2 = _interopRequireDefault(_Pagination);
 
@@ -67779,7 +67927,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 642 */
+/* 639 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67797,7 +67945,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _rcPagination = __webpack_require__(643);
+	var _rcPagination = __webpack_require__(640);
 
 	var _rcPagination2 = _interopRequireDefault(_rcPagination);
 
@@ -67805,11 +67953,11 @@
 
 	var _select2 = _interopRequireDefault(_select);
 
-	var _MiniSelect = __webpack_require__(649);
+	var _MiniSelect = __webpack_require__(646);
 
 	var _MiniSelect2 = _interopRequireDefault(_MiniSelect);
 
-	var _zh_CN = __webpack_require__(650);
+	var _zh_CN = __webpack_require__(647);
 
 	var _zh_CN2 = _interopRequireDefault(_zh_CN);
 
@@ -67868,16 +68016,16 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 643 */
+/* 640 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// export this package's api
 	'use strict';
 
-	module.exports = __webpack_require__(644);
+	module.exports = __webpack_require__(641);
 
 /***/ },
-/* 644 */
+/* 641 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67891,10 +68039,10 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(162);
-	var Pager = __webpack_require__(645);
-	var Options = __webpack_require__(646);
-	var KEYCODE = __webpack_require__(647);
-	var LOCALE = __webpack_require__(648);
+	var Pager = __webpack_require__(642);
+	var Options = __webpack_require__(643);
+	var KEYCODE = __webpack_require__(644);
+	var LOCALE = __webpack_require__(645);
 
 	function noop() {}
 
@@ -68263,7 +68411,7 @@
 	module.exports = Pagination;
 
 /***/ },
-/* 645 */
+/* 642 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68332,7 +68480,7 @@
 	module.exports = Pager;
 
 /***/ },
-/* 646 */
+/* 643 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68346,7 +68494,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(162);
-	var KEYCODE = __webpack_require__(647);
+	var KEYCODE = __webpack_require__(644);
 
 	var Options = (function (_React$Component) {
 	  _inherits(Options, _React$Component);
@@ -68491,7 +68639,7 @@
 	module.exports = Options;
 
 /***/ },
-/* 647 */
+/* 644 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -68512,7 +68660,7 @@
 	};
 
 /***/ },
-/* 648 */
+/* 645 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -68539,7 +68687,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 649 */
+/* 646 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68590,15 +68738,15 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 650 */
+/* 647 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(648);
+	module.exports = __webpack_require__(645);
 
 /***/ },
-/* 651 */
+/* 648 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68764,7 +68912,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 652 */
+/* 649 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -68796,7 +68944,7 @@
 	}
 
 /***/ },
-/* 653 */
+/* 650 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68979,7 +69127,7 @@
 	exports.default = feedback;
 
 /***/ },
-/* 654 */
+/* 651 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin

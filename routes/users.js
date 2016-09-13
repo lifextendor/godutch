@@ -96,8 +96,8 @@ router.get('/groups',function(req, res, next) {
             });
         }catch(e){
             console.log(e);
-            res.sendStatus(500);
-            res.send({result:'failure',operate:'findgroup'});
+            //res.sendStatus(500);
+            //res.send({result:'failure',operate:'findgroup'});
         }
     }else{
         res.sendStatus(401);
@@ -354,7 +354,7 @@ router.get('/messages',function(req, res, next){
  * rest服务相对地址："/users/message/1"，http方法为:“GET”
  * 请求参数中的1代表消息id
  */
-router.get('message/:id',function(req, res, next){
+router.get('/message/:id',function(req, res, next){
     var user = req.user;
     if(user) {
         var messageId = req.params.id;
@@ -379,7 +379,7 @@ router.get('message/:id',function(req, res, next){
  * rest服务相对地址："/users/message/1/reply/agree"，http方法为:“GET”
  * 请求参数中的1代表消息id,agree代表回复的类型，"agree"代表同意,"reject"代表有拒绝
  */
-router.get('message/:id/reply/:type',function(req, res, next){
+router.get('/message/:id/reply/:type',function(req, res, next){
     var user = req.user;
     if(user) {
          var messageId = req.params.id,
@@ -414,7 +414,7 @@ router.get('message/:id/reply/:type',function(req, res, next){
  * rest服务相对地址："/users/from/12311313/to/1231313132"，http方法为:“GET”
  * 请求参数用from后面的数字代表起始时间，to后面的数字代表结束时间，两个的时间的单位都是毫秒
  */
-router.get('bills/from/:from/to/:to',function(req, res, next){
+router.get('/bills/from/:from/to/:to',function(req, res, next){
     var user = req.user;
     if(user) {
         var provider = user.provider,
@@ -442,7 +442,7 @@ router.get('bills/from/:from/to/:to',function(req, res, next){
  * rest服务相对地址："/users/feedback"，http方法为:“PUT”
  * 请求体需要包含：content——反馈内容，比如：{content:'找不到创建团的功能'}
  */
-router.put('feedback',function(req, res, next){
+router.put('/feedback',function(req, res, next){
     var user = req.user;
     if(user) {
         var provider = user.provider,

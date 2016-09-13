@@ -61,7 +61,7 @@ class teamManage extends React.Component{
     }
     dissolutionGroupYes(id) {
         $.ajax({
-            url: "/users/group/"+id+"/leave",
+            url: "/users/group/"+id+"/dropgroup",
             dataType: 'json',
             type: 'POST',
             success: function(data) {
@@ -77,7 +77,7 @@ class teamManage extends React.Component{
     }
     exitGroupYes(id) {
         $.ajax({
-            url: "/users/group/"+id+"/dropgroup",
+            url: "/users/group/"+id+"/leave",
             dataType: 'json',
             type: 'POST',
             success: function(data) {
