@@ -30,7 +30,7 @@ class numManage extends React.Component{
     infoMessage() {
       return notification['info']({
           message: '提示',
-          description: '取消失败！',
+          description: '取消操作！',
         });
     } 
     componentDidMount(){
@@ -60,7 +60,7 @@ class numManage extends React.Component{
             url: "/users/group/"+id+"/deletemember",
             dataType: 'json',
             type: 'POST',
-            member:{provider:'qq',user_id:1}
+            member:{provider:'qq',user_id:1},
             success: function(data) {
                 this.componentDidMount();
                 this.setState({teamlist:this.state.teamlist});
@@ -77,7 +77,7 @@ class numManage extends React.Component{
             url: "/users/group/"+id+"/authorize",
             dataType: 'json',
             type: 'POST',
-            member:{provider:'qq',user_id:1}
+            member:{provider:'qq',user_id:1},
             success: function(data) {
                 this.componentDidMount();
                 this.setState({teamlist:this.state.teamlist});

@@ -1,6 +1,6 @@
 //团队管理
 import React from 'react';
-import { Card, Collapse, Button, message, Popconfirm, notification } from 'antd';
+import { Card, Collapse, Button, message, Popconfirm, notification, Modal } from 'antd';
 import {Link} from 'react-router';
 import $ from 'jquery';
 import '../stylesheets/teamManage.scss'
@@ -17,7 +17,7 @@ var teamlist=[
 class teamManage extends React.Component{ 
     constructor(props) {
         super(props);
-        this.state={username: this.props.params.username,teamlist:[]}; 
+        this.state={username: this.props.params.username,teamlist:[],modalvisible: false}; 
     }
     succesMessage() {
       return notification['success']({
@@ -34,7 +34,7 @@ class teamManage extends React.Component{
     infoMessage() {
       return notification['info']({
           message: '提示',
-          description: '取消失败！',
+          description: '取消操作！',
         });
     } 
     componentDidMount(){
@@ -91,6 +91,12 @@ class teamManage extends React.Component{
             }.bind(this)
         });        
     }
+    showModal(){
+        this.setState({modalvisible:true});
+    }
+    invitation(){
+
+    }
     cancel() {
         this.infoMessage();  
     }    
@@ -129,16 +135,17 @@ class teamManage extends React.Component{
                                     </div>
                                     &nbsp;                                    
                                     <Button className="tool-button" type="primary"><Link to={'numManage/'+list.id}>查看团员</Link></Button>
-                                     &nbsp;                                    
-                                    <Button className="tool-button" type="primary"><Link to="numManage">邀请团成员</Link></Button>                                  
+                                    &nbsp;                                    
+                                    <Button className="tool-button" type="primary"><Link to={'invitation/'+list.id}>邀请团成员</Link></Button>                                  
                                 </Panel>
                                 );
                             }, this)} 
                             </Collapse>                                
                         </Card>
-                        </div>                      
-                    </Card>
-                </div>            
+                        </div>                                          
+                    </Card>                    
+                </div>
+
     }
 }
 // teamManage.defaultProps={teamlist:teamManage};//设置默认属性
