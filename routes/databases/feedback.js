@@ -39,7 +39,9 @@ function findFeedbackByDateTime(from,to,isReaded){
             return;
         }
         var queryDoc = {'datetime':{'$gt':from,'$lt':to},readed:isReaded};
-        return DbUtil.queryDoc(evt.db,evt.col,queryDoc);
+        return DbUtil.queryDoc(evt.db,evt.col,queryDoc,function(evt){
+            deferred.reject(evt);
+        });
     }).done(function(evt){
         if(!evt){
             return;
@@ -66,7 +68,9 @@ function findFeedback(isReaded){
         if(!evt){
             return;
         }
-        return DbUtil.queryDoc(evt.db,evt.col,{readed:isReaded});
+        return DbUtil.queryDoc(evt.db,evt.col,{readed:isReaded},function(evt){
+            deferred.reject(evt);
+        });
     }).done(function(evt){
         if(!evt){
             return;
@@ -94,7 +98,9 @@ function findFeedbackById(feedbackId,isReaded){
         if(!evt){
             return;
         }
-        DbUtil.queryDoc(evt.db,evt.col,{id:feedbackId,readed:isReaded}).then(function(){
+        DbUtil.queryDoc(evt.db,evt.col,{id:feedbackId,readed:isReaded},function(evt){
+            deferred.reject(evt);
+        }).then(function(){
             updateFeedbackState(feedbackId,true).then(function(evt){
                 if(!evt){
                     return;

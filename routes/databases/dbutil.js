@@ -90,9 +90,9 @@ function updateDocument(db,collection, query, updateDoc) {
     return deferred.promise;
 }
 
-function deleteDocument(db,collection, query) {
+function deleteDocument(db,collection, query, options) {
     var deferred = when.defer();
-    collection.remove(query, function(err, doc) {
+    collection.deleteOne(query, options).then(function(err, doc) {
         if (err) {
             deferred.reject({db:db,err:err});
             return deferred.promise;
@@ -102,15 +102,18 @@ function deleteDocument(db,collection, query) {
     return deferred.promise;
 }
 
-function queryDocument(db,collection, query) {
+function queryDocument(db,collection, query,failure) {
     var deferred = when.defer();
-    collection.find(query).toArray(function(err, docs) {
-        if (err) {
-            deferred.reject({db:db,err:err});
-            return deferred.promise;
-        }
-        deferred.resolve({db:db,docs:docs,type:'query'});
-    });
+    try{
+        collection.find(query).toArray(function(err, docs) {
+            if (err || (docs.length === 0)) {
+               failure && failure({db:db,err:err});
+            }
+            deferred.resolve({db:db,docs:docs,type:'query'});
+        });
+    }catch(e){
+        console.error(e);
+    }
     return deferred.promise;
 }
 
@@ -118,7 +121,7 @@ function queryOneDocument(db,collection, query, options) {
     var deferred = when.defer();
     collection.findOne(query, options, function(err, doc) {
         if (err) {
-            deferred.reject({db:db,err:err});
+            throw new Error(err && err.message);
             return deferred.promise;
         }
         deferred.resolve({db:db,doc:doc,type:'query'});

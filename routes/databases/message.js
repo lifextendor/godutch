@@ -38,7 +38,9 @@ function findMessage(provider,userId,isReaded){
         if(!evt){
             return;
         }
-        return DbUtil.queryDoc(evt.db,evt.col,{'userinfo.provider':provider,'userinfo.user_id':userId,readed:isReaded});
+        return DbUtil.queryDoc(evt.db,evt.col,{'userinfo.provider':provider,'userinfo.user_id':userId,readed:isReaded},function(evt){
+            deferred.reject(evt);
+        });
     }).done(function(evt){
         if(!evt){
             return;
@@ -71,7 +73,9 @@ function findMessageById(messageId,isReaded){
         if(!evt){
             return;
         }
-        DbUtil.queryDoc(evt.db,evt.col,{id:messageId,readed:isReaded}).then(function(){
+        DbUtil.queryDoc(evt.db,evt.col,{id:messageId,readed:isReaded},function(evt){
+            deferred.reject(evt);
+        }).then(function(){
             updateMessageState(messageId,true).then(function(evt){
                 if(!evt){
                     return;

@@ -47,6 +47,7 @@ function findGroupById(groupId,provider,userId){
 			return DbUtil.getCollection(db, COL);
 		}).catch(function(err){
 			deferred.reject(err);
+			return findGroupByIdPromise;
 		}).then(function(evt){
 			if(!evt){
 				return;
@@ -59,8 +60,9 @@ function findGroupById(groupId,provider,userId){
 			deferred.resolve(evt.doc);
 			evt.db.close();
 		});
-	}).catch(function(){
-		deferred.reject();
+	}).catch(function(evt){
+		deferred.reject(evt);
+		return findGroupByIdPromise;
 	});
 	return findGroupByIdPromise;
 }
@@ -105,7 +107,7 @@ function findGroupByCreator(provider,userId){
 function findGroupByMember(provider,userId){
 	var deferred = when.defer(),
 		findGroupByMember = deferred.promise;
-	findGroup({"members.user.provider":provider,"members.user.user_id":userId})
+	findGroup({"members.user.provider":provider,"members.user.user_id":userId,'members.state':'normal'})
 		.then(function(docs){
 			var results =[];
 			for(var i = 0, len = docs.length; i < len; i++){
@@ -140,34 +142,39 @@ function findGroupByMember(provider,userId){
 function findGroupByUser(provider,userId){
 	var deferred = when.defer(),
 		findGroupByUserPromise = deferred.promise;
-	findGroup({$or:[{creator:{provider:provider,user_id:userId}},
-		{"members.user.provider":provider,"members.user.user_id":userId}]})
-		.then(function(docs){
-			var results =[];
-			for(var i = 0, len = docs.length; i < len; i++){
-				var doc = docs[i];
-				var members = doc.members,
-					grant;
-				for(var j = 0, len0 = members.length; j < len0; j++){
-					if(members[j].user.provider === provider && members[j].user.user_id === userId){
-						grant = members[j].grant;
-						break;
+	try{
+		findGroup({$or:[{creator:{provider:provider,user_id:userId}},
+			{"members.user.provider":provider,"members.user.user_id":userId,'members.state':'normal'}]})
+			.then(function(docs){
+				var results =[];
+				for(var i = 0, len = docs.length; i < len; i++){
+					var doc = docs[i];
+					var members = doc.members,
+						grant;
+					for(var j = 0, len0 = members.length; j < len0; j++){
+						if(members[j].user.provider === provider && members[j].user.user_id === userId){
+							grant = members[j].grant;
+							break;
+						}
 					}
+					var result = {
+						id:docs[i].id,
+						groupName:docs[i].gname,
+						members:docs[i].members.length,
+						description:docs[i].description,
+						createTime:docs[i].createtime,
+						grant:grant
+					};
+					results.push(result);
 				}
-				var result = {
-					id:docs[i].id,
-					groupName:docs[i].gname,
-					members:docs[i].members.length,
-					description:docs[i].description,
-					createTime:docs[i].createtime,
-					grant:grant
-				};
-				results.push(result);
-			}
-			deferred.resolve(results);
-	}).catch(function(err){
-			deferred.reject(err);
-		});
+				deferred.resolve(results);
+			}).catch(function(evt){
+				deferred.reject(evt);
+				return findGroupByUserPromise;
+			});
+	}catch(e){
+		console.error(e);
+	}
 	return findGroupByUserPromise;
 }
 /**
@@ -221,7 +228,7 @@ function addMemberByInvite(groupId,memberInfo,money){
  * */
 function deleteMember(groupId,provider,userId,memberInfo){
 	var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.userId},
-		updateDoc = {'members.$.state':'delete'};
+		updateDoc = {'$set':{'members.$.state':'delete'}};
 	return updateMemberWithCheck(OPERATE.Manage,queryDoc,groupId, provider,userId,updateDoc);
 }
 
@@ -234,7 +241,7 @@ function deleteMember(groupId,provider,userId,memberInfo){
  */
 function leaveGroup(groupId,provider,userId){
 	var queryDoc = {id:groupId,'members.user.provider':provider,'members.user.user_id':userId},
-		updateDoc = {'members.$.state':'delete'};
+		updateDoc = {'$set':{'members.$.state':'delete'}};
 	return updateMember(queryDoc, updateDoc);
 }
 
@@ -268,7 +275,7 @@ function updateMoney(groupId,provider,userId,memberInfos){
 		for(var i = 0, len = memberInfos.length; i < len; i++){
 			var memberInfo = memberInfos[i];
 			var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.userId},
-				updateDoc = {'members.$.money':memberInfo.money};
+				updateDoc = {'$set':{'members.$.money':memberInfo.money}};
 			var promise = updateMember(queryDoc, updateDoc);
 			promises.push(promise);
 		}
@@ -292,7 +299,7 @@ function updateMoney(groupId,provider,userId,memberInfos){
 function authorize(groupId,provider,userId,memberInfo,reverse){
 	var grant = reverse ? GRANT.TeamMember : GRANT.ViceCapTain;
 	var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.userId},
-		updateDoc = {'members.$.grant':grant};
+		updateDoc = {'$set':{'members.$.grant':grant}};
 	//只有团长有权限执行此操作
 	return updateMemberWithCheck(OPERATE.Manage,queryDoc,groupId, provider,userId,updateDoc);
 }
@@ -331,9 +338,6 @@ function updateMember(queryDoc, updateDoc){
 	}).done(function(evt){
 		deferred.resolve(evt.doc);
 		evt.db.close;
-	}).catch(function(evt){
-		deferred.reject(evt);
-		evt.db.close;
 	});
 	return updateMemberPromise;
 }
@@ -343,13 +347,16 @@ function findGroup(query){
 		findGroupPromise = deferred.promise;
 	DbUtil.connect().then(function(db){
 		return DbUtil.getCollection(db, COL);
-	}).catch(function(err){
-		deferred.reject(err);
+	}).catch(function(evt){
+		deferred.reject(evt);
+		return findGroupPromise;
 	}).then(function(evt){
 		if(!evt){
 			return;
 		}
-		return DbUtil.queryDoc(evt.db,evt.col,query);
+		return DbUtil.queryDoc(evt.db,evt.col,query,function(evt){
+			deferred.reject(evt);
+		});
 	}).done(function(evt){
 		if(!evt){
 			return;
@@ -418,7 +425,9 @@ function checkGrant(operate,groupId,provider,userId){
 			grants.push(queryGrant);
 		}
 		var filter = {id:groupId,'members.user.provider':provider,'members.user.user_id':userId,$or:grants};
-		return DbUtil.queryDoc(evt.db,evt.col,filter);
+		return DbUtil.queryDoc(evt.db,evt.col,filter,function(evt){
+			deferred.reject(evt);
+		});
 	}).done(function(evt){
 		if(!evt){
 			return;

@@ -40,7 +40,9 @@ function findBillByDateTime(provider,userId,from,to){
             return;
         }
         var queryDoc = {'members.$.provider':provider,'members.$.user_id':userId,'datetime':{'$gt':from,'$lt':to}};
-        return DbUtil.queryDoc(evt.db,evt.col,queryDoc);
+        return DbUtil.queryDoc(evt.db,evt.col,queryDoc,function(evt){
+            deferred.reject(evt);
+        });
     }).done(function(evt){
         if(!evt){
             return;
@@ -67,7 +69,9 @@ function findBillById(billId){
         if(!evt){
             return;
         }
-        return DbUtil.queryDoc(evt.db,evt.col,{id:billId});
+        return DbUtil.queryDoc(evt.db,evt.col,{id:billId},function(evt){
+            deferred.reject(evt);
+        });
     }).done(function(evt){
         if(!evt){
             return;
