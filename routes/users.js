@@ -38,14 +38,16 @@ router.put('/creategroup', function (req, res, next) {
                         res.send({result:'failure',operate:'creategroup'});
                     });
             }catch(e){
-                console.log(e);
+                console.error(e);
+                res.sendStatus(500);
+                res.send({result:'failure',operate:'creategroup'});
             }
         }else{
-            res.sendStatus(500);
+            res.sendStatus(400);
             res.send({result:'failure',operate:'creategroup'});
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -71,7 +73,7 @@ router.post('/group/:id/dropgroup', function (req, res, next) {
             console.log(e);
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -94,9 +96,11 @@ router.get('/groups',function(req, res, next) {
             });
         }catch(e){
             console.log(e);
+            res.sendStatus(500);
+            res.send({result:'failure',operate:'findgroup'});
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -122,7 +126,7 @@ router.get('/group/:id',function(req, res, next) {
             console.log(e);
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -151,7 +155,7 @@ router.post('/group/:id/deletemember',function(req, res, next) {
             console.log(e);
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -178,7 +182,7 @@ router.post('/group/:id/leave',function(req, res, next) {
             console.log(e);
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -221,7 +225,7 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
             console.log(e);
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -250,7 +254,7 @@ router.put('/group/:id/authorize',function(req, res, next) {
             console.log(e);
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -279,7 +283,7 @@ router.put('/group/:id/deauthorize',function(req, res, next) {
             console.log(e);
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -315,7 +319,7 @@ router.post('/group/:id/invite',function(req, res, next) {
             console.log(e);
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -340,7 +344,7 @@ router.get('/messages',function(req, res, next){
             console.log(e);
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -365,7 +369,7 @@ router.get('message/:id',function(req, res, next){
             console.log(e);
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -400,6 +404,7 @@ router.get('message/:id/reply/:type',function(req, res, next){
             console.log(e);
         }
     }else{
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -427,7 +432,7 @@ router.get('bills/from/:from/to/:to',function(req, res, next){
             console.log(e);
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });
@@ -462,7 +467,7 @@ router.put('feedback',function(req, res, next){
             console.log(e);
         }
     }else{
-        res.sendStatus(500);
+        res.sendStatus(401);
         res.send({result:'failure',operate:'unlogin'});
     }
 });

@@ -18,6 +18,8 @@ var OPERATE_GRANT_MAP = {
 	MANAGE:[GRANT.Captain]
 };
 
+var groupInfoProps = ['createtime','creator','description','gname','id','members','type'];
+
 /*************** Group操作 ****************/
 /**
  * 添加团
@@ -53,12 +55,35 @@ function findGroupById(groupId,provider,userId){
 				return;
 			}
 			return findOneGroup({id:groupId});
-		}).done(function(evt){
-			if(!evt){
+		}).done(function(doc){
+			if(!doc){
 				return;
 			}
-			deferred.resolve(evt.doc);
-			evt.db.close();
+			var result={};
+			if(doc){
+				for(var i= 0,len=groupInfoProps.length;i<len;i++){
+					var prop = groupInfoProps[i];
+					var value = doc[prop];
+					if(prop ==='members'){
+						var members = [];
+						for(var j= 0,len=value.length;j<len;j++){
+							var member=value[j];
+							if(member.state==='normal'){
+								members.push({'grant':member.grant,
+									'money':member.money,
+									'provider':member.user.provider,
+									'userId':member.user['user_id']
+								});
+							}
+						}
+						value=members;
+					}
+					if(value){
+						result[prop]=value;
+					}
+				}
+			}
+			deferred.resolve(result);
 		});
 	}).catch(function(evt){
 		deferred.reject(evt);
@@ -421,7 +446,7 @@ function checkGrant(operate,groupId,provider,userId){
 		}
 		var grants = [];
 		for(grant in OPERATE_GRANT_MAP[operate]){
-			var queryGrant = {'members.grant': grant};
+			var queryGrant = {'members.grant': OPERATE_GRANT_MAP[operate][grant]};
 			grants.push(queryGrant);
 		}
 		var filter = {id:groupId,'members.user.provider':provider,'members.user.user_id':userId,$or:grants};
