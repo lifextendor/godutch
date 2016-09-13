@@ -7,6 +7,7 @@ import Nav from './components/nav';
 import navigation from './components/navigation';
 import createTeam from './components/createTeam';
 import teamManage from './components/teamManage';
+import invitation from './components/invitation';
 import numManage from './components/numManage';
 import billManage from './components/billManage';
 import feedback from './components/feedback';
@@ -36,6 +37,7 @@ ReactDOM.render((
             <Route path="createTeam" component={createTeam} />
             <Route path="teamManage/:username" component={teamManage} /> 
             <Route path="numManage/:id" component={numManage} />
+            <Route path="invitation/:id" component={invitation} />
             <Route path="billManage/:username" component={billManage} />
             <Route path="feedback" component={feedback} />
         </Route>
