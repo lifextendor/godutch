@@ -12,53 +12,103 @@ var myList=[
 
 class numManage extends React.Component{ 
     constructor(props) {
-        super(props);
-        this.setState={username:this.props.params.username}
-        // alert(this.props.params.id);
-        // alert(this.props.params.power);
+        super(props);        
+        this.state={id:this.props.params.id,myList:[]};
     }
-    lookNum(e){
-        this.setState({layout:layout2,shownum:true});
+    succesMessage() {
+      return notification['success']({
+          message: '成功',
+          description: '操作成功！',
+        });
     }
-    confirm(e) {
-        message.info('点击了确定');
+    errorMessage() {
+      return notification['error']({
+          message: '失败',
+          description: '操作失败！',
+        });
     }
-    cancel(e) {
-        message.error('点击了取消');
+    infoMessage() {
+      return notification['info']({
+          message: '提示',
+          description: '取消失败！',
+        });
+    } 
+    componentDidMount(){
+        $.ajax({
+            url: "/users/group/"+this.props.params.id,
+            dataType: 'json',
+            type: 'get',
+            async: true,
+            success: function(data) {
+                debugger
+                for (var i = data.result.length - 1; i >= 0; i--) {
+                    var date = new Date(data.result[i].createTime);
+                    data.result[i].createTime=date.getFullYear()+"年"+date.getMonth()+"月"+date.getDate()+"日";
+                }
+                this.setState({teamlist:data.result});         
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
     }
-    // handleCommentSubmit: function(comment) {
-    //     alert("确认提交");
-    //     $.ajax({
-    //         url: this.props.url,
-    //         dataType: 'json',
-    //         type: 'POST',
-    //         data: comment,
-    //         success: function(data) {
-    //             this.setState({data: data});
-    //         }.bind(this),
-    //         error: function(xhr, status, err) {
-    //             this.setState({data: comments});
-    //             console.error(this.props.url, status, err.toString());
-    //         }.bind(this)
-    //     });
-    // }
+    componentWillUnmount() {
+        // this.serverRequest.abort();
+    }
+    expelGroupYes(id) {
+        $.ajax({
+            url: "/users/group/"+id+"/deletemember",
+            dataType: 'json',
+            type: 'POST',
+            member:{provider:'qq',user_id:1}
+            success: function(data) {
+                this.componentDidMount();
+                this.setState({teamlist:this.state.teamlist});
+                this.succesMessage();
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.log(this.props.url, status, err.toString());
+                this.errorMessage();
+            }.bind(this)
+        });
+    }
+    powerGroupYes(id) {
+        $.ajax({
+            url: "/users/group/"+id+"/authorize",
+            dataType: 'json',
+            type: 'POST',
+            member:{provider:'qq',user_id:1}
+            success: function(data) {
+                this.componentDidMount();
+                this.setState({teamlist:this.state.teamlist});
+                this.succesMessage();
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.log(this.props.url, status, err.toString());
+                this.errorMessage();
+            }.bind(this)
+        });        
+    }
+    cancel() {
+        this.infoMessage();  
+    }    
     render(){
         return  <div style={{ background: '#ECECEC'}}>                    
                     <Card className="main-panel" title="团队" bordered={false}>
                         <div className="col-md-offset-2 col-sm-offset-1 col-md-8 col-sm-10">
                             <Card title="团员列表">
                                 <Collapse accordion>
-                                 {this.props.myList.map(function(list, i) {
+                                 {this.state.myList.map(function(list, i) {
                                 return (
                                     <Panel header={list.name} key={i}>
                                         <p>2016年7月1日加团</p>
                                         <p>简介：啦啦啦</p>
                                         <div className={this.props.params.power}>
-                                        <Popconfirm title="确定要开除这个团员吗？" onConfirm={this.confirm.bind(this)} onCancel={this.cancel.bind(this)}>
+                                        <Popconfirm title="确定要开除这个团员吗？" onConfirm={this.expelGroupYes.bind(this)} onCancel={this.cancel.bind(this)}>
                                             <Button className="tool-button"  type="primary">开除</Button>
                                         </Popconfirm>                                        
                                         &nbsp;
-                                        <Popconfirm title="确定要给这个团员授权吗？" onConfirm={this.confirm.bind(this)} onCancel={this.cancel.bind(this)}>
+                                        <Popconfirm title="确定要给这个团员授权吗？" onConfirm={this.powerGroupYes.bind(this)} onCancel={this.cancel.bind(this)}>
                                         <Button className="tool-button" type="primary">授权</Button> 
                                         </Popconfirm>
                                         </div>                           
@@ -72,5 +122,5 @@ class numManage extends React.Component{
                 </div>
     }
 }
-numManage.defaultProps={myList:myList};//设置默认属性
+// numManage.defaultProps={myList:myList};//设置默认属性
 export default numManage;

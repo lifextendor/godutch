@@ -17,7 +17,7 @@ var teamlist=[
 class teamManage extends React.Component{ 
     constructor(props) {
         super(props);
-        this.state={username: this.props.params.username}; 
+        this.state={username: this.props.params.username,teamlist:[]}; 
     }
     succesMessage() {
       return notification['success']({
@@ -37,18 +37,19 @@ class teamManage extends React.Component{
           description: '取消失败！',
         });
     } 
-    componentWillMount(){
+    componentDidMount(){
         $.ajax({
             url: "/users/groups",
             dataType: 'json',
             type: 'get',
-            async: false,
+            async: true,
             success: function(data) {
                 for (var i = data.result.length - 1; i >= 0; i--) {
                     var date = new Date(data.result[i].createTime);
                     data.result[i].createTime=date.getFullYear()+"年"+date.getMonth()+"月"+date.getDate()+"日";
                 }
-                this.state=({teamlist:data.result});         
+                // this.state=({teamlist:data.result});
+                this.setState({teamlist:data.result});         
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -56,23 +57,15 @@ class teamManage extends React.Component{
         });
     }
     componentWillUnmount() {
-        this.serverRequest.abort();
+        // this.serverRequest.abort();
     }
-    deleteGroup(e) {
-        
-    }
-    exitGroup(e) {
-      
-    }
-    exitGroupYes(id) {
+    dissolutionGroupYes(id) {
         $.ajax({
-            url: "/users/group/"+id+"/dropgroup",
+            url: "/users/group/"+id+"/leave",
             dataType: 'json',
             type: 'POST',
             success: function(data) {
-                // this.setState({data: data});
-                debugger
-                this.componentWillMount();
+                this.componentDidMount();
                 this.setState({teamlist:this.state.teamlist});
                 this.succesMessage();
             }.bind(this),
@@ -81,10 +74,25 @@ class teamManage extends React.Component{
                 this.errorMessage();
             }.bind(this)
         });
-        
     }
-    exitGroupNo(e) {
-      
+    exitGroupYes(id) {
+        $.ajax({
+            url: "/users/group/"+id+"/dropgroup",
+            dataType: 'json',
+            type: 'POST',
+            success: function(data) {
+                this.componentDidMount();
+                this.setState({teamlist:this.state.teamlist});
+                this.succesMessage();
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.log(this.props.url, status, err.toString());
+                this.errorMessage();
+            }.bind(this)
+        });        
+    }
+    cancel() {
+        this.infoMessage();  
     }    
     render(){        
         var boss=[];
@@ -97,8 +105,6 @@ class teamManage extends React.Component{
                 boss[i]="hidden";
                 number[i]="ok";
             }
-            debugger
-            // permissions[i]=list.grant?"ok":"hidden";
         }, this)}
         return  <div style={{ background: '#ECECEC'}}>                    
                     <Card className="main-panel" title="团队" bordered={false}>                        
@@ -111,18 +117,18 @@ class teamManage extends React.Component{
                                     <p>创于:{list.createTime}</p>
                                     <p>简介:{list.description}</p>
                                     <div className={number[i]} style={{display: 'inline'}}>
-                                    <Popconfirm title="确定要退出这个团吗？" onConfirm={this.exitGroupYes.bind(this,list.id)} onCancel={this.exitGroupNo.bind(this)}>
+                                    <Popconfirm title="确定要退出这个团吗？" onConfirm={this.exitGroupYes.bind(this, list.id)} onCancel={this.cancel.bind(this)}>
                                     <Button className="tool-button" type="primary" >退团</Button>
                                     </Popconfirm>
                                     </div>
                                     <div className={boss[i]} style={{display: 'inline'}}>
                                     &nbsp;
-                                    <Popconfirm title="确定要解散这个团吗？" onConfirm={this.exitGroupYes.bind(this)} onCancel={this.exitGroupYes.bind(this)}>
+                                    <Popconfirm title="确定要解散这个团吗？" onConfirm={this.dissolutionGroupYes.bind(this, list.id)} onCancel={this.cancel.bind(this)}>
                                     <Button className="tool-button" type="primary">解散团</Button>
                                     </Popconfirm>
                                     </div>
                                     &nbsp;                                    
-                                    <Button className="tool-button" type="primary"><Link to="numManage">查看团员</Link></Button>
+                                    <Button className="tool-button" type="primary"><Link to={'numManage/'+list.id}>查看团员</Link></Button>
                                      &nbsp;                                    
                                     <Button className="tool-button" type="primary"><Link to="numManage">邀请团成员</Link></Button>                                  
                                 </Panel>

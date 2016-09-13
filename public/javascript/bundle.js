@@ -38545,9 +38545,7 @@
 	              _react2.default.createElement(
 	                FormItem,
 	                (0, _extends3.default)({}, formItemLayout, {
-	                  label: '团名称',
-	                  hasFeedback: true
-	                  // help={isFieldValidating('name') ? '校验中...' : (getFieldError('name') || []).join(', ')}
+	                  label: '团名称'
 	                }),
 	                _react2.default.createElement(_input2.default, (0, _extends3.default)({}, nameProps, { placeholder: '团队名称', name: 'gname' }))
 	              ),
@@ -68903,6 +68901,10 @@
 	        value: function handleSubmit(e) {
 	            e.preventDefault();
 	            console.log('收到表单值：', this.props.form.getFieldsValue());
+	            if (this.props.form.getFieldsValue().content === "") {
+	                this.errorMessage();
+	                return;
+	            }
 	            $.ajax({
 	                url: "/users/feedback",
 	                dataType: 'json',
@@ -68953,7 +68955,7 @@
 	                                    wrapperCol: { span: 24 },
 	                                    help: '客观，留下点什么嘛'
 	                                },
-	                                _react2.default.createElement(_input2.default, (0, _extends3.default)({ type: 'content', rows: '12', placeholder: '随便写' }, getFieldProps('content', { initialValue: '' })))
+	                                _react2.default.createElement(_input2.default, (0, _extends3.default)({ type: 'textarea', rows: '12', placeholder: '随便写' }, getFieldProps('content', { initialValue: '' })))
 	                            ),
 	                            _react2.default.createElement(
 	                                FormItem,

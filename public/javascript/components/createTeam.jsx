@@ -103,9 +103,7 @@ class createTeam extends React.Component{
                         <Form horizontal form={this.props.form}>
                             <FormItem
                               {...formItemLayout}
-                              label="团名称"
-                              hasFeedback
-                              // help={isFieldValidating('name') ? '校验中...' : (getFieldError('name') || []).join(', ')}
+                              label="团名称"                              
                             >
                               <Input {...nameProps} placeholder="团队名称" name="gname"/>
                             </FormItem>

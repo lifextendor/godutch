@@ -35,7 +35,7 @@ ReactDOM.render((
             <IndexRoute path="" component={navigation} />
             <Route path="createTeam" component={createTeam} />
             <Route path="teamManage/:username" component={teamManage} /> 
-            <Route path="numManage/:id/:power" component={numManage} />
+            <Route path="numManage/:id" component={numManage} />
             <Route path="billManage/:username" component={billManage} />
             <Route path="feedback" component={feedback} />
         </Route>
