@@ -177,7 +177,7 @@ function findGroupByUser(provider,userId){
 	var deferred = when.defer(),
 		findGroupByUserPromise = deferred.promise;
 	try{
-		findGroup({$or:[{creator:{provider:provider,user_id:userId}},
+		findGroup({$or:[{'creator.provider':provider,'creator.user_id':userId},
 			{"members.user.provider":provider,"members.user.user_id":userId,'members.state':'normal'}]})
 			.then(function(docs){
 				var results =[];
