@@ -46,7 +46,7 @@ class nav extends React.Component{
                         <li><Link to="createTeam">建团</Link></li>                      
                         <li><Link to={'teamManage/'+ this.state.username}>团队</Link></li>
                         <li><Link to={'billManage/'+ this.state.username}>账单</Link></li>
-                        <li><Link to="billManage"><Badge dot>消息</Badge></Link></li>                   
+                        <li><Link to={'billManage/'+ this.state.username}><Badge dot>消息</Badge></Link></li>                   
                       </ul>  
                     </div>                                 
 
@@ -79,10 +79,10 @@ class nav extends React.Component{
                 <nav className="visible-xs navbar navbar-default navbar-fixed-bottom">
                   <div id="main-nav">
                     <ul className="nav navbar-nav">
-                        <li><Badge dot><Icon type="aliwangwang-o" /></Badge><Link to="billManage">消息</Link></li>   
+                        <li><Badge dot><Icon type="aliwangwang-o" /></Badge><Link to={'billManage/'+ this.state.username}>消息</Link></li>   
                         <li><Icon type="plus-square" /><Link to="createTeam">建团</Link></li>                      
-                        <li><Icon type="team" /><Link to="teamManage">团队</Link></li>
-                        <li><Icon type="book" /><Link to="billManage">账单</Link></li>                                    
+                        <li><Icon type="team" /><Link to={'teamManage/'+ this.state.username}>团队</Link></li>
+                        <li><Icon type="book" /><Link to={'billManage/'+ this.state.username}>账单</Link></li>                                    
                       </ul>
                   </div>
                 </nav>

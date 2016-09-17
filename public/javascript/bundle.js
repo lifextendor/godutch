@@ -36300,7 +36300,7 @@
 	                    null,
 	                    _react2.default.createElement(
 	                      _reactRouter.Link,
-	                      { to: 'billManage' },
+	                      { to: 'billManage/' + this.state.username },
 	                      _react2.default.createElement(
 	                        _badge2.default,
 	                        { dot: true },
@@ -36415,7 +36415,7 @@
 	                ),
 	                _react2.default.createElement(
 	                  _reactRouter.Link,
-	                  { to: 'billManage' },
+	                  { to: 'billManage/' + this.state.username },
 	                  '消息'
 	                )
 	              ),
@@ -36435,7 +36435,7 @@
 	                _react2.default.createElement(_icon2.default, { type: 'team' }),
 	                _react2.default.createElement(
 	                  _reactRouter.Link,
-	                  { to: 'teamManage' },
+	                  { to: 'teamManage/' + this.state.username },
 	                  '团队'
 	                )
 	              ),
@@ -36445,7 +36445,7 @@
 	                _react2.default.createElement(_icon2.default, { type: 'book' }),
 	                _react2.default.createElement(
 	                  _reactRouter.Link,
-	                  { to: 'billManage' },
+	                  { to: 'billManage/' + this.state.username },
 	                  '账单'
 	                )
 	              )
@@ -50905,7 +50905,7 @@
 	        key: 'dissolutionGroupYes',
 	        value: function dissolutionGroupYes(id) {
 	            _jquery2.default.ajax({
-	                url: "/users/group/" + id + "/leave",
+	                url: "/users/group/" + id + "/dropgroup",
 	                dataType: 'json',
 	                type: 'POST',
 	                success: function (data) {
@@ -50923,7 +50923,7 @@
 	        key: 'exitGroupYes',
 	        value: function exitGroupYes(id) {
 	            _jquery2.default.ajax({
-	                url: "/users/group/" + id + "/dropgroup",
+	                url: "/users/group/" + id + "/leave",
 	                dataType: 'json',
 	                type: 'POST',
 	                success: function (data) {

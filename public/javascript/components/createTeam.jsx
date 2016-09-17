@@ -51,33 +51,11 @@ class createTeam extends React.Component{
           });
         });        
     }
-    userExists(rule, value, callback) {
-      // debugger
-      //   if (!value) {
-      //     callback();
-      //   } else {
-      //     $.ajax({
-      //       url: this.props.url,
-      //       dataType: 'json',
-      //       type: 'POST',
-      //       data: value,
-      //       success: function(data) {
-      //           console.log(data);
-      //       }.bind(this),
-      //       error: function(xhr, status, err) {
-      //           callback([new Error('抱歉，该团队名已被占用。')]);
-      //       }.bind(this)
-      //   });
-      // }
-    }
-    // handleSelectChange(value){
-    //   this.props.form.validateFields.type=value;
-    // }
     render() {  
         const { getFieldProps, getFieldError, isFieldValidating } = this.props.form;
         const nameProps = getFieldProps('gname', {
           rules: [
-            { required: true, min: 2, max: 4, message: '用户名至少为 2 个字符' },
+            { required: true, min: 2, max: 8, message: '用户名在2至8个字符之间' },
             // { validator: this.userExists },
           ],
         });

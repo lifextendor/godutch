@@ -1,4 +1,4 @@
-//创建团
+//邀请团员
 import React from 'react';
 import {Card, Form, Input, Select, Button, Checkbox, notification } from 'antd';
 const FormItem = Form.Item;

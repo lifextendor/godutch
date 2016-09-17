@@ -10,10 +10,6 @@ notification.config({
       duration: 3,
     }) 
 
-var teamlist=[
-        {grant:"no",groupName:"还没有团组"}
-    ]; 
-
 class teamManage extends React.Component{ 
     constructor(props) {
         super(props);

@@ -3,17 +3,12 @@ import React from 'react';
 import { Card, Collapse, Button, Icon, Affix,  Popconfirm, message } from 'antd';
 import {Link} from 'react-router';
 const Panel = Collapse.Panel;
-
-var myList=[
-    {name:"张三",power:"团长"}, 
-    {name:"张三",power:"团长"},
-    {name:"张三",power:"团员"}
-    ];
+var username=window.userName;
 
 class numManage extends React.Component{ 
     constructor(props) {
         super(props);        
-        this.state={id:this.props.params.id,myList:[]};
+        this.state={id:this.props.params.id,numList:[],power:'hidden'};
     }
     succesMessage() {
       return notification['success']({
@@ -41,11 +36,12 @@ class numManage extends React.Component{
             async: true,
             success: function(data) {
                 debugger
-                for (var i = data.result.length - 1; i >= 0; i--) {
-                    var date = new Date(data.result[i].createTime);
-                    data.result[i].createTime=date.getFullYear()+"年"+date.getMonth()+"月"+date.getDate()+"日";
+                if (data.result.grant==='CAPTAIN') {
+                    this.setState({numList:data.result.members,power:'ok'});
+                }else{
+                    this.setState({numList:data.result.members,power:'hidden'});
                 }
-                this.setState({teamlist:data.result});         
+                         
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -55,32 +51,36 @@ class numManage extends React.Component{
     componentWillUnmount() {
         // this.serverRequest.abort();
     }
-    expelGroupYes(id) {
-        $.ajax({
-            url: "/users/group/"+id+"/deletemember",
+    expelGroupYes(provider,user_id) {
+        debugger
+        $.ajax({            
+            url: "/users/group/"+this.state.id+"/deletemember",
             dataType: 'json',
             type: 'POST',
-            member:{provider:'qq',user_id:1},
+            data:'{member:{provider:'+provider+',user_id:'+user_id+'}}',
             success: function(data) {
+                debugger
                 this.componentDidMount();
-                this.setState({teamlist:this.state.teamlist});
+                this.setState({numList:this.state.numList});
                 this.succesMessage();
             }.bind(this),
             error: function(xhr, status, err) {
+                debugger
                 console.log(this.props.url, status, err.toString());
                 this.errorMessage();
             }.bind(this)
         });
     }
-    powerGroupYes(id) {
+    powerGroupYes(provider,user_id) {
         $.ajax({
             url: "/users/group/"+id+"/authorize",
             dataType: 'json',
             type: 'POST',
-            member:{provider:'qq',user_id:1},
+           data:'{member:{provider:'+provider+',user_id:'+user_id+'}}',
             success: function(data) {
+                debugger
                 this.componentDidMount();
-                this.setState({teamlist:this.state.teamlist});
+                this.setState({numList:this.state.numList});
                 this.succesMessage();
             }.bind(this),
             error: function(xhr, status, err) {
@@ -98,17 +98,15 @@ class numManage extends React.Component{
                         <div className="col-md-offset-2 col-sm-offset-1 col-md-8 col-sm-10">
                             <Card title="团员列表">
                                 <Collapse accordion>
-                                 {this.state.myList.map(function(list, i) {
+                                 {this.state.numList.map(function(list, i) {
                                 return (
-                                    <Panel header={list.name} key={i}>
-                                        <p>2016年7月1日加团</p>
-                                        <p>简介：啦啦啦</p>
-                                        <div className={this.props.params.power}>
-                                        <Popconfirm title="确定要开除这个团员吗？" onConfirm={this.expelGroupYes.bind(this)} onCancel={this.cancel.bind(this)}>
+                                    <Panel header={list.user_name} key={i}>
+                                        <div className={this.state.power}>
+                                        <Popconfirm title="确定要开除这个团员吗？" onConfirm={this.expelGroupYes.bind(this,list.provider,list.userId)} onCancel={this.cancel.bind(this)}>
                                             <Button className="tool-button"  type="primary">开除</Button>
                                         </Popconfirm>                                        
                                         &nbsp;
-                                        <Popconfirm title="确定要给这个团员授权吗？" onConfirm={this.powerGroupYes.bind(this)} onCancel={this.cancel.bind(this)}>
+                                        <Popconfirm title="确定要给这个团员授权吗？" onConfirm={this.powerGroupYes.bind(this,list.provider,list.userId)} onCancel={this.cancel.bind(this)}>
                                         <Button className="tool-button" type="primary">授权</Button> 
                                         </Popconfirm>
                                         </div>                           

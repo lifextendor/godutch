@@ -18,7 +18,7 @@ class feedback extends React.Component{
       return notification['error']({
           message: '失败',
           description: '操作失败！',
-        });
+        }); 
     } 
     handleSubmit(e) {
         e.preventDefault();
