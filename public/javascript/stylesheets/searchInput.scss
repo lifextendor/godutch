@@ -1,0 +1,15 @@
+$border:1px solid #C1C1C1;
+$backColor:#f8f8f8;
+.search-list:hover{
+    background-color:#57c5f7;
+    color:white;
+}
+.search-list{
+    background-color: $backColor;
+    font-size:14px;
+    border-left:$border;
+    border-right:$border;
+    border-bottom:$border;
+    padding: 6px;
+    border-radius: 4px;
+}

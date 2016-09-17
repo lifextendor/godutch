@@ -5306,7 +5306,9 @@ form .ant-cascader-picker {
 .has-warning .ant-form-split {
   color: #fa0;
 }
-.has-warning .ant-input {
+.has-warning .ant-input,
+.has-warning .ant-input:hover,
+.has-warning .ant-input:focus {
   border-color: #fa0;
   box-shadow: 0 0 0 2px rgba(255, 170, 0, 0.2);
 }
@@ -5352,7 +5354,9 @@ form .ant-cascader-picker {
 .has-error .ant-form-split {
   color: #f50;
 }
-.has-error .ant-input {
+.has-error .ant-input,
+.has-error .ant-input:hover,
+.has-error .ant-input:focus {
   border-color: #f50;
   box-shadow: 0 0 0 2px rgba(255, 85, 0, 0.2);
 }
@@ -8107,6 +8111,18 @@ form .ant-cascader-picker {
 :root .ant-collapse > .ant-collapse-item > .ant-collapse-header[aria-expanded="true"] .arrow {
   font-size: 12px;
 }
+.search-list:hover {
+  background-color: #57c5f7;
+  color: white; }
+
+.search-list {
+  background-color: #f8f8f8;
+  font-size: 14px;
+  border-left: 1px solid #C1C1C1;
+  border-right: 1px solid #C1C1C1;
+  border-bottom: 1px solid #C1C1C1;
+  padding: 6px;
+  border-radius: 4px; }
 .ant-table {
   font-size: 12px;
   color: #666;
@@ -8183,6 +8199,7 @@ form .ant-cascader-picker {
   padding: 16px 8px;
   background: #f7f7f7;
   position: relative;
+  z-index: 2;
   top: -1px;
   border-radius: 0 0 6px 6px;
 }
@@ -8355,8 +8372,14 @@ form .ant-cascader-picker {
 .ant-table-bordered.ant-table-fixed-header .ant-table-fixed-right {
   border-left: 1px solid #e9e9e9;
 }
+.ant-table-bordered.ant-table-fixed-header .ant-table-placeholder {
+  border-bottom: 0;
+}
 .ant-table-bordered .ant-table-thead > tr > th {
   border-bottom: 1px solid #e9e9e9;
+}
+.ant-table-bordered.ant-table-empty .ant-table-thead > tr > th {
+  border-bottom: 0;
 }
 .ant-table-bordered .ant-table-tbody tr:last-child > th,
 .ant-table-bordered .ant-table-tbody tr:last-child > td {
@@ -8371,9 +8394,12 @@ form .ant-cascader-picker {
   border-right: 0;
 }
 .ant-table-placeholder {
-  height: 65px;
-  line-height: 65px;
+  padding: 16px 8px;
+  background: #fff;
+  border-bottom: 1px solid #e9e9e9;
   text-align: center;
+  position: relative;
+  z-index: 2;
   font-size: 12px;
   color: #999;
 }

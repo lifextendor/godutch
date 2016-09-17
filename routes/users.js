@@ -16,8 +16,8 @@ router.get('/findusers/:userNameOrUserId', function (req, res, next) {
     if(user){
         var userNameOrUserId = req.params.userNameOrUserId;
         try{
-            Users.findUsers(userNameOrUserId).then(function(){
-                res.send({result:'success',operate:'findUser'});
+            Users.findUsers(userNameOrUserId).then(function(users){
+                res.send({result:users,operate:'findUser'});
             }).catch(function(){
                 res.sendStatus(500);
                 res.send({result:'failure',operate:'findUser'});

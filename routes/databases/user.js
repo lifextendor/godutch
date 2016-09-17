@@ -48,12 +48,12 @@ function findUsers(query){
         if(!evt){
             return;
         }
-        return DbUtil.queryDoc(evt.db,evt.col,{'$or':[{user_name:query},{user_id:query}]});
+        return DbUtil.queryDoc(evt.db,evt.col,{'$or':[{user_name:query},{user_id:query},{nick:query}]});
     }).done(function(evt){
         if(!evt){
             return;
         }
-        deferred.resolve(evt.doc);
+        deferred.resolve(evt.docs);
         evt.db.close();
     });
     return findUserByNamePromise;
