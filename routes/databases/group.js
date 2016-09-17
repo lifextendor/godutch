@@ -61,6 +61,7 @@ function findGroupById(groupId,provider,userId){
 			}
 			var result={};
 			if(doc){
+				var grant;
 				for(var i= 0,len=groupInfoProps.length;i<len;i++){
 					var prop = groupInfoProps[i];
 					var value = doc[prop];
@@ -77,11 +78,17 @@ function findGroupById(groupId,provider,userId){
 									'userId':member.user['user_id']
 								});
 							}
+							if(member.user.provider === provider && member.user.user_id === userId){
+								grant = members[j].grant;
+							}
 						}
 						value=members;
 					}
 					if(value){
 						result[prop]=value;
+					}
+					if(grant){
+						result.grant = grant;
 					}
 				}
 			}
