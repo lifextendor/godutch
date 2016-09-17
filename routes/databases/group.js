@@ -261,8 +261,8 @@ function addMemberByInvite(groupId,memberInfo,money){
  * 成员实际上不是真的删掉，只是把团员的state属性改成delete状态,userInfo应该至少拥有这样的属性：{provider:'a',user_id:1}
  * */
 function deleteMember(groupId,provider,userId,memberInfo){
-	var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.userId},
-		updateDoc = {'$set':{'members.$.state':'delete'}};
+	var queryDoc = {id:groupId},
+		updateDoc = {'$pull':{members:{'user.provider':provider,'user.user_id':userId}}};
 	return updateMemberWithCheck(OPERATE.Manage,queryDoc,groupId, provider,userId,updateDoc);
 }
 
@@ -274,8 +274,8 @@ function deleteMember(groupId,provider,userId,memberInfo){
  * @returns {*}
  */
 function leaveGroup(groupId,provider,userId){
-	var queryDoc = {id:groupId,'members.user.provider':provider,'members.user.user_id':userId},
-		updateDoc = {'$set':{'members.$.state':'delete'}};
+	var queryDoc = {id:groupId},
+		updateDoc = {'$pull':{members:{'user.provider':provider,'user.user_id':userId}}};
 	return updateMember(queryDoc, updateDoc);
 }
 
