@@ -1,10 +1,35 @@
 var express = require('express');
 var router = express.Router();
+var Users = require('./databases/user');
 var Group = require('./databases/group');
 var Message = require('./databases/message');
 var Bill = require('./databases/bill');
 var Feedback = require('./databases/feedback');
 var Util = require('./util');
+
+/**
+ * 查询用户
+ * rest服务相对地址："/users/vein"，其中的vein为用户名，http方法为:“get”
+ */
+router.get('/:userName', function (req, res, next) {
+    var user = req.user;
+    if(user){
+        var userName = req.params.userName;
+        try{
+            Users.findUserByName(userName).then(function(){
+                res.send({result:'success',operate:'findUser'});
+            }).catch(function(){
+                res.sendStatus(500);
+                res.send({result:'failure',operate:'findUser'});
+            });
+        }catch(e){
+            console.log(e);
+        }
+    }else{
+        res.sendStatus(401);
+        res.send({result:'failure',operate:'unlogin'});
+    }
+});
 
 /**
  * 创建团队
@@ -16,13 +41,14 @@ router.put('/creategroup', function (req, res, next) {
     if(user){
         var provider = user.provider;
         var user_id = user.id || user.userID;
+        var user_name = user.name || user.nickname;
         var reqBody = req.body;
         var type = reqBody.type;
         if(Util.verifyGroup(reqBody)){
             try{
                 var gName = reqBody.gname,
                     description = reqBody.description,
-                    creator = {provider:provider,user_id:user_id},
+                    creator = {provider:provider,user_id:user_id,user_name:user_name},
                     groupInfo = {
                         id:Util.getGuid(),
                         gname:gName,
@@ -91,7 +117,7 @@ router.get('/groups',function(req, res, next) {
             Group.findGroupByUser(provider,user_id).then(function(groups){
                 res.send({result:groups,operate:'findgroup'});
             }).catch(function(){
-                res.sendStatus(500);
+                //res.sendStatus(500);
                 res.send({result:'failure',operate:'findgroup'});
             });
         }catch(e){

@@ -27,7 +27,7 @@ var groupInfoProps = ['createtime','creator','description','gname','id','members
 function addGroup(groupInfo){
 	var deferred = when.defer(),
 		addGroupPromise = deferred.promise;
-	groupInfo.members = [{user:groupInfo.creator,money:0,grant:GRANT.Captain}];
+	groupInfo.members = [{user:groupInfo.creator,money:0,grant:GRANT.Captain,state:'normal'}];
 	var getGroupColPromise = DbUtil.connect().then(function(db){
 		return DbUtil.getCollection(db, COL);
 	}).catch(function(evt){

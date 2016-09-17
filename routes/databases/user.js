@@ -37,6 +37,28 @@ function findUser(provider,userId){
     return findUserPromise;
 }
 
+function findUserByName(userName){
+    var deferred = when.defer(),
+        findUserByNamePromise = deferred.promise;
+    DbUtil.connect().then(function(db){
+        return DbUtil.getCollection(db, COL);
+    }).catch(function(err){
+        deferred.reject(err);
+    }).then(function(evt){
+        if(!evt){
+            return;
+        }
+        return DbUtil.queryDoc(evt.db,evt.col,{user_name:userName});
+    }).done(function(evt){
+        if(!evt){
+            return;
+        }
+        deferred.resolve(evt.doc);
+        evt.db.close();
+    });
+    return findUserByNamePromise;
+}
+
 function deleteUser(provider,userId){
     var deferred = when.defer(),
         deleteUserPromise = deferred.promise;
@@ -92,5 +114,6 @@ function insertUser(promise, deferred,userInfo){
 module.exports = {
     addUser: addUser,
     findUser: findUser,
+    findUserByName: findUserByName,
     deleteUser: deleteUser
 };
