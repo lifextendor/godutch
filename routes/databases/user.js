@@ -37,7 +37,7 @@ function findUser(provider,userId){
     return findUserPromise;
 }
 
-function findUserByName(userName){
+function findUsers(query){
     var deferred = when.defer(),
         findUserByNamePromise = deferred.promise;
     DbUtil.connect().then(function(db){
@@ -48,7 +48,7 @@ function findUserByName(userName){
         if(!evt){
             return;
         }
-        return DbUtil.queryDoc(evt.db,evt.col,{user_name:userName});
+        return DbUtil.queryDoc(evt.db,evt.col,{'$or':[{user_name:query},{user_id:query}]});
     }).done(function(evt){
         if(!evt){
             return;
@@ -114,6 +114,6 @@ function insertUser(promise, deferred,userInfo){
 module.exports = {
     addUser: addUser,
     findUser: findUser,
-    findUserByName: findUserByName,
+    findUsers: findUsers,
     deleteUser: deleteUser
 };

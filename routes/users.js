@@ -9,14 +9,14 @@ var Util = require('./util');
 
 /**
  * 查询用户
- * rest服务相对地址："/users/vein"，其中的vein为用户名，http方法为:“get”
+ * rest服务相对地址："/users/findusers/vein"，其中的vein为用户名或者用户id，http方法为:“get”
  */
-router.get('/:userName', function (req, res, next) {
+router.get('/findusers/:userNameOrUserId', function (req, res, next) {
     var user = req.user;
     if(user){
-        var userName = req.params.userName;
+        var userNameOrUserId = req.params.userNameOrUserId;
         try{
-            Users.findUserByName(userName).then(function(){
+            Users.findUsers(userNameOrUserId).then(function(){
                 res.send({result:'success',operate:'findUser'});
             }).catch(function(){
                 res.sendStatus(500);
