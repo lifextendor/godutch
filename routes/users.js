@@ -160,7 +160,7 @@ router.get('/group/:id',function(req, res, next) {
 /**
  * 删除用户
  * rest服务相对地址："/users/group/1/deletemember"，其中1为团Id，http方法为:“POST”
- * 请求参数如下：{member:{provider:'qq',user_id:1}}
+ * 请求参数如下：{provider:'qq',user_id:1}
  */
 router.post('/group/:id/deletemember',function(req, res, next) {
     var user = req.user;
@@ -169,7 +169,7 @@ router.post('/group/:id/deletemember',function(req, res, next) {
         var user_id = user.id || user.userID;
         var reqBody = req.body;
         var groupId = req.params.id,
-            memberInfo = reqBody.member;
+            memberInfo = {provider:reqBody.provider,user_id:reqBody.user_id};
         try{
             Group.deleteMember(groupId,provider,user_id,memberInfo).then(function(){
                 res.send({result:'success',operate:'deletemember'});
@@ -259,7 +259,7 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
 /**
  * 授权为副团长
  * rest服务相对地址："/users/group/1/authorize"，其中1为团Id，http方法为:“PUT”
- * 请求参数，比如：{member:{provider:'qq',user_id:1}}
+ * 请求参数，比如：{provider:'qq',user_id:1}
  */
 router.put('/group/:id/authorize',function(req, res, next) {
     var user = req.user;
@@ -268,7 +268,7 @@ router.put('/group/:id/authorize',function(req, res, next) {
         var user_id = user.id || user.userID;
         var reqBody = req.body;
         var groupId = req.params.id,
-            memberInfo = reqBody.member;
+            memberInfo = {provider:reqBody.provider,user_id:reqBody.user_id};
         try{
             Group.authorize(groupId,provider,user_id,memberInfo).then(function(){
                 res.send({result:'success',operate:'authorize'});
@@ -288,7 +288,7 @@ router.put('/group/:id/authorize',function(req, res, next) {
 /**
  * 取消副团长的授权
  * rest服务相对地址："/users/group/1/deauthorize"，其中1为团Id，http方法为:“PUT”
- * 请求参数，比如：{groupId:1,member:{provider:'qq',user_id:1}}
+ * 请求参数，比如：{provider:'qq',user_id:1}
  */
 router.put('/group/:id/deauthorize',function(req, res, next) {
     var user = req.user;
@@ -297,7 +297,7 @@ router.put('/group/:id/deauthorize',function(req, res, next) {
         var user_id = user.id || user.userID;
         var reqBody = req.body;
         var groupId = req.params.id,
-            memberInfo = reqBody.member;
+            memberInfo = {provider:reqBody.provider,user_id:reqBody.user_id};
         try{
             Group.deauthorize(groupId,provider,user_id,memberInfo).then(function(){
                 res.send({result:'success',operate:'deauthorize'});
@@ -317,7 +317,7 @@ router.put('/group/:id/deauthorize',function(req, res, next) {
 /**
  * 邀请用户加入团
  * rest服务相对地址："/users/group/1/invite"，其中1为团Id，http方法为:“POST”
- * 请求参数，比如：{userInfo:{provider:'qq',user_id:1}}
+ * 请求参数，比如：{provider:'qq',user_id:1}
  */
 router.post('/group/:id/invite',function(req, res, next) {
     var user = req.user;
@@ -326,7 +326,7 @@ router.post('/group/:id/invite',function(req, res, next) {
         var user_id = user.id || user.userID;
         var reqBody = req.body;
         var groupId = req.params.id,
-            userInfo = reqBody.userInfo,
+            userInfo = {provider:reqBody.provider,user_id:reqBody.user_id},
             message = {
                 id:Util.getGuid(),
                 type:'invite',

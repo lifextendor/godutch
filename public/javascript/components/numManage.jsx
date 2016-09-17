@@ -57,7 +57,7 @@ class numManage extends React.Component{
             url: "/users/group/"+this.state.id+"/deletemember",
             dataType: 'json',
             type: 'POST',
-            data:'{member:{provider:'+provider+',user_id:'+user_id+'}}',
+            data:{provider:provider,user_id:user_id},
             success: function(data) {
                 debugger
                 this.componentDidMount();
