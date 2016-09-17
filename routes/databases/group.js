@@ -69,7 +69,9 @@ function findGroupById(groupId,provider,userId){
 						for(var j= 0,len=value.length;j<len;j++){
 							var member=value[j];
 							if(member.state==='normal'){
-								members.push({'grant':member.grant,
+								members.push({
+									'user_name':member.user_name,
+									'grant':member.grant,
 									'money':member.money,
 									'provider':member.user.provider,
 									'userId':member.user['user_id']
