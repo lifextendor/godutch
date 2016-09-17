@@ -70,7 +70,7 @@ function findGroupById(groupId,provider,userId){
 							var member=value[j];
 							if(member.state==='normal'){
 								members.push({
-									'user_name':member.user_name,
+									'user_name':member.user.user_name,
 									'grant':member.grant,
 									'money':member.money,
 									'provider':member.user.provider,
