@@ -3,7 +3,6 @@ import React from 'react';
 import { Card, Collapse, Button, Icon, Affix,  Popconfirm, message } from 'antd';
 import {Link} from 'react-router';
 const Panel = Collapse.Panel;
-var username=window.userName;
 
 class numManage extends React.Component{ 
     constructor(props) {
@@ -34,38 +33,30 @@ class numManage extends React.Component{
             dataType: 'json',
             type: 'get',
             async: true,
-            success: function(data) {
-                debugger
+            success: function(data) {                
                 if (data.result.grant==='CAPTAIN') {
                     this.setState({numList:data.result.members,power:'ok'});
                 }else{
                     this.setState({numList:data.result.members,power:'hidden'});
-                }
-                         
+                }                         
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
             }.bind(this)
         });
     }
-    componentWillUnmount() {
-        // this.serverRequest.abort();
-    }
-    expelGroupYes(provider,user_id) {
-        debugger
+    expelGroupYes(provider,user_id) {        
         $.ajax({            
             url: "/users/group/"+this.state.id+"/deletemember",
             dataType: 'json',
             type: 'POST',
             data:{provider:provider,user_id:user_id},
-            success: function(data) {
-                debugger
+            success: function(data) {                
                 this.componentDidMount();
                 this.setState({numList:this.state.numList});
                 this.succesMessage();
             }.bind(this),
-            error: function(xhr, status, err) {
-                debugger
+            error: function(xhr, status, err) {                
                 console.log(this.props.url, status, err.toString());
                 this.errorMessage();
             }.bind(this)
@@ -76,9 +67,8 @@ class numManage extends React.Component{
             url: "/users/group/"+id+"/authorize",
             dataType: 'json',
             type: 'POST',
-           data:'{member:{provider:'+provider+',user_id:'+user_id+'}}',
-            success: function(data) {
-                debugger
+            data:{provider:provider,user_id:user_id},
+            success: function(data) {                
                 this.componentDidMount();
                 this.setState({numList:this.state.numList});
                 this.succesMessage();

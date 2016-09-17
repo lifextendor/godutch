@@ -10,6 +10,7 @@ import teamManage from './components/teamManage';
 import invitation from './components/invitation';
 import numManage from './components/numManage';
 import billManage from './components/billManage';
+import account from './components/account';
 import feedback from './components/feedback';
 import './stylesheets/index.scss'
 
@@ -35,10 +36,11 @@ ReactDOM.render((
         <Route path="/" component={App}>
             <IndexRoute path="" component={navigation} />
             <Route path="createTeam" component={createTeam} />
-            <Route path="teamManage/:username" component={teamManage} /> 
+            <Route path="teamManage" component={teamManage} /> 
             <Route path="numManage/:id" component={numManage} />
             <Route path="invitation/:id" component={invitation} />
-            <Route path="billManage/:username" component={billManage} />
+            <Route path="account/:id" component={account} />
+            <Route path="billManage/:id" component={billManage} />
             <Route path="feedback" component={feedback} />
         </Route>
     </Router>

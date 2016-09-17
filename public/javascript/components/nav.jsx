@@ -13,23 +13,6 @@ class nav extends React.Component{
         super(props);
         this.state={username:username,rootPath:rootPath};
     }   
-  loadCommentsFromServer() {
-        // $.ajax({
-        //     url: this.props.url,
-        //     dataType: 'json',
-        //     cache: false,
-        //     success: function(data) {
-        //         this.setState({data: data});
-        //     }.bind(this),
-        //     error: function(xhr, status, err) {
-        //         console.error(this.props.url, status, err.toString());
-        //     }.bind(this)
-        // });
-    }
-    //在初始化渲染执行之后立刻调用一次，仅客户端有效（服务器端不会调用）。
-    componentDidMount(){
-        this.loadCommentsFromServer();
-    }
     render() { 
       const { style, size, placeholder } = this.props;
       return  <header>
@@ -44,8 +27,8 @@ class nav extends React.Component{
                     <div className="hidden-xs col-lg-7 col-md-6 col-sm-6">
                       <ul className="nav navbar-nav">
                         <li><Link to="createTeam">建团</Link></li>                      
-                        <li><Link to={'teamManage/'+ this.state.username}>团队</Link></li>
-                        <li><Link to={'billManage/'+ this.state.username}>账单</Link></li>
+                        <li><Link to="teamManage">团队</Link></li>
+                        <li><Link to="billManage">账单</Link></li>
                         <li><Link to={'billManage/'+ this.state.username}><Badge dot>消息</Badge></Link></li>                   
                       </ul>  
                     </div>                                 
@@ -81,8 +64,8 @@ class nav extends React.Component{
                     <ul className="nav navbar-nav">
                         <li><Badge dot><Icon type="aliwangwang-o" /></Badge><Link to={'billManage/'+ this.state.username}>消息</Link></li>   
                         <li><Icon type="plus-square" /><Link to="createTeam">建团</Link></li>                      
-                        <li><Icon type="team" /><Link to={'teamManage/'+ this.state.username}>团队</Link></li>
-                        <li><Icon type="book" /><Link to={'billManage/'+ this.state.username}>账单</Link></li>                                    
+                        <li><Icon type="team" /><Link to="teamManage">团队</Link></li>
+                        <li><Icon type="book" /><Link to="billManage">账单</Link></li>                                    
                       </ul>
                   </div>
                 </nav>
