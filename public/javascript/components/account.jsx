@@ -1,6 +1,6 @@
 //账单
 import React from 'react';
-import { Form, Input, Card, Table, Button } from 'antd';
+import { Form, Input, Card, Table, Button, DatePicker } from 'antd';
 const FormItem = Form.Item;
 // import $ from 'jquery';
 var username=window.userName;  
@@ -119,10 +119,18 @@ class account extends React.Component{
                             <div style={{ marginBottom: 16 }}>
                                 <Form horizontal form={this.props.form}>
                                 <FormItem
+                                  wrapperCol={{ span: 12, offset: 7 }}
                                   {...formItemLayout}
                                   label="输入金额"                              
                                 >
                                   <Input {...moneyProps} placeholder="金额" name="money"/>
+                                </FormItem>
+                                <FormItem 
+                                  wrapperCol={{ span: 12, offset: 7 }}
+                                  {...formItemLayout}
+                                  label="选择时间" 
+                                >
+                                  <DatePicker />
                                 </FormItem>
                                 <FormItem wrapperCol={{ span: 12, offset: 7 }}>
                                   <Button disabled={!hasSelected} type="primary" onClick={this.start.bind(this)}>花费</Button>
