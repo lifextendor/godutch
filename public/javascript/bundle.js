@@ -7713,15 +7713,19 @@
 
 	var _billManage2 = _interopRequireDefault(_billManage);
 
-	var _feedback = __webpack_require__(648);
+	var _account = __webpack_require__(648);
+
+	var _account2 = _interopRequireDefault(_account);
+
+	var _feedback = __webpack_require__(649);
 
 	var _feedback2 = _interopRequireDefault(_feedback);
 
-	__webpack_require__(649);
+	__webpack_require__(650);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// 引入React-Router模块
+	// 引入单个页面（包括嵌套的子页面）
 	var App = function (_React$Component) {
 	  (0, _inherits3.default)(App, _React$Component);
 
@@ -7761,7 +7765,7 @@
 	}(_react2.default.Component);
 	// 配置路由
 
-	// 引入单个页面（包括嵌套的子页面）
+	// 引入React-Router模块
 
 
 	_reactDom2.default.render(_react2.default.createElement(
@@ -7775,6 +7779,7 @@
 	    _react2.default.createElement(_reactRouter.Route, { path: 'teamManage', component: _teamManage2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'numManage/:id', component: _numManage2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'invitation/:id', component: _invitation2.default }),
+	    _react2.default.createElement(_reactRouter.Route, { path: 'account/:id', component: _account2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'billManage/:id', component: _billManage2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'feedback', component: _feedback2.default })
 	  )
@@ -50838,7 +50843,6 @@
 	                        var date = new Date(data.result[i].createTime);
 	                        data.result[i].createTime = date.getFullYear() + "年" + date.getMonth() + "月" + date.getDate() + "日";
 	                    }
-	                    debugger;
 	                    this.setState({ teamlist: data.result });
 	                }.bind(this),
 	                error: function (xhr, status, err) {
@@ -50958,15 +50962,16 @@
 	                                                    _button2.default,
 	                                                    { className: 'tool-button', type: 'primary' },
 	                                                    '解散团'
-	                                                ),
+	                                                )
+	                                            ),
+	                                            ' ',
+	                                            _react2.default.createElement(
+	                                                _button2.default,
+	                                                { className: 'tool-button', type: 'primary' },
 	                                                _react2.default.createElement(
-	                                                    _button2.default,
-	                                                    { className: 'tool-button', type: 'primary' },
-	                                                    _react2.default.createElement(
-	                                                        _reactRouter.Link,
-	                                                        { to: 'billManage/' + list.id },
-	                                                        '记账'
-	                                                    )
+	                                                    _reactRouter.Link,
+	                                                    { to: 'account/' + list.id },
+	                                                    '记账'
 	                                                )
 	                                            )
 	                                        ),
@@ -68882,6 +68887,254 @@
 
 	var _card2 = _interopRequireDefault(_card);
 
+	var _css2 = __webpack_require__(587);
+
+	var _table = __webpack_require__(605);
+
+	var _table2 = _interopRequireDefault(_table);
+
+	var _css3 = __webpack_require__(430);
+
+	var _button = __webpack_require__(433);
+
+	var _button2 = _interopRequireDefault(_button);
+
+	var _css4 = __webpack_require__(439);
+
+	var _input = __webpack_require__(501);
+
+	var _input2 = _interopRequireDefault(_input);
+
+	var _extends2 = __webpack_require__(446);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _getPrototypeOf = __webpack_require__(76);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(102);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(103);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(107);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(154);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _css5 = __webpack_require__(512);
+
+	var _form = __webpack_require__(518);
+
+	var _form2 = _interopRequireDefault(_form);
+
+	var _react = __webpack_require__(162);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var FormItem = _form2.default.Item;
+	// import $ from 'jquery';
+	//账单
+	var username = window.userName;
+
+	var columns = [{ title: '姓名', dataIndex: 'name' }, { title: '余额', dataIndex: 'balance' }, { title: '备注', dataIndex: 'remarks' }];
+
+	var account = function (_React$Component) {
+	    (0, _inherits3.default)(account, _React$Component);
+
+	    function account(props) {
+	        (0, _classCallCheck3.default)(this, account);
+
+	        var _this = (0, _possibleConstructorReturn3.default)(this, (account.__proto__ || (0, _getPrototypeOf2.default)(account)).call(this, props));
+
+	        _this.state = { id: _this.props.params.id, selectedRowKeys: [], teamlist: [], data: [], moneyRecord: [] };
+	        return _this;
+	    }
+
+	    (0, _createClass3.default)(account, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            $.ajax({
+	                url: "/users/group/" + this.state.id,
+	                dataType: 'json',
+	                type: 'get',
+	                async: true,
+	                success: function (data) {
+	                    debugger;
+	                    var moneydata = [];
+	                    for (var i = data.result.members.length - 1; i >= 0; i--) {
+	                        moneydata.push({
+	                            key: data.result.members[i].userId,
+	                            name: data.result.members[i].user_name,
+	                            balance: data.result.members[i].money,
+	                            remarks: '备注'
+	                        });
+	                    }
+	                    this.setState({ teamlist: data.result.members, data: moneydata });
+	                }.bind(this),
+	                error: function (xhr, status, err) {
+	                    console.error(this.props.url, status, err.toString());
+	                }.bind(this)
+	            });
+	        }
+	    }, {
+	        key: 'handleChange',
+	        value: function handleChange(name) {
+	            console.log('selected ' + name);
+	        }
+	    }, {
+	        key: 'start',
+	        value: function start(e) {
+	            var _this2 = this;
+
+	            this.props.form.validateFields(function (errors, values) {
+	                console.log(values);
+	                if (!!errors) {
+	                    _this2.errorMessage();
+	                    console.log('Errors in form!!!');
+	                    return;
+	                }
+	                debugger;
+	                $.ajax({
+	                    url: "/users/group/" + _this2.state.id + "/updatemoney",
+	                    dataType: 'json',
+	                    type: 'put',
+	                    async: true,
+	                    data: { total: values['money'], members: [{ provider: 'qq', user_id: 1, money: 10 }], dataTime: 121321313 },
+	                    success: function (data) {
+	                        var moneydata = [];
+	                        for (var i = data.result.members.length - 1; i >= 0; i--) {
+	                            moneydata.push({
+	                                key: i,
+	                                name: data.result.members[i].user_name,
+	                                balance: data.result.members[i].money,
+	                                remarks: '备注'
+	                            });
+	                        }
+	                        this.setState({ data: moneydata });
+	                    }.bind(_this2),
+	                    error: function (xhr, status, err) {
+	                        console.error(this.props.url, status, err.toString());
+	                    }.bind(_this2)
+	                });
+	                _this2.setState({ selectedRowKeys: [] });
+	            });
+	        }
+	    }, {
+	        key: 'onSelectChange',
+	        value: function onSelectChange(selectedRowKeys) {
+	            debugger;
+	            var moneyRecord = [];
+	            console.log('selectedRowKeys changed: ', selectedRowKeys);
+	            for (var i = selectedRowKeys.length - 1; i >= 0; i--) {
+	                for (var j = this.state.teamlist.length - 1; j >= 0; j--) {
+	                    if (this.state.teamlist[j].userId === selectedRowKeys[i]) {
+	                        moneyRecord.push({ id: selectedRowKeys[i], provider: this.state.teamlist[j].provider });
+	                    }
+	                }
+	            }
+	            this.state = { moneyRecord: moneyRecord };
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var getFieldProps = this.props.form.getFieldProps;
+
+	            var moneyProps = getFieldProps('money', {
+	                rules: [{ required: true, min: 2, max: 8, message: '用户名在2至8个字符之间' }]
+	            });
+	            var formItemLayout = {
+	                labelCol: { span: 7 },
+	                wrapperCol: { span: 12 }
+	            };
+	            var selectedRowKeys = this.state.selectedRowKeys;
+
+	            var rowSelection = {
+	                selectedRowKeys: selectedRowKeys,
+	                onChange: this.onSelectChange.bind(this)
+	            };
+	            var hasSelected = selectedRowKeys.length > 0;
+	            return _react2.default.createElement(
+	                'div',
+	                { style: { background: '#ECECEC' } },
+	                _react2.default.createElement(
+	                    _card2.default,
+	                    { className: 'main-panel', title: '账单管理', bordered: false },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'col-md-offset-2 col-sm-offset-1 col-md-8 col-sm-10' },
+	                        _react2.default.createElement(
+	                            'div',
+	                            { style: { marginBottom: 16 } },
+	                            _react2.default.createElement(
+	                                _form2.default,
+	                                { horizontal: true, form: this.props.form },
+	                                _react2.default.createElement(
+	                                    FormItem,
+	                                    (0, _extends3.default)({}, formItemLayout, {
+	                                        label: '输入金额'
+	                                    }),
+	                                    _react2.default.createElement(_input2.default, (0, _extends3.default)({}, moneyProps, { placeholder: '金额', name: 'money' }))
+	                                ),
+	                                _react2.default.createElement(
+	                                    FormItem,
+	                                    { wrapperCol: { span: 12, offset: 7 } },
+	                                    _react2.default.createElement(
+	                                        _button2.default,
+	                                        { disabled: !hasSelected, type: 'primary', onClick: this.start.bind(this) },
+	                                        '花费'
+	                                    ),
+	                                    '   ',
+	                                    _react2.default.createElement(
+	                                        _button2.default,
+	                                        { disabled: !hasSelected, type: 'primary', onClick: this.start.bind(this) },
+	                                        '充值'
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        { style: { marginLeft: 8 } },
+	                                        hasSelected ? '选择了 ' + selectedRowKeys.length + ' 个团员' : ''
+	                                    )
+	                                )
+	                            )
+	                        ),
+	                        _react2.default.createElement(_table2.default, { rowSelection: rowSelection, columns: columns, dataSource: this.state.data })
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	    return account;
+	}(_react2.default.Component);
+
+	account = _form2.default.create()(account);
+	exports.default = account;
+
+/***/ },
+/* 649 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _css = __webpack_require__(425);
+
+	var _card = __webpack_require__(428);
+
+	var _card2 = _interopRequireDefault(_card);
+
 	var _css2 = __webpack_require__(430);
 
 	var _button = __webpack_require__(433);
@@ -69050,7 +69303,7 @@
 	exports.default = feedback;
 
 /***/ },
-/* 649 */
+/* 650 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
