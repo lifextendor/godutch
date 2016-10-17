@@ -8107,6 +8107,18 @@ form .ant-cascader-picker {
 :root .ant-collapse > .ant-collapse-item > .ant-collapse-header[aria-expanded="true"] .arrow {
   font-size: 12px;
 }
+.search-list:hover {
+  background-color: #57c5f7;
+  color: white; }
+
+.search-list {
+  background-color: #f8f8f8;
+  font-size: 14px;
+  border-left: 1px solid #C1C1C1;
+  border-right: 1px solid #C1C1C1;
+  border-bottom: 1px solid #C1C1C1;
+  padding: 6px;
+  border-radius: 4px; }
 .ant-table {
   font-size: 12px;
   color: #666;

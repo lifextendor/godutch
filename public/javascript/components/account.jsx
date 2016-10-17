@@ -10,7 +10,7 @@ var username=window.userName;
 class account extends React.Component{ 
     constructor(props) {
         super(props);
-        this.state = {id:this.props.params.id, teamlist:[], data:[], moneyRecord:[], knum:[]};     
+        this.state = {id:this.props.params.id, teamlist:[], data:[], moneyRecord:[]};     
     }
     componentDidMount(){
         $.ajax({
@@ -30,8 +30,6 @@ class account extends React.Component{
                     remarks: '备注',
                     num:{"n":"1","k":data.result.members[i].userId},
                   });
-                    debugger
-                    knum[data.result.members[i].userId]="1";
                 }
                 this.setState({teamlist:data.result.members,data:moneydata,knum:knum});         
             }.bind(this),
@@ -51,14 +49,29 @@ class account extends React.Component{
                 this.errorMessage();
                 console.log('Errors in form!!!');
                 return;
-            }            
-            console.log(this.state.selectedRows);
+            }  
+            if (this.state.selectedRows<=0) {
+                return;
+            }          
+            var ns = 0;
+            for (var i = this.state.selectedRows.length - 1; i >= 0; i--) {
+                ns+=parseInt(this.state.selectedRows[i].num.n);
+            }
+            var average = values.money/ns; 
+            var members = [];
+            for (var i = this.state.selectedRows.length - 1; i >= 0; i--) {
+                           var member={};
+                           member.provider=this.state.selectedRows[i].provider;
+                           member.user_id=this.state.selectedRows[i].key;
+                           member.money=average*this.state.selectedRows[i].num.n;
+                           members.push(member);
+                       }           
             $.ajax({
             url: "/users/group/"+this.state.id+"/updatemoney",
             dataType: 'json',
             type: 'put',
             async: true,
-            data: {total:values['money'],members:[{provider:'qq',user_id:1,money:10}],dataTime:121321313},
+            data: {total:values['money'],members:members,dataTime:values.time},
             success: function(data) {
                 debugger
                 const moneydata = [];
@@ -79,10 +92,14 @@ class account extends React.Component{
         });        
     }       
     inputChange(e){
-        debugger
-        var onum=this.state.knum;
-        onum[e.target.id]=e.target.value;
-        this.setState({knum:onum});
+        var newdata=this.state.data;
+        for (var i = this.state.data.length - 1; i >= 0; i--) {
+            if(e.target.id==newdata[i].key){
+                newdata[i].num.k=e.target.id;
+                newdata[i].num.n=e.target.value;
+            }
+        }
+        this.setState({data:newdata});
     }
     render(){
         var that=this;
@@ -91,6 +108,11 @@ class account extends React.Component{
           rules: [
             { required: true, message: '金额必须是数字' },
           ],
+        });
+        const timeProps = getFieldProps('time', {
+          // rules: [
+          //   { required: true, message: '必须选时间' },
+          // ],
         });
         const rowSelection = {
             onChange(selectedRowKeys, selectedRows) {              
@@ -127,7 +149,7 @@ class account extends React.Component{
                                   required
                                   label="选择时间" 
                                 >
-                                  <DatePicker />
+                                  <DatePicker {...timeProps} name="time"/>
                                 </FormItem>
                                 <FormItem wrapperCol={{ span: 12, offset: 7 }}>
                                   <Button type="primary" onClick={this.start.bind(this)}>花费</Button>
