@@ -3,7 +3,6 @@ import React from 'react';
 import { Card, Collapse, Button, message, Popconfirm, notification, Modal } from 'antd';
 import {Link} from 'react-router';
 import $ from 'jquery';
-// import '../stylesheets/teamManage.scss'
 const Panel = Collapse.Panel;
 notification.config({
       top: 60,
