@@ -50786,7 +50786,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// import '../stylesheets/teamManage.scss'
 	var Panel = _collapse2.default.Panel; //团队管理
 
 	_notification2.default.config({
@@ -69063,7 +69062,7 @@
 
 	        var _this = (0, _possibleConstructorReturn3.default)(this, (account.__proto__ || (0, _getPrototypeOf2.default)(account)).call(this, props));
 
-	        _this.state = { id: _this.props.params.id, teamlist: [], data: [], moneyRecord: [], knum: [] };
+	        _this.state = { id: _this.props.params.id, teamlist: [], data: [], moneyRecord: [] };
 	        return _this;
 	    }
 
@@ -69087,8 +69086,6 @@
 	                            remarks: '备注',
 	                            num: { "n": "1", "k": data.result.members[i].userId }
 	                        });
-	                        debugger;
-	                        knum[data.result.members[i].userId] = "1";
 	                    }
 	                    this.setState({ teamlist: data.result.members, data: moneydata, knum: knum });
 	                }.bind(this),
@@ -69115,13 +69112,28 @@
 	                    console.log('Errors in form!!!');
 	                    return;
 	                }
-	                console.log(_this2.state.selectedRows);
+	                if (_this2.state.selectedRows <= 0) {
+	                    return;
+	                }
+	                var ns = 0;
+	                for (var i = _this2.state.selectedRows.length - 1; i >= 0; i--) {
+	                    ns += parseInt(_this2.state.selectedRows[i].num.n);
+	                }
+	                var average = values.money / ns;
+	                var members = [];
+	                for (var i = _this2.state.selectedRows.length - 1; i >= 0; i--) {
+	                    var member = {};
+	                    member.provider = _this2.state.selectedRows[i].provider;
+	                    member.user_id = _this2.state.selectedRows[i].key;
+	                    member.money = average * _this2.state.selectedRows[i].num.n;
+	                    members.push(member);
+	                }
 	                $.ajax({
 	                    url: "/users/group/" + _this2.state.id + "/updatemoney",
 	                    dataType: 'json',
 	                    type: 'put',
 	                    async: true,
-	                    data: { total: values['money'], members: [{ provider: 'qq', user_id: 1, money: 10 }], dataTime: 121321313 },
+	                    data: { total: values['money'], members: members, dataTime: values.time },
 	                    success: function (data) {
 	                        debugger;
 	                        var moneydata = [];
@@ -69144,10 +69156,14 @@
 	    }, {
 	        key: 'inputChange',
 	        value: function inputChange(e) {
-	            debugger;
-	            var onum = this.state.knum;
-	            onum[e.target.id] = e.target.value;
-	            this.setState({ knum: onum });
+	            var newdata = this.state.data;
+	            for (var i = this.state.data.length - 1; i >= 0; i--) {
+	                if (e.target.id == newdata[i].key) {
+	                    newdata[i].num.k = e.target.id;
+	                    newdata[i].num.n = e.target.value;
+	                }
+	            }
+	            this.setState({ data: newdata });
 	        }
 	    }, {
 	        key: 'render',
@@ -69159,6 +69175,11 @@
 
 	            var moneyProps = getFieldProps('money', {
 	                rules: [{ required: true, message: '金额必须是数字' }]
+	            });
+	            var timeProps = getFieldProps('time', {
+	                // rules: [
+	                //   { required: true, message: '必须选时间' },
+	                // ],
 	            });
 	            var rowSelection = {
 	                onChange: function onChange(selectedRowKeys, selectedRows) {
@@ -69205,7 +69226,7 @@
 	                                        required: true,
 	                                        label: '选择时间'
 	                                    },
-	                                    _react2.default.createElement(_datePicker2.default, null)
+	                                    _react2.default.createElement(_datePicker2.default, (0, _extends3.default)({}, timeProps, { name: 'time' }))
 	                                ),
 	                                _react2.default.createElement(
 	                                    FormItem,
