@@ -1,5 +1,6 @@
 //邀请团员
 import React from 'react';
+import SearchInput from './searchInput';
 import {Card, Form, Input, Select, Button, Checkbox, notification } from 'antd';
 const FormItem = Form.Item;
 notification.config({
@@ -29,17 +30,11 @@ class invitation extends React.Component{
     }
     handleSubmit(e) {
         e.preventDefault();
-        this.props.form.validateFields((errors, values) => {
-          if (!!errors) {
-            this.errorMessage();
-            console.log('Errors in form!!!');
-            return;
-          }
-          $.ajax({
-            url: "/users/creategroup",
+        $.ajax({
+            url: "users/group/"+ this.props.params.id +"/invite",
             dataType: 'json',
-            type: 'put',
-            data: values,
+            type: 'post',
+            data: {provider:this.refs.searchInput.state.provider,user_id:this.refs.searchInput.state.user_id},
             success: function(data) {
                 console.log("提交成功");
                 this.succesMessage();
@@ -48,28 +43,9 @@ class invitation extends React.Component{
                 console.log(this.props.url, status, err.toString());
                 this.errorMessage();
             }.bind(this)
-          });
-        });        
+        });
     }
-    render() {  
-        const { getFieldProps, getFieldError, isFieldValidating } = this.props.form;
-        const nameProps = getFieldProps('gname', {
-          rules: [
-            { required: true, min: 2, max: 4, message: '用户名至少为 2 个字符' }
-          ],
-        });
-        const textareaProps = getFieldProps('description', {
-          rules: [
-            { required: true, message: '真的不打算写点什么吗？' },
-          ],
-        });
-
-        const texttypeProps = getFieldProps('type', {
-          rules: [
-            { required: true},
-          ],
-        });
-
+    render() {
         const formItemLayout = {
           labelCol: { span: 7 },
           wrapperCol: { span: 12 },
@@ -82,10 +58,10 @@ class invitation extends React.Component{
                               {...formItemLayout}
                               label="输入用户账号"                              
                             >
-                              <Input {...nameProps} placeholder="用户账号" name="gname"/>
+                              <SearchInput ref='searchInput' url='/users/findusers/' size='large' placeholder="用户账号" name="gname"/>
                             </FormItem>
                             <FormItem wrapperCol={{ span: 12, offset: 7 }}>
-                              <Button type="primary" onClick={this.handleSubmit.bind(this)}>确定</Button>
+                              <Button type="primary" onClick={this.handleSubmit.bind(this)}>添加</Button>
                               &nbsp;&nbsp;&nbsp;
                               <Button type="ghost" onClick={this.handleReset.bind(this)}>重置</Button>
                             </FormItem>
