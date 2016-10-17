@@ -68952,7 +68952,7 @@
 	//账单
 	var username = window.userName;
 
-	var columns = [{ title: '姓名', dataIndex: 'name' }, { title: '余额', dataIndex: 'balance' }, {
+	var columns = [{ title: '姓名', dataIndex: 'name' }, { title: '类型', dataIndex: 'provider' }, { title: '余额', dataIndex: 'balance' }, {
 	    title: '人数',
 	    dataIndex: 'num',
 	    width: 70,
@@ -68988,6 +68988,7 @@
 	                        moneydata.push({
 	                            key: data.result.members[i].userId,
 	                            name: data.result.members[i].user_name,
+	                            provider: data.result.members[i].provider,
 	                            balance: data.result.members[i].money,
 	                            remarks: '备注'
 	                        });
@@ -69017,6 +69018,7 @@
 	                    return;
 	                }
 	                debugger;
+	                console.log(_this2.state.selectedRows);
 	                $.ajax({
 	                    url: "/users/group/" + _this2.state.id + "/updatemoney",
 	                    dataType: 'json',
@@ -69039,41 +69041,54 @@
 	                        console.error(this.props.url, status, err.toString());
 	                    }.bind(_this2)
 	                });
-	                _this2.setState({ selectedRowKeys: [] });
+	                // this.setState({selectedRowKeys: []});                
 	            });
 	        }
-	    }, {
-	        key: 'onSelectChange',
-	        value: function onSelectChange(selectedRowKeys) {
-	            debugger;
-	            var moneyRecord = [];
-	            console.log('selectedRowKeys changed: ', selectedRowKeys);
-	            for (var i = selectedRowKeys.length - 1; i >= 0; i--) {
-	                for (var j = this.state.teamlist.length - 1; j >= 0; j--) {
-	                    if (this.state.teamlist[j].userId === selectedRowKeys[i]) {
-	                        moneyRecord.push({ id: selectedRowKeys[i], provider: this.state.teamlist[j].provider });
-	                    }
-	                }
-	            }
-	            this.state = { moneyRecord: moneyRecord };
-	        }
+	        // onSelectChange(e) {
+	        //     debugger
+	        //     var moneyRecord=[];
+	        //     console.log('selectedRowKeys changed: ', e);
+	        //     for (var i = selectedRowKeys.length - 1; i >= 0; i--) {
+	        //             for (var j = this.state.teamlist.length - 1; j >= 0; j--) {
+	        //                     if (this.state.teamlist[j].userId===selectedRowKeys[i]) {
+	        //                         moneyRecord.push({id:selectedRowKeys[i],provider:this.state.teamlist[j].provider})    
+	        //                     }
+	        //                 }                       
+	        //            }       
+	        //     this.state={moneyRecord:moneyRecord};
+	        // }
+
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var that = this;
 	            var getFieldProps = this.props.form.getFieldProps;
 
 	            var moneyProps = getFieldProps('money', {
 	                rules: [{ required: true, min: 2, max: 8, message: '用户名在2至8个字符之间' }]
 	            });
-	            var formItemLayout = {
-	                labelCol: { span: 7 },
-	                wrapperCol: { span: 12 }
-	            };
-	            var selectedRowKeys = this.state.selectedRowKeys;
+	            var _state = this.state;
+	            var selectedRowKeys = _state.selectedRowKeys;
+	            var selectedRows = _state.selectedRows;
+	            // const rowSelection = {
+	            //     selectedRowKeys,
+	            //     selectedRows,
+	            //     onChange: this.onSelectChange.bind(this,selectedRows),
+	            // };
 
 	            var rowSelection = {
-	                selectedRowKeys: selectedRowKeys,
-	                onChange: this.onSelectChange.bind(this)
+	                onChange: function onChange(selectedRowKeys, selectedRows) {
+	                    console.log('selectedRowKeys: ' + selectedRowKeys, 'selectedRows: ', selectedRows);
+	                    // var moneyRecord=[];
+	                    // debugger
+	                    // for (var i = selectedRows.length - 1; i >= 0; i--) {
+	                    //     moneyRecord.push({id:selectedRows[i].key,provider:selectedRows[i].provider});
+	                    // }                
+	                    // this.state={moneyRecord:moneyRecord};
+	                    debugger;
+	                    that.state = { selectedRowKeys: selectedRowKeys, selectedRows: selectedRows };
+	                    that.setState({ selectedRowKeys: selectedRowKeys });
+	                }
 	            };
 	            var hasSelected = selectedRowKeys.length > 0;
 	            return _react2.default.createElement(
@@ -69093,16 +69108,21 @@
 	                                { horizontal: true, form: this.props.form },
 	                                _react2.default.createElement(
 	                                    FormItem,
-	                                    (0, _extends3.default)({
-	                                        wrapperCol: { span: 12, offset: 7 }
-	                                    }, formItemLayout, {
+	                                    {
+	                                        wrapperCol: { span: 8 },
+	                                        labelCol: { span: 7 },
 	                                        label: '输入金额'
-	                                    }),
+	                                    },
 	                                    _react2.default.createElement(_input2.default, (0, _extends3.default)({}, moneyProps, { placeholder: '金额', name: 'money' }))
 	                                ),
 	                                _react2.default.createElement(
 	                                    FormItem,
-	                                    { wrapperCol: { span: 12, offset: 7 } },
+	                                    {
+	                                        wrapperCol: { span: 12 },
+	                                        labelCol: { span: 7 },
+	                                        required: true,
+	                                        label: '选择时间'
+	                                    },
 	                                    _react2.default.createElement(_datePicker2.default, null)
 	                                ),
 	                                _react2.default.createElement(
