@@ -64,7 +64,7 @@ class account extends React.Component{
                            member.provider=this.state.selectedRows[i].provider;
                            member.user_id=this.state.selectedRows[i].key;
                            member.money=average*this.state.selectedRows[i].num.n;
-                           var json="{'provider':"+member.provider+"'user_id:'"+member.user_id+"'money:'"+member.money+"}";
+                           var json='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+member.money+'"}';
                            members.push(json);
                        }           
             $.ajax({
