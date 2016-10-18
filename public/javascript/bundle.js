@@ -69126,7 +69126,8 @@
 	                    member.provider = _this2.state.selectedRows[i].provider;
 	                    member.user_id = _this2.state.selectedRows[i].key;
 	                    member.money = average * _this2.state.selectedRows[i].num.n;
-	                    members.push(member);
+	                    var json = '{"provider":"' + member.provider + '","user_id":"' + member.user_id + '","money":"' + member.money + '"}';
+	                    members.push(json);
 	                }
 	                $.ajax({
 	                    url: "/users/group/" + _this2.state.id + "/updatemoney",

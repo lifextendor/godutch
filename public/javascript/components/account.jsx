@@ -41,7 +41,7 @@ class account extends React.Component{
     handleChange(name) {
       console.log(`selected ${name}`);      
     }
-    start(e) {        
+    start(e) {      
         this.props.form.validateFields((errors, values) => {
             debugger
             console.log(values);
@@ -58,15 +58,20 @@ class account extends React.Component{
                 ns+=parseInt(this.state.selectedRows[i].num.n);
             }
             var average = values.money/ns; 
-            var members = [];
+            if (e.target.innerText=="花 费") {
+                average=-average;
+            }            
+            var members = "[";
             for (var i = this.state.selectedRows.length - 1; i >= 0; i--) {
                            var member={};
                            member.provider=this.state.selectedRows[i].provider;
                            member.user_id=this.state.selectedRows[i].key;
-                           member.money=average*this.state.selectedRows[i].num.n;
+                           member.money=average*this.state.selectedRows[i].num.n+parseInt(this.state.selectedRows[i].balance);
                            var json='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+member.money+'"}';
-                           members.push(json);
-                       }           
+                           members+=json;
+                           if (i>0) {members+=","};
+                       }   
+            members+="]";        
             $.ajax({
             url: "/users/group/"+this.state.id+"/updatemoney",
             dataType: 'json',
