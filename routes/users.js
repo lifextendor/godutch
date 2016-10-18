@@ -16,8 +16,8 @@ router.get('/findusers/:userNameOrUserId', function (req, res, next) {
     if(user){
         var userNameOrUserId = req.params.userNameOrUserId;
         try{
-            Users.findUsers(userNameOrUserId).then(function(){
-                res.send({result:'success',operate:'findUser'});
+            Users.findUsers(userNameOrUserId).then(function(data){
+                res.send({result:data,operate:'findUser'});
             }).catch(function(){
                 res.sendStatus(500);
                 res.send({result:'failure',operate:'findUser'});
@@ -225,12 +225,11 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
         var user_id = user.id || user.userID;
         var reqBody = req.body;
         var groupId = req.params.id,
-            memberInfos = reqBody.memberInfos,
-            totalMoney = memberInfos.total,
-            members = memberInfos.members,
-            dateTime = memberInfos.dateTime;
+            totalMoney = reqBody.total,
+            members = reqBody.members,
+            dateTime = reqBody.dateTime;
         try{
-            Group.updateMoney(groupId,provider,user_id,memberInfos).then(function(){
+            Group.updateMoney(groupId,provider,user_id,members).then(function(){
                 Bill.createBill({
                     id:Util.getGuid(),
                     groupid:groupId,
@@ -240,19 +239,18 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
                 }).then(function(){
                     res.send({result:'success',operate:'updatemoney'});
                 }).catch(function(){
-                    res.sendStatus(500);
-                    res.send({result:'failure',operate:'createBill'});
+                    //res.sendStatus(500);
+                    res.status(500).send({result:'failure',operate:'createBill'});
                 });
             }).catch(function(){
-                res.sendStatus(500);
-                res.send({result:'failure',operate:'updatemoney'});
+                //res.sendStatus(500);
+                res.status(500).send({result:'failure',operate:'updatemoney'});
             });
         }catch(e){
             console.log(e);
         }
     }else{
-        res.sendStatus(401);
-        res.send({result:'failure',operate:'unlogin'});
+        res.status(401).send({result:'failure',operate:'unlogin'});
     }
 });
 

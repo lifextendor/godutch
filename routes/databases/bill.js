@@ -16,7 +16,7 @@ function createBill(bill){
         var createBillColPromise = createBillCollection(evt.db);
         insertBill(createBillColPromise,deferred,bill);
     });
-    insertBill(getBillColPromise,deferred, message);
+    insertBill(getBillColPromise,deferred, bill);
     return createBillPromise;
 }
 
