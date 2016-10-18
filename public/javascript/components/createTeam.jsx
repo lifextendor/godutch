@@ -69,6 +69,7 @@ class createTeam extends React.Component{
           rules: [
             { required: true},
           ],
+            initialValue:'normal'
         });
 
         const formItemLayout = {
