@@ -1,6 +1,7 @@
 //导航栏
 import React from 'react';
 import {Navbar,Nav,NavItem,MenuItem,NavDropdown}from 'react-bootstrap';
+import $ from 'jquery';
 
 var myItems=[
     {name:"团1",num:"8"},

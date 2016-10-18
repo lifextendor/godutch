@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, Form, Input, Button, notification } from 'antd';
 const FormItem = Form.Item;
+import $ from 'jquery';
 notification.config({
       top: 60,
       duration: 3,

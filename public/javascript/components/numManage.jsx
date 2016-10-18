@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, Collapse, Button, Icon, Affix,  Popconfirm, message } from 'antd';
 import {Link} from 'react-router';
+import $ from 'jquery';
 const Panel = Collapse.Panel;
 
 class numManage extends React.Component{ 

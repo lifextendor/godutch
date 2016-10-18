@@ -2,9 +2,8 @@
 import React from 'react';
 import { Form, Input, Card, Table, Button, DatePicker } from 'antd';
 const FormItem = Form.Item;
-// import $ from 'jquery';
-var username=window.userName;  
-
+import $ from 'jquery';
+var username=window.userName; 
 
 
 class account extends React.Component{ 
@@ -77,7 +76,7 @@ class account extends React.Component{
             dataType: 'json',
             type: 'put',
             async: true,
-            data: {total:values['money'],members:members,dataTime:values.time},
+            data: {total:values['money'],members:members,dateTime:values.time},
             success: function(data) {
                 debugger
                 const moneydata = [];
@@ -119,6 +118,7 @@ class account extends React.Component{
           // rules: [
           //   { required: true, message: '必须选时间' },
           // ],
+          initialValue:new Date().getFullYear()+"-"+(parseInt(new Date().getMonth())+parseInt(1))+"-"+new Date().getDate(),
         });
         const rowSelection = {
             onChange(selectedRowKeys, selectedRows) {              
@@ -155,7 +155,7 @@ class account extends React.Component{
                                   required
                                   label="选择时间" 
                                 >
-                                  <DatePicker {...timeProps} name="time"/>
+                                  <DatePicker {...timeProps} name="time" format="yyyy-MM-dd" />
                                 </FormItem>
                                 <FormItem wrapperCol={{ span: 12, offset: 7 }}>
                                   <Button type="primary" onClick={this.start.bind(this)}>花费</Button>

@@ -3,6 +3,7 @@ import React from 'react';
 import SearchInput from './searchInput';
 import {Card, Form, Input, Select, Button, Checkbox, notification } from 'antd';
 const FormItem = Form.Item;
+import $ from 'jquery';
 notification.config({
       top: 60,
       duration: 3,

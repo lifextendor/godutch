@@ -11,7 +11,7 @@
     "password": ""
   },
   "deploy_host": "http://localhost:18080",
-  "auth_host": "http://godutch.oschina.mopaasapp.com",
+  "auth_host": "http://192.168.20.107:8082",
   "auth": {
     "qq": {
       "app_id": "101318755",
@@ -60,6 +60,7 @@
     "express-session": "^1.13.0",
     "jquery": "^3.1.0",
     "less-loader": "^2.2.3",
+    "moment": "^2.15.1",
     "mongodb": "^2.1.18",
     "morgan": "~1.6.1",
     "node-compass": "^0.2.4",

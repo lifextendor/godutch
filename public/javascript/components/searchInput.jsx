@@ -1,5 +1,6 @@
 import React from 'react';
 import { Input, Button } from 'antd';
+import $ from 'jquery';
 import '../stylesheets/searchInput.scss';
 
 class SearchInput extends React.Component{
