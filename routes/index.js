@@ -3,6 +3,7 @@ var passport = require('passport');
 var crypto = require('crypto');
 var router = express.Router();
 var Users = require('./databases/user');
+var Message = require('./databases/message');
 require('../auth');
 var TITLE = 'godutch';
 
@@ -19,7 +20,11 @@ router.get('/', function(req, res, next) {
          var user_id = user.id || user.userID;
          try{
              Users.findUser(provider,user_id).then(function(userInfo){
-                 res.render('index',{title:TITLE,user:userInfo.user_name,root:root});
+                 Message.findMessage(provider,user_id,false).then(function(messages){
+                     res.render('index',{title:TITLE,user:userInfo.user_name,root:root,messages:messages.length});
+                 }).catch(function(){
+                     res.render('index',{title:TITLE,user:userInfo.user_name,root:root,messages:0});
+                 });
              }).catch(function(){
                  var userInfo = user._json;
                  userInfo.provider = provider;

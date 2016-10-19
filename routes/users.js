@@ -346,7 +346,7 @@ router.get('/messages',function(req, res, next){
             Message.findMessage(provider,user_id,false).then(function(messages){
                 res.send({result:messages,operate:'messages'});
             }).catch(function(){
-                res.status(500).send({result:'failure',operate:'messages'});
+                res.status(200).send({result:[],operate:'messages'});
             });
         }catch(e){
             console.log(e);
