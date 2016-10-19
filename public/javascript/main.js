@@ -10,6 +10,7 @@ import teamManage from './components/teamManage';
 import invitation from './components/invitation';
 import numManage from './components/numManage';
 import billManage from './components/billManage';
+import messages from './components/messages';
 import account from './components/account';
 import feedback from './components/feedback';
 import './stylesheets/index.scss'
@@ -41,6 +42,7 @@ ReactDOM.render((
             <Route path="invitation/:id" component={invitation} />
             <Route path="account/:id" component={account} />
             <Route path="billManage/:id" component={billManage} />
+            <Route path="messages" component={messages} />
             <Route path="feedback" component={feedback} />
         </Route>
     </Router>

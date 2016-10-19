@@ -29,7 +29,7 @@ class nav extends React.Component{
                         <li><Link to="createTeam">建团</Link></li>                      
                         <li><Link to="teamManage">团队</Link></li>
                         <li><Link to="billManage">账单</Link></li>
-                        <li><Link to={'billManage/'+ this.state.username}><Badge dot>消息</Badge></Link></li>                   
+                        <li><Link to='messages'><Badge dot={(window.messages>0)}>消息</Badge></Link></li>
                       </ul>  
                     </div>                                 
 

@@ -303,18 +303,25 @@ router.post('/group/:id/invite',function(req, res, next) {
     if(user) {
         var provider = user.provider;
         var user_id = user.id || user.userID;
+        var user_name = user.name || user.nickname;
         var reqBody = req.body;
         var groupId = req.params.id,
             userInfo = {provider:reqBody.provider,user_id:reqBody.user_id},
             message = {
                 id:Util.getGuid(),
                 type:'invite',
+                invitor:user_name,
                 groupid:groupId,
                 userinfo:userInfo,
                 readed:false
             };
+        if(userInfo.provider === provider && userInfo.user_id === user_id){
+            res.status(403).send({result:'cannot invite youself',operate:'invite'});
+            return;
+        }
         try{
-            Group.findGroupById(groupId,provider,user_id).then(function(){
+            Group.findGroupById(groupId,provider,user_id).then(function(group){
+                message.group = group.gname;
                 Message.createMessage(groupId,provider,user_id,message).then(function(){
                     res.send({result:'success',operate:'invite'});
                 }).catch(function(e){
