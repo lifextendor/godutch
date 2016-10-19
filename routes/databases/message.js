@@ -45,7 +45,7 @@ function findMessage(provider,userId,isReaded){
         if(!evt){
             return;
         }
-        deferred.resolve(evt.doc);
+        deferred.resolve(evt.docs);
         evt.db.close();
     });
     return findMessagePromise;
@@ -73,7 +73,7 @@ function findMessageById(messageId,isReaded){
         if(!evt){
             return;
         }
-        DbUtil.queryDoc(evt.db,evt.col,{id:messageId,readed:isReaded},function(evt){
+        DbUtil.queryOneDoc(evt.db,evt.col,{id:messageId,readed:isReaded},function(evt){
             deferred.reject(evt);
         }).then(function(){
             updateMessageState(messageId,true).then(function(evt){

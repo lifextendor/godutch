@@ -67,7 +67,7 @@ function findGroupById(groupId,provider,userId){
 					var value = doc[prop];
 					if(prop ==='members'){
 						var members = [];
-						for(var j= 0,len=value.length;j<len;j++){
+						for(var j= 0,len0=value.length;j<len0;j++){
 							var member=value[j];
 							if(member.state==='normal'){
 								members.push({
@@ -125,6 +125,7 @@ function findGroupByCreator(provider,userId){
 					members:docs[i].members.length,
 					description:docs[i].description,
 					createTime:docs[i].createtime,
+					type:docs[i].type,
 					grant:grant
 				};
 				results.push(result);
@@ -160,6 +161,7 @@ function findGroupByMember(provider,userId){
 					members:docs[i].members.length,
 					description:docs[i].description,
 					createTime:docs[i].createtime,
+					type:docs[i].type,
 					grant:grant
 				};
 				results.push(result);
@@ -197,6 +199,7 @@ function findGroupByUser(provider,userId){
 						members:docs[i].members.length,
 						description:docs[i].description,
 						createTime:docs[i].createtime,
+						type:docs[i].type,
 						grant:grant
 					};
 					results.push(result);
