@@ -1,18 +1,18 @@
 //账单
 import React from 'react';
-import { Form, Input, Card, Table, Button, DatePicker } from 'antd';
+import { Form, Input, Card, Table, Button, DatePicker, Select } from 'antd';
 const FormItem = Form.Item;
+const Option = Select.Option;
 import $ from 'jquery';
 var username=window.userName; 
 
 
-class account extends React.Component{ 
+class debt extends React.Component{ 
     constructor(props) {
         super(props);
-        this.state = {id:this.props.params.id, teamlist:[], data:[], moneyRecord:[]};     
+        this.state = {id:this.props.params.id, teamlist:[], data:[], moneyRecord:[], host:""};     
     }
     componentDidMount(){
-        debugger
         $.ajax({
             url: "/users/group/"+this.state.id,
             dataType: 'json',
@@ -28,7 +28,6 @@ class account extends React.Component{
                     provider: data.result.members[i].provider,
                     balance: data.result.members[i].money,
                     remarks: '备注',
-                    num:{"n":"1","k":data.result.members[i].userId},
                   });
                 }
                 this.setState({teamlist:data.result.members,data:moneydata,knum:knum});         
@@ -37,9 +36,6 @@ class account extends React.Component{
                 console.error(this.props.url, status, err.toString());
             }.bind(this)
         });
-    }
-    handleChange(name) {
-      console.log(`selected ${name}`);      
     }
     start(e) {      
         this.props.form.validateFields((errors, values) => {
@@ -53,20 +49,18 @@ class account extends React.Component{
             if (this.state.selectedRows<=0) {
                 return;
             }          
-            var ns = 0;
-            for (var i = this.state.selectedRows.length - 1; i >= 0; i--) {
-                ns+=parseInt(this.state.selectedRows[i].num.n);
-            }
-            var average = values.money/ns; 
-            if (e.target.innerText=="花 费") {
-                average=-average;
-            }            
+            var ns = this.state.selectedRows.length;
+            var average = values.money/ns;            
             var members = "[";
-            for (var i = this.state.selectedRows.length - 1; i >= 0; i--) {
+            for (var i = this.state.selectedRows.length - 1; i >= 0; i--) {                            
                var member={};
+               if (this.state.selectedRows[i].name==this.state.host) {
+                    member.money=average*(ns-1)+parseInt(this.state.selectedRows[i].balance);
+               }else{
+                    member.money=this.state.selectedRows[i].balance-average;
+               }
                member.provider=this.state.selectedRows[i].provider;
-               member.user_id=this.state.selectedRows[i].key;
-               member.money=average*this.state.selectedRows[i].num.n+parseInt(this.state.selectedRows[i].balance);
+               member.user_id=this.state.selectedRows[i].key;               
                var json='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+member.money+'"}';
                members+=json;
                if (i>0) {members+=","};
@@ -80,7 +74,7 @@ class account extends React.Component{
             data: {total:values['money'],members:members,dateTime:values.time},
             success: function(data) {
                 debugger
-                this.componentDidMount();        
+                this.componentDidMount();      
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -97,6 +91,10 @@ class account extends React.Component{
             }
         }
         this.setState({data:newdata});
+    }
+    selectChange(name){
+        console.log(`selected ${name}`);
+        this.setState({host:name});
     }
     render(){
         var that=this;
@@ -120,13 +118,7 @@ class account extends React.Component{
         const columns = [
         {title: '姓名',dataIndex: 'name'}, 
         {title: '类型',dataIndex: 'provider'}, 
-        {title: '余额',dataIndex: 'balance'}, 
-        {
-            title: '人数',
-            dataIndex: 'num',
-            width: 70,
-            render: (num) => <Input id={num.k} value={num.n} onChange={this.inputChange.bind(this)}/>,
-          },
+        {title: '余额',dataIndex: 'balance'},         
         {title: '备注',dataIndex: 'remarks'}
         ];
         return  <div style={{ background: '#ECECEC'}}>
@@ -149,10 +141,28 @@ class account extends React.Component{
                                 >
                                   <DatePicker {...timeProps} name="time" format="yyyy-MM-dd" />
                                 </FormItem>
+                                <FormItem
+                                  wrapperCol={{ span: 12}}
+                                  labelCol={{ span: 7 }}
+                                  required
+                                  label="选择付费人员"
+                                  >
+                                    <Select showSearch
+                                    style={{ width: 200 }}
+                                    placeholder="选择付费人员"
+                                    optionFilterProp="children"
+                                    notFoundContent="无法找到"
+                                    onChange={this.selectChange.bind(this)}
+                                    >
+                                    {this.state.data.map(function(list, i) {
+                                    return (
+                                        <Option value={list.name}>{list.name}</Option>
+                                        );
+                                    }, this)}
+                                    </Select>
+                                </FormItem>
                                 <FormItem wrapperCol={{ span: 12, offset: 7 }}>
-                                  <Button type="primary" onClick={this.start.bind(this)}>花费</Button>
-                                  &nbsp;&nbsp;&nbsp;
-                                  <Button type="primary" onClick={this.start.bind(this)}>充值</Button>
+                                  <Button type="primary" onClick={this.start.bind(this)}>提交花费</Button>                                  
                                 </FormItem>
                                 </Form>
                             </div>
@@ -162,5 +172,5 @@ class account extends React.Component{
                 </div>            
     }
 }
-account = Form.create()(account)
-export default account;
+debt = Form.create()(debt)
+export default debt;

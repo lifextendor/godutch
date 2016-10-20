@@ -39,6 +39,7 @@ class teamManage extends React.Component{
             type: 'get',
             async: true,
             success: function(data) {
+                debugger
                 for (var i = data.result.length - 1; i >= 0; i--) {
                     var date = new Date(data.result[i].createTime);
                     data.result[i].createTime=date.getFullYear()+"年"+date.getMonth()+"月"+date.getDate()+"日";
@@ -87,7 +88,9 @@ class teamManage extends React.Component{
     }    
     render(){        
         var boss=[];
-        var number=[];          
+        var number=[];
+        var fund=[];
+        var type=[];          
         {this.state.teamlist.map(function(list, i) {
             if (list.grant==="CAPTAIN") {
                 boss[i]="ok";
@@ -96,6 +99,12 @@ class teamManage extends React.Component{
                 boss[i]="hidden";
                 number[i]="ok";
             }
+            if (list.type==="fund") {
+                fund[i]="hidden";
+            }else{
+                fund[i]="ok";                
+            }
+            type[i]=list.type;
         }, this)}
         return  <div style={{ background: '#ECECEC'}}>                    
                     <Card className="main-panel" title="团队" bordered={false}>                        
@@ -109,21 +118,21 @@ class teamManage extends React.Component{
                                     <p>简介:{list.description}</p>
                                     <div className={number[i]} style={{display: 'inline'}}>
                                     <Popconfirm title="确定要退出这个团吗？" onConfirm={this.exitGroupYes.bind(this, list.id)} onCancel={this.cancel.bind(this)}>
-                                    <Button className="tool-button" type="primary" >退团</Button>
+                                    <Button className="" type="primary" >退团</Button>
                                     </Popconfirm>
                                     </div>
                                     <div className={boss[i]} style={{display: 'inline'}}>
                                     &nbsp;
                                     <Popconfirm title="确定要解散这个团吗？" onConfirm={this.dissolutionGroupYes.bind(this, list.id)} onCancel={this.cancel.bind(this)}>
-                                    <Button className="tool-button" type="primary">解散团</Button>                                    
+                                    <Button className="" type="primary">解散团</Button>                                    
                                     </Popconfirm>
                                     &nbsp;
-                                    <Button className="tool-button" type="primary"><Link to={'account/'+list.id}>记账</Link></Button>
+                                    <Button className="" type="primary"><Link to={ type[i]+'/'+list.id}>记账</Link></Button>
                                     </div>
                                     &nbsp;                                    
-                                    <Button className="tool-button" type="primary"><Link to={'numManage/'+list.id}>查看团员</Link></Button>
+                                    <Button className={fund[i]} type="primary"><Link to={'numManage/'+list.id}>查看团员</Link></Button>
                                     &nbsp;                                    
-                                    <Button className="tool-button" type="primary"><Link to={'invitation/'+list.id}>邀请团成员</Link></Button>                                  
+                                    <Button className={fund[i]} type="primary"><Link to={'invitation/'+list.id}>邀请团成员</Link></Button>                                  
                                 </Panel>
                                 );
                             }, this)} 

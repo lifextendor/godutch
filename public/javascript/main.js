@@ -11,7 +11,9 @@ import invitation from './components/invitation';
 import numManage from './components/numManage';
 import billManage from './components/billManage';
 import messages from './components/messages';
-import account from './components/account';
+import normal from './components/account';
+import bill from './components/debt';
+import fund from './components/fund';
 import feedback from './components/feedback';
 import './stylesheets/index.scss'
 
@@ -40,7 +42,9 @@ ReactDOM.render((
             <Route path="teamManage" component={teamManage} /> 
             <Route path="numManage/:id" component={numManage} />
             <Route path="invitation/:id" component={invitation} />
-            <Route path="account/:id" component={account} />
+            <Route path="normal/:id" component={normal} />
+            <Route path="bill/:id" component={bill} />
+            <Route path="fund/:id" component={fund} />
             <Route path="billManage/:id" component={billManage} />
             <Route path="messages" component={messages} />
             <Route path="feedback" component={feedback} />
