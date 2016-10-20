@@ -211,7 +211,7 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
         var reqBody = req.body;
         var groupId = req.params.id,
             totalMoney = reqBody.total,
-            members = reqBody.members,
+            members = JSON.parse(reqBody.members),
             dateTime = reqBody.dateTime;
         try{
             Group.updateMoney(groupId,provider,user_id,members).then(function(){

@@ -311,7 +311,7 @@ function updateMoney(groupId,provider,userId,memberInfos){
 		var promises = [];
 		for(var i = 0, len = memberInfos.length; i < len; i++){
 			var memberInfo = memberInfos[i];
-			var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.userId},
+			var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.user_id},
 				updateDoc = {'$set':{'members.$.money':memberInfo.money}};
 			var promise = updateMember(queryDoc, updateDoc);
 			promises.push(promise);
