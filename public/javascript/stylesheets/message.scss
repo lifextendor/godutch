@@ -1,0 +1,22 @@
+.message{
+  border: 2px solid #ececec;
+  margin: 20px 100px;
+}
+.message .ant-card-body{
+  padding: 0;
+}
+.message-content{
+  text-align: center;
+  font-size: 18px;
+  margin: 15px;
+}
+.message-footer{
+  text-align: center;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-top: 1px solid #ececec;;
+}
+.message-footer button{
+  margin-left:15px;
+  margin-right:15px;
+}

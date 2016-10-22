@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, Table, Button, Select, Row, Col } from 'antd';
 import $ from 'jquery';
 const Option = Select.Option;
+import '../stylesheets/message.scss';
 
 class Message extends React.Component{
     constructor(props) {
@@ -11,8 +12,44 @@ class Message extends React.Component{
     componentDidMount(){
 
     }
-    handleChange(name) {
-
+    handleAgree(evt) {
+        const { message } = this.props;
+        var messageId = message.id;
+        $.ajax({
+            url: "/users/message/" + messageId + "/reply/agree",
+            dataType: 'json',
+            type: 'get',
+            async: true,
+            success: function(data) {
+                if(data.result&&data.result.length>0){
+                    this.setState({messages:data.result});
+                }
+                window.location.reload();
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(err);
+                window.location.reload();
+            }.bind(this)
+        });
+    }
+    handleReject(evt) {
+        const { message } = this.props;
+        var messageId = message.id;
+        $.ajax({
+            url: "/users/message/" + messageId + "/reply/reject",
+            dataType: 'json',
+            type: 'get',
+            async: true,
+            success: function(data) {
+                if(data.result&&data.result.length>0){
+                    this.setState({messages:data.result});
+                }
+                window.location.reload();
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
     }
     render(){
         const { message } = this.props;
@@ -20,10 +57,11 @@ class Message extends React.Component{
         switch (message.type){
             case 'invite':
                 title = '邀请';
-                content = (<div><div>{message.invitor}邀请你加入{message.group}团队</div><Row>
-                    <Col span={2} offset={6}><Button type="primary">同意</Button></Col>
-                    <Col span={2} offset={6}><Button type="primary">拒绝</Button></Col>
-                </Row></div>);
+                content = (<div><div className='message-content'>{message.invitor}邀请你加入{message.group}团队</div>
+                    <div className='message-footer'>
+                        <Button type="primary" data-type='reject' size="large" onClick={this.handleReject.bind(this)}>拒绝</Button>
+                        <Button type="primary" data-type='agree'  size="large" onClick={this.handleAgree.bind(this)}>同意</Button>
+                    </div></div>);
                 break;
             case 'bill':
                 title = '账单';
@@ -31,7 +69,7 @@ class Message extends React.Component{
             default :
                 title = '消息';
         }
-        return  <Card title={title} bordered={false}>{content}</Card>
+        return  <Card className='message' title={title} bordered={false}>{content}</Card>
     }
 }
 // billManage.defaultProps={teamItems:teamItems};//设置默认属性

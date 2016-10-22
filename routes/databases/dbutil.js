@@ -117,12 +117,11 @@ function queryDocument(db,collection, query,failure) {
     return deferred.promise;
 }
 
-function queryOneDocument(db,collection, query, options) {
+function queryOneDocument(db,collection, query,failure) {
     var deferred = when.defer();
-    collection.findOne(query, options, function(err, doc) {
-        if (err) {
-            throw new Error(err && err.message);
-            return deferred.promise;
+    collection.findOne(query, function(err, doc) {
+        if (err || !doc) {
+            failure && failure({db:db,err:err});
         }
         deferred.resolve({db:db,doc:doc,type:'query'});
     });

@@ -31,11 +31,12 @@ class invitation extends React.Component{
     }
     handleSubmit(e) {
         e.preventDefault();
+        var searchInputState = this.refs.searchInput.state;
         $.ajax({
             url: "users/group/"+ this.props.params.id +"/invite",
             dataType: 'json',
             type: 'post',
-            data: {provider:this.refs.searchInput.state.provider,user_id:this.refs.searchInput.state.user_id},
+            data: {provider:searchInputState.provider,user_id:searchInputState.user_id,user_name:searchInputState.user_name},
             success: function(data) {
                 console.log("提交成功");
                 this.succesMessage();

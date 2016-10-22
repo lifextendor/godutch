@@ -296,7 +296,7 @@ router.put('/group/:id/deauthorize',function(req, res, next) {
 /**
  * 邀请用户加入团
  * rest服务相对地址："/users/group/1/invite"，其中1为团Id，http方法为:“POST”
- * 请求参数，比如：{provider:'qq',user_id:1}
+ * 请求参数，比如：{provider:'qq',user_id:1,user_name:'name'}
  */
 router.post('/group/:id/invite',function(req, res, next) {
     var user = req.user;
@@ -306,7 +306,7 @@ router.post('/group/:id/invite',function(req, res, next) {
         var user_name = user.name || user.nickname;
         var reqBody = req.body;
         var groupId = req.params.id,
-            userInfo = {provider:reqBody.provider,user_id:reqBody.user_id},
+            userInfo = {provider:reqBody.provider,user_id:reqBody.user_id,user_name:reqBody.user_name},
             message = {
                 id:Util.getGuid(),
                 type:'invite',
@@ -398,9 +398,20 @@ router.get('/message/:id/reply/:type',function(req, res, next){
              replyType = req.params.type;
         try{
             if(replyType === 'agree'){
-                Message.findMessageById(messageId).then(function(){
-                    res.send({result:'success',operate:'reply agree'});
-                }).catch(function(){
+                Message.findMessageById(messageId).then(function(message){
+                    var memberInfo = message.userinfo;
+                    Group.findGroupByMember(memberInfo.provider,memberInfo.user_id).then(function(){
+                        res.status(500).send({result:'failure',message:'member is exit',operate:'reply agree'});
+                    }).catch(function(){
+                        Group.addMemberByInvite(message.groupid,memberInfo,0).then(function(){
+                            res.send({result:'success',operate:'reply agree'});
+                        }).catch(function(e){
+                            console.log(e);
+                            res.status(500).send({result:'failure',operate:'reply agree'});
+                        });
+                    });
+                }).catch(function(e){
+                    console.log(e);
                     res.status(500).send({result:'failure',operate:'reply agree'});
                 })
             }else{

@@ -73,20 +73,20 @@ function findMessageById(messageId,isReaded){
         if(!evt){
             return;
         }
-        DbUtil.queryOneDoc(evt.db,evt.col,{id:messageId,readed:isReaded},function(evt){
+        DbUtil.queryOneDoc(evt.db,evt.col,{id:messageId,readed:!!isReaded},function(evt){
             deferred.reject(evt);
-        }).then(function(){
+        }).then(function(messageInfo){
             updateMessageState(messageId,true).then(function(evt){
                 if(!evt){
                     return;
                 }
-                deferred.resolve(evt.doc);
+                deferred.resolve(messageInfo.doc);
                 evt.db.close();
-            }).catch(function(){
+            }).catch(function(err){
                 deferred.reject(err);
                 evt.db.close();
             });
-        }).catch(function(){
+        }).catch(function(err){
             deferred.reject(err);
             evt.db.close();
         });
@@ -103,9 +103,9 @@ function updateMessageState(messageId,isReaded){
         deferred.reject(evt);
     }).then(function(evt){
         var queryDoc = {id:messageId},
-            updateDoc = {readed:isReaded};
+            updateDoc = {'$set':{readed:!!isReaded}};
         return DbUtil.updateDoc(evt.db,evt.col,queryDoc,updateDoc);
-    }).done(function(evt){
+    }).then(function(evt){
         deferred.resolve(evt.doc);
         evt.db.close;
     }).catch(function(evt){

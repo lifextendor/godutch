@@ -72,19 +72,23 @@ div {
   @media only screen and (min-width: 414px) {
     .note {
       margin-left: 5%;
-      margin-right: 5%; } }
+      margin-right: 5%;
+      min-height: 450px;} }
   @media only screen and (min-width: 768px) {
     .note {
       margin-left: 10%;
-      margin-right: 10%; } }
+      margin-right: 10%;
+      min-height: 450px;} }
   @media only screen and (min-width: 992px) {
     .note {
       margin-left: 20%;
-      margin-right: 20%; } }
+      margin-right: 20%;
+      min-height: 450px;} }
   @media only screen and (min-width: 1280px) {
     .note {
       margin-left: 25%;
-      margin-right: 25%; } }
+      margin-right: 25%;
+      min-height: 450px;} }
 
 .note::before {
   content: '';
