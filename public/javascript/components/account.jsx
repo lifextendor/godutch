@@ -9,7 +9,7 @@ var username=window.userName;
 class account extends React.Component{ 
     constructor(props) {
         super(props);
-        this.state = {id:this.props.params.id, teamlist:[], data:[], moneyRecord:[]};     
+        this.state = {id:this.props.params.id, teamlist:[], data:[], selectedRowKeys: []};     
     }
     componentDidMount(){
         debugger
@@ -79,14 +79,14 @@ class account extends React.Component{
             async: true,
             data: {total:values['money'],members:members,dateTime:values.time},
             success: function(data) {
-                debugger
                 this.componentDidMount();        
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
             }.bind(this)
         });              
-        });        
+        }); 
+        this.setState({selectedRowKeys: []});
     }       
     inputChange(e){
         var newdata=this.state.data;
@@ -112,9 +112,11 @@ class account extends React.Component{
           // ],
           initialValue:new Date().getFullYear()+"-"+(parseInt(new Date().getMonth())+parseInt(1))+"-"+new Date().getDate(),
         });
+        const { selectedRowKeys } = this.state;
         const rowSelection = {
-            onChange(selectedRowKeys, selectedRows) {              
-                that.setState({selectedRows:selectedRows});
+            selectedRowKeys,
+            onChange(selectedRowKeys, selectedRows) {          
+                that.setState({selectedRows:selectedRows,selectedRowKeys:selectedRowKeys});
             }
         }
         const columns = [
@@ -130,7 +132,7 @@ class account extends React.Component{
         {title: '备注',dataIndex: 'remarks'}
         ];
         return  <div style={{ background: '#ECECEC'}}>
-                    <Card className="main-panel" title="账单管理" bordered={false}>
+                    <Card className="main-panel" title="记账" bordered={false}>
                         <div className="col-md-offset-2 col-sm-offset-1 col-md-8 col-sm-10">
                             <div style={{ marginBottom: 16 }}>
                                 <Form horizontal form={this.props.form}>

@@ -11,9 +11,9 @@ import invitation from './components/invitation';
 import numManage from './components/numManage';
 import billManage from './components/billManage';
 import messages from './components/messages';
-import normal from './components/account';
-import bill from './components/debt';
-import fund from './components/fund';
+import normal from './components/account';//分摊
+import bill from './components/debt';//欠账
+import fund from './components/fund';//经费
 import feedback from './components/feedback';
 import './stylesheets/index.scss'
 
