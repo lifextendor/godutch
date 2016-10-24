@@ -27,7 +27,6 @@ class account extends React.Component{
         });
     }
     componentDidMount(){
-        debugger
         $.ajax({
             url: "/users/group/"+this.state.id,
             dataType: 'json',
@@ -58,7 +57,6 @@ class account extends React.Component{
     }
     start(e) {      
         this.props.form.validateFields((errors, values) => {
-            debugger
             console.log(values);
             if (!!errors) {
                 this.errorMessage();
@@ -161,7 +159,7 @@ class account extends React.Component{
         ];
         return  <div style={{ background: '#ECECEC'}}>
                     <Card className="main-panel" title="记账" bordered={false}>
-                        <div className="col-md-offset-2 col-sm-offset-1 col-md-8 col-sm-10">
+                        <div className="col-md-offset-2 col-sm-offset-0 col-md-8 col-sm-12">
                             <div style={{ marginBottom: 16 }}>
                                 <Form horizontal form={this.props.form}>
                                 <FormItem
@@ -179,9 +177,9 @@ class account extends React.Component{
                                 >
                                   <DatePicker {...timeProps} name="time" format="yyyy-MM-dd" />
                                 </FormItem>
-                                <FormItem wrapperCol={{ span: 12, offset: 7 }}>
+                                <FormItem wrapperCol={{ span: 18, offset: 7 }}>
                                   <Button type="primary" onClick={this.start.bind(this)}>花费</Button>
-                                  &nbsp;&nbsp;&nbsp;
+                                  &nbsp;
                                   <Button type="primary" onClick={this.start.bind(this)}>充值</Button>
                                 </FormItem>
                                 </Form>

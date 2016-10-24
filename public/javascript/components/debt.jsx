@@ -162,11 +162,11 @@ class debt extends React.Component{
                                   wrapperCol={{ span: 12}}
                                   labelCol={{ span: 7 }}
                                   required
-                                  label="选择付费人员"
+                                  label="选择付费者"
                                   >
                                     <Select showSearch
-                                    style={{ width: 200 }}
-                                    placeholder="选择付费人员"
+                                    style={{ width: 150 }}
+                                    placeholder="选择付费者"
                                     optionFilterProp="children"
                                     notFoundContent="无法找到"
                                     onChange={this.selectChange.bind(this)}
