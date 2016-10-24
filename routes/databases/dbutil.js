@@ -120,7 +120,7 @@ function queryDocument(db,collection, query,failure) {
 function queryOneDocument(db,collection, query,failure) {
     var deferred = when.defer();
     collection.findOne(query, function(err, doc) {
-        if (err || !doc) {
+        if (err) {
             failure && failure({db:db,err:err});
         }
         deferred.resolve({db:db,doc:doc,type:'query'});

@@ -20,19 +20,23 @@ router.get('/', function(req, res, next) {
          var user_id = user.id || user.userID;
          try{
              Users.findUser(provider,user_id).then(function(userInfo){
-                 Message.findMessage(provider,user_id,false).then(function(messages){
-                     res.render('index',{title:TITLE,user:userInfo.user_name,root:root,messages:messages.length});
-                 }).catch(function(){
-                     res.render('index',{title:TITLE,user:userInfo.user_name,root:root,messages:0});
-                 });
+                 if(userInfo){
+                     Message.findMessage(provider,user_id,false).then(function(messages){
+                         res.render('index',{title:TITLE,user:userInfo.user_name,root:root,messages:messages.length});
+                     }).catch(function(){
+                         res.render('index',{title:TITLE,user:userInfo.user_name,root:root,messages:0});
+                     });
+                 }else{
+                     addUser(user,function(userInfo){
+                         res.render('index',{title:TITLE,user:userInfo.user_name,root:root});
+                     },function(){
+                         res.render('users',{title:TITLE,root:root});
+                     });
+                 }
              }).catch(function(){
-                 var userInfo = user._json;
-                 userInfo.provider = provider;
-                 userInfo.user_id = user_id;
-                 userInfo.user_name = user.name || user.nickname;
-                 Users.addUser(userInfo).then(function(userInfo){
+                 addUser(user,function(userInfo){
                      res.render('index',{title:TITLE,user:userInfo.user_name,root:root});
-                 }).catch(function(){
+                 },function(){
                      res.render('users',{title:TITLE,root:root});
                  });
              });
@@ -44,6 +48,18 @@ router.get('/', function(req, res, next) {
      }
     //res.render('index',{title:TITLE,user:"hahaha",root:root});//测试用
 });
+
+function addUser(user,success,failed){
+    var provider = user.provider;
+    var user_id = user.id || user.userID;
+    var userInfo = user._json;
+    userInfo.provider = provider;
+    userInfo.user_id = user_id;
+    userInfo.user_name = user.name || user.nickname;
+    Users.addUser(userInfo).then(function(){
+        Message.findMessage(provider,user_id,false).then(success).catch(failed);
+    }).catch(failed);
+}
 
 /**
  * qq登录

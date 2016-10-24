@@ -48,7 +48,7 @@ function findUsers(query){
         if(!evt){
             return;
         }
-        return DbUtil.queryDoc(evt.db,evt.col,{'$or':[{user_name:query},{user_id:query}]});
+        return DbUtil.queryDoc(evt.db,evt.col,{'$or':[{user_name:{ $regex: new RegExp(query), $options: 'i'}},{user_id:query}]});
     }).done(function(evt){
         if(!evt){
             return;
