@@ -206,7 +206,7 @@ function existMember(groupId,provider,userId){
                 }
             }
         }
-        deferred.reject('member no exist');
+        deferred.reject('member is not exist');
     });
     return findGroupByIdPromise;
 }

@@ -409,7 +409,7 @@ router.get('/message/:id/reply/:type',function(req, res, next){
                                 id:Util.getGuid(),
                                 type:'info',
                                 userinfo:message.invitor,
-                                content:message.userinfo.user_name+' is added to '+message.group,
+                                content:message.userinfo.user_name+'已经被添加到'+message.group+'团队了',
                                 readed:false
                             };
                             Message.createMessage(null,null,null,new_message).then(function(){

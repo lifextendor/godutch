@@ -66,6 +66,10 @@ class Message extends React.Component{
             case 'bill':
                 title = '账单';
                 break;
+            case 'info':
+                title = '消息';
+                content = (<div><div className='message-content'>{message.content}</div></div>);
+                break;
             default :
                 title = '消息';
         }
