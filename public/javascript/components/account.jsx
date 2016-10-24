@@ -41,7 +41,6 @@ class account extends React.Component{
                     name: data.result.members[i].user_name,
                     provider: data.result.members[i].provider,
                     balance: data.result.members[i].money,
-                    remarks: '备注',
                     num:{"n":"1","k":data.result.members[i].userId},
                   });
                 }
@@ -154,8 +153,7 @@ class account extends React.Component{
             dataIndex: 'num',
             width: 70,
             render: (num) => <Input id={num.k} value={num.n} onChange={this.inputChange.bind(this)}/>,
-          },
-        {title: '备注',dataIndex: 'remarks'}
+          }
         ];
         return  <div style={{ background: '#ECECEC'}}>
                     <Card className="main-panel" title="记账" bordered={false}>

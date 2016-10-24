@@ -1,8 +1,7 @@
-$border:1px solid #C1C1C1;
+$border:1px solid #DADADA;
 $backColor:#f8f8f8;
 .search-list:hover{
-    background-color:#57c5f7;
-    color:white;
+    background-color:#eaf8fe;
 }
 .search-list{
     background-color: $backColor;
@@ -10,6 +9,6 @@ $backColor:#f8f8f8;
     border-left:$border;
     border-right:$border;
     border-bottom:$border;
-    padding: 6px;
+    padding-left: 6px;
     border-radius: 4px;
 }

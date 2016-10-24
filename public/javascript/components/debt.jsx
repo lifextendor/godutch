@@ -41,7 +41,6 @@ class debt extends React.Component{
                     name: data.result.members[i].user_name,
                     provider: data.result.members[i].provider,
                     balance: data.result.members[i].money,
-                    remarks: '备注',
                   });
                 }
                 this.setState({teamlist:data.result.members,data:moneydata,knum:knum});         
@@ -135,12 +134,11 @@ class debt extends React.Component{
         const columns = [
         {title: '姓名',dataIndex: 'name'}, 
         {title: '类型',dataIndex: 'provider'}, 
-        {title: '余额',dataIndex: 'balance'},         
-        {title: '备注',dataIndex: 'remarks'}
+        {title: '余额',dataIndex: 'balance'}
         ];
         return  <div style={{ background: '#ECECEC'}}>
                     <Card className="main-panel" title="记账" bordered={false}>
-                        <div className="col-md-offset-2 col-sm-offset-1 col-md-8 col-sm-10">
+                        <div className="col-md-offset-2 col-sm-offset-0 col-md-8 col-sm-12">
                             <div style={{ marginBottom: 16 }}>
                                 <Form horizontal form={this.props.form}>
                                 <FormItem

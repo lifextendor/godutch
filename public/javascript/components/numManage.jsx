@@ -33,12 +33,13 @@ class numManage extends React.Component{
             dataType: 'json',
             type: 'get',
             async: true,
-            success: function(data) {                
+            success: function(data) { 
+            debugger               
                 if (data.result.grant==='CAPTAIN') {
-                    this.setState({numList:data.result.members,power:'ok'});
+                    this.setState({numList:data.result.members,power:'ok'});                    
                 }else{
-                    this.setState({numList:data.result.members,power:'hidden'});
-                }                         
+                    this.setState({numList:data.result.members,power:'hidden'});                    
+                }                                        
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -91,7 +92,7 @@ class numManage extends React.Component{
                                  {this.state.numList.map(function(list, i) {
                                 return (
                                     <Panel header={list.user_name} key={i}>
-                                        <div className={this.state.power}>
+                                        <div className={this.state.power}>                                                                                
                                         <Popconfirm title="确定要开除这个团员吗？" onConfirm={this.expelGroupYes.bind(this,list.provider,list.userId)} onCancel={this.cancel.bind(this)}>
                                             <Button className="tool-button"  type="primary">开除</Button>
                                         </Popconfirm>                                        
@@ -99,7 +100,7 @@ class numManage extends React.Component{
                                         <Popconfirm title="确定要给这个团员授权吗？" onConfirm={this.powerGroupYes.bind(this,list.provider,list.userId)} onCancel={this.cancel.bind(this)}>
                                         <Button className="tool-button" type="primary">授权</Button> 
                                         </Popconfirm>
-                                        </div>                           
+                                        </div>                                                                
                                     </Panel>
                                     );
                                 }, this)} 
