@@ -401,7 +401,7 @@ router.get('/message/:id/reply/:type',function(req, res, next){
             if(replyType === 'agree'){
                 Message.findMessageById(messageId).then(function(message){
                     var memberInfo = message.userinfo;
-                    Group.findGroupByMember(memberInfo.provider,memberInfo.user_id).then(function(){
+                    Group.existMember(message.groupid,memberInfo.provider,memberInfo.user_id).then(function(){
                         res.status(500).send({result:'failure',message:'member is exit',operate:'reply agree'});
                     }).catch(function(){
                         Group.addMemberByInvite(message.groupid,memberInfo,0).then(function(){
