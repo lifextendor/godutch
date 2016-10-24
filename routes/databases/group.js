@@ -172,6 +172,45 @@ function findGroupByMember(provider,userId){
 		});
 	return findGroupByMember;
 }
+
+/**
+ * 判断用户是否存在于团内
+ * @param groupId  团队id
+ * @param provider 用户的提供者
+ * @param userId 用户id
+ * @returns {*}
+ */
+function existMember(groupId,provider,userId){
+    var deferred = when.defer(),
+        findGroupByIdPromise = deferred.promise;
+    DbUtil.connect().then(function(db){
+        return DbUtil.getCollection(db, COL);
+    }).catch(function(err){
+        deferred.reject(err);
+        return findGroupByIdPromise;
+    }).then(function(evt){
+        if(!evt){
+            return;
+        }
+        return findOneGroup({id:groupId});
+    }).done(function(doc){
+        if(!doc){
+            return;
+        }
+        if(doc){
+            var members = doc.members;
+            for(var j= 0,len0=members.length;j<len0;j++){
+                var member=members[j];
+                if(member.user.provider === provider && member.user.user_id == userId){
+                    deferred.resolve(member);
+                }
+            }
+        }
+        deferred.reject('member is not exist');
+    });
+    return findGroupByIdPromise;
+}
+
 /**
  * 根据用户（即创建者或者成员）查找团
  * */
@@ -482,6 +521,7 @@ function checkGrant(operate,groupId,provider,userId){
 module.exports = {
 	addGroup: addGroup,
 	findGroupByMember: findGroupByMember,
+	existMember: existMember,
 	findGroupByCreator: findGroupByCreator,
 	findGroupByUser: findGroupByUser,
 	findGroupById: findGroupById,
