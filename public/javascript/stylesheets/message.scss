@@ -2,6 +2,16 @@
   border: 2px solid #ececec;
   margin: 20px 100px;
 }
+.message .close-btn{
+  height: 32px;
+  width: 32px;
+  position: relative;
+  top: -36px;
+  right: -583px;
+}
+.message .close-btn:hover{
+  font-weight: 700;
+}
 .message .ant-card-body{
   padding: 0;
 }

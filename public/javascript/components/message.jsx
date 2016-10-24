@@ -1,6 +1,6 @@
 //账单
 import React from 'react';
-import { Card, Table, Button, Select, Row, Col } from 'antd';
+import { Card, Table, Button, Select, Row, Col,Icon } from 'antd';
 const Option = Select.Option;
 import '../stylesheets/message.scss';
 
@@ -12,7 +12,7 @@ class Message extends React.Component{
 
     }
     handleAgree(evt) {
-        const { message,success,failed } = this.props;
+        const { message,success,failed,context } = this.props;
         var messageId = message.id;
         $.ajax({
             url: "/users/message/" + messageId + "/reply/agree",
@@ -24,19 +24,19 @@ class Message extends React.Component{
                     this.setState({messages:data.result});
                 }
                 if(success){
-                    success();
+                    success.call(context);
                 }
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(err);
                 if(failed){
-                    failed();
+                    failed.call(context);
                 }
             }.bind(this)
         });
     }
     handleReject(evt) {
-        const { message,success,failed } = this.props;
+        const { message,success,failed,context } = this.props;
         var messageId = message.id;
         $.ajax({
             url: "/users/message/" + messageId + "/reply/reject",
@@ -48,13 +48,38 @@ class Message extends React.Component{
                     this.setState({messages:data.result});
                 }
                 if(success){
-                    success();
+                    success.call(context);
                 }
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
                 if(failed){
-                    failed();
+                    failed.call(context);
+                }
+            }.bind(this)
+        });
+    }
+    handleClose(evt) {
+        debugger
+        const { message,success,failed,context } = this.props;
+        var messageId = message.id;
+        $.ajax({
+            url: "/users/message/" + messageId,
+            dataType: 'json',
+            type: 'get',
+            async: true,
+            success: function(data) {
+                if(data.result&&data.result.length>0){
+                    this.setState({messages:data.result});
+                }
+                if(success){
+                    success.call(context);
+                }
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+                if(failed){
+                    failed.call(context);
                 }
             }.bind(this)
         });
@@ -62,10 +87,11 @@ class Message extends React.Component{
     render(){
         const { message } = this.props;
         var title,content =(<div>messages</div>);
+        var closeIcon = (<Icon type="cross" className='close-btn' onClick={this.handleClose.bind(this)} />);
         switch (message.type){
             case 'invite':
                 title = '邀请';
-                content = (<div><div className='message-content'>{message.invitor.user_name}邀请你加入{message.group}团队</div>
+                content = (<div>{closeIcon}<div className='message-content'>{message.invitor.user_name}邀请你加入{message.group}团队</div>
                     <div className='message-footer'>
                         <Button type="primary" data-type='reject' size="large" onClick={this.handleReject.bind(this)}>拒绝</Button>
                         <Button type="primary" data-type='agree'  size="large" onClick={this.handleAgree.bind(this)}>同意</Button>
@@ -76,7 +102,7 @@ class Message extends React.Component{
                 break;
             case 'info':
                 title = '消息';
-                content = (<div><div className='message-content'>{message.content}</div></div>);
+                content = (<div>{closeIcon}<div className='message-content'>{message.content}</div></div>);
                 break;
             default :
                 title = '消息';
