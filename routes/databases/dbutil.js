@@ -106,7 +106,7 @@ function queryDocument(db,collection, query,failure) {
     var deferred = when.defer();
     try{
         collection.find(query).toArray(function(err, docs) {
-            if (err || (docs.length === 0)) {
+            if (err) {
                failure && failure({db:db,err:err});
             }
             deferred.resolve({db:db,docs:docs,type:'query'});

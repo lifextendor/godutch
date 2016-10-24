@@ -307,10 +307,11 @@ router.post('/group/:id/invite',function(req, res, next) {
         var reqBody = req.body;
         var groupId = req.params.id,
             userInfo = {provider:reqBody.provider,user_id:reqBody.user_id,user_name:reqBody.user_name},
+            invitor = {provider:provider,user_id:user_id,user_name:user_name},
             message = {
                 id:Util.getGuid(),
                 type:'invite',
-                invitor:user_name,
+                invitor:invitor,
                 groupid:groupId,
                 userinfo:userInfo,
                 readed:false
@@ -404,7 +405,19 @@ router.get('/message/:id/reply/:type',function(req, res, next){
                         res.status(500).send({result:'failure',message:'member is exit',operate:'reply agree'});
                     }).catch(function(){
                         Group.addMemberByInvite(message.groupid,memberInfo,0).then(function(){
-                            res.send({result:'success',operate:'reply agree'});
+                            var new_message = {
+                                id:Util.getGuid(),
+                                type:'info',
+                                userinfo:message.invitor,
+                                content:message.userinfo.user_name+' is added to '+message.group,
+                                readed:false
+                            };
+                            Message.createMessage(null,null,null,new_message).then(function(){
+                                res.send({result:'success',operate:'reply agree'});
+                            }).catch(function(e){
+                                console.log(e);
+                                res.status(500).send({result:'failure',operate:'reply agree'});
+                            });
                         }).catch(function(e){
                             console.log(e);
                             res.status(500).send({result:'failure',operate:'reply agree'});

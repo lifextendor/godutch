@@ -57,7 +57,7 @@ class Message extends React.Component{
         switch (message.type){
             case 'invite':
                 title = '邀请';
-                content = (<div><div className='message-content'>{message.invitor}邀请你加入{message.group}团队</div>
+                content = (<div><div className='message-content'>{message.invitor.user_name}邀请你加入{message.group}团队</div>
                     <div className='message-footer'>
                         <Button type="primary" data-type='reject' size="large" onClick={this.handleReject.bind(this)}>拒绝</Button>
                         <Button type="primary" data-type='agree'  size="large" onClick={this.handleAgree.bind(this)}>同意</Button>

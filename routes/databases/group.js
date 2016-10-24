@@ -469,7 +469,11 @@ function checkGrant(operate,groupId,provider,userId){
 		if(!evt){
 			return;
 		}
-		deferred.resolve(evt.docs);
+		if(evt.docs.length > 0 ){
+			deferred.resolve(evt.docs);
+		}else{
+			deferred.reject('checkGrant Failed');
+		}
 		evt.db.close();
 	});
 	return checkGrantPromise;
