@@ -2,7 +2,6 @@
 import React from 'react';
 import { Card, Collapse, Button, message, Popconfirm, notification, Modal } from 'antd';
 import {Link} from 'react-router';
-import $ from 'jquery';
 const Panel = Collapse.Panel;
 notification.config({
       top: 60,
@@ -39,7 +38,6 @@ class teamManage extends React.Component{
             type: 'get',
             async: true,
             success: function(data) {
-                debugger
                 for (var i = data.result.length - 1; i >= 0; i--) {
                     var date = new Date(data.result[i].createTime);
                     data.result[i].createTime=date.getFullYear()+"年"+date.getMonth()+"月"+date.getDate()+"日";
@@ -106,11 +104,12 @@ class teamManage extends React.Component{
             }
             type[i]=list.type;
         }, this)}
+        var buttonStyle={margin: "2px 5px 2px 0px"};
         return  <div style={{ background: '#ECECEC'}}>                    
                     <Card className="main-panel" title="团队" bordered={false}>                        
-                        <div className="col-md-offset-2 col-sm-offset-1 col-md-8 col-sm-10">
+                        <div className="col-md-offset-2 col-sm-offset-0 col-md-8 col-sm-12">
                         <Card title="团组列表">
-                            <Collapse accordion>
+                            <Collapse defaultActiveKey={['0']} accordion>
                              {this.state.teamlist.map(function(list, i) {
                             return (
                                 <Panel header={list.groupName} key={i}>                                    
@@ -118,21 +117,21 @@ class teamManage extends React.Component{
                                     <p>简介:{list.description}</p>
                                     <div className={number[i]} style={{display: 'inline'}}>
                                     <Popconfirm title="确定要退出这个团吗？" onConfirm={this.exitGroupYes.bind(this, list.id)} onCancel={this.cancel.bind(this)}>
-                                    <Button className="" type="primary" >退团</Button>
+                                    <Button className="" type="primary" style={buttonStyle}>退 团</Button>
                                     </Popconfirm>
                                     </div>
                                     <div className={boss[i]} style={{display: 'inline'}}>
                                     &nbsp;
                                     <Popconfirm title="确定要解散这个团吗？" onConfirm={this.dissolutionGroupYes.bind(this, list.id)} onCancel={this.cancel.bind(this)}>
-                                    <Button className="" type="primary">解散团</Button>                                    
+                                    <Button type="primary" style={buttonStyle}>解 散</Button>                                    
                                     </Popconfirm>
                                     &nbsp;
-                                    <Button className="" type="primary"><Link to={ type[i]+'/'+list.id}>记账</Link></Button>
+                                    <Button type="primary" style={buttonStyle}><Link to={ type[i]+'/'+list.id}>记 账</Link></Button>
                                     </div>
                                     &nbsp;                                    
-                                    <Button className={fund[i]} type="primary"><Link to={'numManage/'+list.id}>查看团员</Link></Button>
+                                    <Button className={fund[i]} type="primary" style={{margin: "2px 5px 2px 3px"}}><Link to={'numManage/'+list.id}>团 员</Link></Button>
                                     &nbsp;                                    
-                                    <Button className={fund[i]} type="primary"><Link to={'invitation/'+list.id}>邀请团成员</Link></Button>                                  
+                                    <Button className={fund[i]} type="primary" style={buttonStyle}><Link to={'invitation/'+list.id}>邀 请</Link></Button>                                  
                                 </Panel>
                                 );
                             }, this)} 

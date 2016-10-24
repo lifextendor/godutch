@@ -2,7 +2,6 @@
 import React from 'react';
 import { Card, Table, Button, Select } from 'antd';
 const Option = Select.Option;
-import $ from 'jquery';
 var username=window.userName;
    
 var teamlist=[

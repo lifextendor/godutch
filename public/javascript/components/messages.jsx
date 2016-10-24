@@ -1,7 +1,6 @@
 //账单
 import React from 'react';
 import { Card, Table, Button, Select } from 'antd';
-import $ from 'jquery';
 import Message from './message';
 const Option = Select.Option;
 var username=window.userName;

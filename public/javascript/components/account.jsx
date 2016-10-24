@@ -1,15 +1,30 @@
 //账单
 import React from 'react';
-import { Form, Input, Card, Table, Button, DatePicker } from 'antd';
+import { Form, Input, Card, Table, Button, DatePicker, notification } from 'antd';
 const FormItem = Form.Item;
-import $ from 'jquery';
 var username=window.userName; 
+notification.config({
+      top: 60,
+      duration: 3,
+    }) 
 
 
 class account extends React.Component{ 
     constructor(props) {
         super(props);
         this.state = {id:this.props.params.id, teamlist:[], data:[], selectedRowKeys: []};     
+    }
+    succesMessage() {
+      return notification['success']({
+          message: '成功',
+          description: '操作成功！',
+        });
+    }
+    errorMessage() {
+      return notification['error']({
+          message: '失败',
+          description: '操作失败！',
+        });
     }
     componentDidMount(){
         debugger
@@ -48,9 +63,11 @@ class account extends React.Component{
             if (!!errors) {
                 this.errorMessage();
                 console.log('Errors in form!!!');
+                this.errorMessage();
                 return;
             }  
             if (this.state.selectedRows<=0) {
+                this.errorMessage();
                 return;
             }          
             var ns = 0;
@@ -79,10 +96,12 @@ class account extends React.Component{
             async: true,
             data: {total:values['money'],members:members,dateTime:values.time},
             success: function(data) {
-                this.componentDidMount();        
+                this.componentDidMount(); 
+                this.succesMessage();       
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
+                 this.errorMessage();
             }.bind(this)
         });              
         }); 
@@ -98,12 +117,21 @@ class account extends React.Component{
         }
         this.setState({data:newdata});
     }
+    inputInt(rule, value, callback) {
+        var reg = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/;
+        if(value && !reg.test(value)){  
+           callback(new Error("输入正确的钱数,最多两位小数!"));
+        } else {
+          callback();
+        }
+    }  
     render(){
         var that=this;
         const { getFieldProps } = this.props.form;
         const moneyProps = getFieldProps('money', {
           rules: [
-            { required: true, message: '金额必须是数字' },
+            { required: true, message: '不能为空' },
+            {validator: this.inputInt},
           ],
         });
         const timeProps = getFieldProps('time', {

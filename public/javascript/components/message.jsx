@@ -1,7 +1,6 @@
 //账单
 import React from 'react';
 import { Card, Table, Button, Select, Row, Col } from 'antd';
-import $ from 'jquery';
 const Option = Select.Option;
 import '../stylesheets/message.scss';
 
