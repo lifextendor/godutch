@@ -92,7 +92,7 @@ function updateDocument(db,collection, query, updateDoc) {
 
 function deleteDocument(db,collection, query, options) {
     var deferred = when.defer();
-    collection.deleteOne(query, options).then(function(err, doc) {
+    collection.deleteOne(query, options,function(err, doc) {
         if (err) {
             deferred.reject({db:db,err:err});
             return deferred.promise;

@@ -12,7 +12,7 @@ class Message extends React.Component{
 
     }
     handleAgree(evt) {
-        const { message } = this.props;
+        const { message,success,failed } = this.props;
         var messageId = message.id;
         $.ajax({
             url: "/users/message/" + messageId + "/reply/agree",
@@ -23,16 +23,20 @@ class Message extends React.Component{
                 if(data.result&&data.result.length>0){
                     this.setState({messages:data.result});
                 }
-                window.location.reload();
+                if(success){
+                    success();
+                }
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(err);
-                window.location.reload();
+                if(failed){
+                    failed();
+                }
             }.bind(this)
         });
     }
     handleReject(evt) {
-        const { message } = this.props;
+        const { message,success,failed } = this.props;
         var messageId = message.id;
         $.ajax({
             url: "/users/message/" + messageId + "/reply/reject",
@@ -43,10 +47,15 @@ class Message extends React.Component{
                 if(data.result&&data.result.length>0){
                     this.setState({messages:data.result});
                 }
-                window.location.reload();
+                if(success){
+                    success();
+                }
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
+                if(failed){
+                    failed();
+                }
             }.bind(this)
         });
     }
