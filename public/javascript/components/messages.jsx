@@ -57,7 +57,7 @@ class Messages extends React.Component{
         var messageViews = [];
         var me = this;
         messages.forEach(function(msg){
-            messageViews.push(<Message success = {me.componentDidMount} failed = {me.componentDidMount} message={msg}/>)
+            messageViews.push(<Message success={me.componentDidMount} failed={me.componentDidMount} message={msg}/>)
         });
         return  <div style={{ background: '#ECECEC'}}>
             <Card className="main-panel" title="消息管理" bordered={false}>
