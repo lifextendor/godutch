@@ -201,8 +201,8 @@ router.post('/group/:id/leave',function(req, res, next) {
 /**
  * 算账
  * rest服务相对地址："/users/group/1/updatemoney"，其中1为团Id，http方法为:“PUT”
- * 请求参数如下：{total:10,members:[{provider:'qq',user_id:1,money:10}],dataTime:121321313,bill:[{provider:'qq',user_id:1,number:1},{provider:'qq',user_id:2,number:2}]}
- * 其中total为消费总额，members为成员及其余额，dataTime为计算时间（单位为毫秒），bill为当前消费帐单，为消费涉及的成员及其人数
+ * 请求参数如下：{total:33,members:[{provider:'qq',user_id:1,money:10}],dataTime:121321313,bill:[{provider:'qq',user_id:1,money:11},{provider:'qq',user_id:2,money:22}]}
+ * 其中total为消费总额，members为成员及其余额，dataTime为计算时间（单位为毫秒），bill为当前消费帐单，为消费涉及的成员及其所消费的钱
  */
 router.put('/group/:id/updatemoney',function(req, res, next) {
     var user = req.user;
