@@ -60,11 +60,16 @@ class debt extends React.Component{
                 return;
             }  
             if (this.state.selectedRows<=0) {
+                this.errorMessage();
                 return;
-            }          
+            }    
+            var stringTime = values.time + " 00:00:00";
+            var time = Date.parse(new Date(stringTime));
+            time = time / 1000;      
             var ns = this.state.selectedRows.length;
             var average = values.money/ns;            
             var members = "[";
+            var bill="[";
             for (var i = this.state.selectedRows.length - 1; i >= 0; i--) {                            
                var member={};
                if (this.state.selectedRows[i].name==this.state.host) {
@@ -75,16 +80,22 @@ class debt extends React.Component{
                member.provider=this.state.selectedRows[i].provider;
                member.user_id=this.state.selectedRows[i].key;               
                var json='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+member.money+'"}';
+               var billjson='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+average+'"}';
                members+=json;
-               if (i>0) {members+=","};
+               bill+=json;
+               if (i>0) {
+                    members+=",";
+                    bill+=",";
+                };
             }   
-            members+="]";        
+            members+="]"; 
+            bill+="]";         
             $.ajax({
             url: "/users/group/"+this.state.id+"/updatemoney",
             dataType: 'json',
             type: 'put',
             async: true,
-            data: {total:values['money'],members:members,dateTime:values.time},
+            data: {total:values['money'],members:members,dateTime:time,bill:bill},
             success: function(data) {
                 this.succesMessage();
                 this.componentDidMount();      
@@ -95,7 +106,7 @@ class debt extends React.Component{
             }.bind(this)
         });              
         }); 
-        this.setState({selectedRowKeys: []});         
+        this.setState({selectedRowKeys: [],selectedRows:[]});         
     }       
     selectChange(name){
         console.log(`selected ${name}`);
@@ -181,7 +192,7 @@ class debt extends React.Component{
                                 </FormItem>
                                 </Form>
                             </div>
-                            <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data} />
+                            <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data} bordered />
                         </div>
                     </Card>
                 </div>            

@@ -102,7 +102,16 @@ class teamManage extends React.Component{
             }else{
                 fund[i]="ok";                
             }
-            type[i]=list.type;
+            if (list.grant==="CAPTAIN") {
+                type[i]=list.type;
+            }else{
+                if (list.type==="fund") {
+                    type[i]=list.type;
+                }else{
+                    type[i]="table";
+                }             
+            }
+            
         }, this)}
         var buttonStyle={margin: "2px 5px 2px 0px"};
         return  <div style={{ background: '#ECECEC'}}>                    
@@ -124,10 +133,10 @@ class teamManage extends React.Component{
                                     &nbsp;
                                     <Popconfirm title="确定要解散这个团吗？" onConfirm={this.dissolutionGroupYes.bind(this, list.id)} onCancel={this.cancel.bind(this)}>
                                     <Button type="primary" style={buttonStyle}>解 散</Button>                                    
-                                    </Popconfirm>
-                                    &nbsp;
-                                    <Button type="primary" style={buttonStyle}><Link to={ type[i]+'/'+list.id}>记 账</Link></Button>
+                                    </Popconfirm>                                    
                                     </div>
+                                    &nbsp;
+                                    <Button type="primary" style={buttonStyle}><Link to={type[i] +'/'+list.id}>{boss[i]=='ok'?'记 账':'账 本'}</Link></Button>
                                     &nbsp;                                    
                                     <Button className={fund[i]} type="primary" style={{margin: "2px 5px 2px 3px"}}><Link to={'numManage/'+list.id}>团 员</Link></Button>
                                     &nbsp;                                    

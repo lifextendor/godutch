@@ -57,6 +57,7 @@ class account extends React.Component{
     start(e) {      
         this.props.form.validateFields((errors, values) => {
             console.log(values);
+            debugger
             if (!!errors) {
                 this.errorMessage();
                 console.log('Errors in form!!!');
@@ -66,7 +67,10 @@ class account extends React.Component{
             if (this.state.selectedRows<=0) {
                 this.errorMessage();
                 return;
-            }          
+            }  
+            var stringTime = values.time + " 00:00:00";
+            var time = Date.parse(new Date(stringTime));
+            time = time / 1000;        
             var ns = 0;
             for (var i = this.state.selectedRows.length - 1; i >= 0; i--) {
                 ns+=parseInt(this.state.selectedRows[i].num.n);
@@ -74,24 +78,31 @@ class account extends React.Component{
             var average = values.money/ns; 
             if (e.target.innerText=="花 费") {
                 average=-average;
-            }            
+            }   
+            var bill="[";
             var members = "[";
             for (var i = this.state.selectedRows.length - 1; i >= 0; i--) {
                var member={};
                member.provider=this.state.selectedRows[i].provider;
                member.user_id=this.state.selectedRows[i].key;
                member.money=average*this.state.selectedRows[i].num.n+parseInt(this.state.selectedRows[i].balance);
-               var json='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+member.money+'"}';
-               members+=json;
-               if (i>0) {members+=","};
+               var membersjson='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+member.money+'"}';
+               var billjson='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+average+'"}';
+               members+=membersjson;
+               bill+=membersjson;
+               if (i>0) {
+                    members+=",";
+                    bill+=",";
+                };
             }   
             members+="]";        
+            bill+="]";        
             $.ajax({
             url: "/users/group/"+this.state.id+"/updatemoney",
             dataType: 'json',
             type: 'put',
             async: true,
-            data: {total:values['money'],members:members,dateTime:values.time},
+            data: {total:values['money'],members:members,dateTime:time,bill:bill},
             success: function(data) {
                 this.componentDidMount(); 
                 this.succesMessage();       
@@ -102,7 +113,7 @@ class account extends React.Component{
             }.bind(this)
         });              
         }); 
-        this.setState({selectedRowKeys: []});
+        this.setState({selectedRowKeys: [],selectedRows:[]});
     }       
     inputChange(e){
         var newdata=this.state.data;
@@ -182,7 +193,7 @@ class account extends React.Component{
                                 </FormItem>
                                 </Form>
                             </div>
-                            <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data} />
+                            <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data} bordered />
                         </div>
                     </Card>
                 </div>            

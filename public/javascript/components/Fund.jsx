@@ -56,14 +56,18 @@ class fund extends React.Component{
                 console.log('Errors in form!!!');
                 return;
             } 
+            var stringTime = values.time + " 00:00:00";
+            var time = Date.parse(new Date(stringTime));
+            time = time / 1000;
             var money = parseInt(this.state.data.money) + parseInt(values.money);              
             var members='[{"provider":"'+ this.state.data.provider +'","user_id":"'+ this.state.data.id +'","money":"'+ money +'"}]'; 
+            var bill='[{"provider":"'+ this.state.data.provider +'","user_id":"'+ this.state.data.id +'","money":"'+ money +'"}]'; 
             $.ajax({
             url: "/users/group/"+this.state.id+"/updatemoney",
             dataType: 'json',
             type: 'put',
             async: true,
-            data: {total:values['money'],members:members,dateTime:values.time},
+            data: {total:values['money'],members:members,dateTime:time,bill:bill},
             success: function(data) {
                 this.componentDidMount();  
                 this.succesMessage();    

@@ -1,13 +1,13 @@
 //团队管理
 import React from 'react';
-import { Card, Collapse, Button, Icon, Affix,  Popconfirm, message } from 'antd';
+import { Card, Collapse, Button, Icon, Affix,  Popconfirm, message, Table } from 'antd';
 import {Link} from 'react-router';
 const Panel = Collapse.Panel;
 
 class numManage extends React.Component{ 
     constructor(props) {
         super(props);        
-        this.state={id:this.props.params.id,numList:[],power:'hidden'};
+        this.state={id:this.props.params.id,numList:[],columns:[],grant:''};
     }
     succesMessage() {
       return notification['success']({
@@ -34,12 +34,10 @@ class numManage extends React.Component{
             type: 'get',
             async: true,
             success: function(data) { 
-            debugger               
-                if (data.result.grant==='CAPTAIN') {
-                    this.setState({numList:data.result.members,power:'ok'});                    
-                }else{
-                    this.setState({numList:data.result.members,power:'hidden'});                    
-                }                                        
+                for (var i = data.result.members.length - 1; i >= 0; i--) {
+                    data.result.members[i].copyuserId=data.result.members[i].userId;
+                }
+                this.setState({numList:data.result.members,grant:data.result.grant});                                                                                                         
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -83,33 +81,40 @@ class numManage extends React.Component{
     cancel() {
         this.infoMessage();  
     }    
-    render(){
+    render(){        
+        const columnsall = [
+            {title: '姓名',dataIndex: 'user_name'}, 
+            {title: '类型',dataIndex: 'provider'},         
+            {
+                title: '授权',
+                dataIndex: 'copyuserId',
+                render: (copyuserId) => <Popconfirm title="确定要给这个团员授权吗？" onConfirm={this.powerGroupYes.bind({copyuserId})} onCancel={this.cancel.bind(this)}><Button type="primary">{'删除'}</Button></Popconfirm>,
+            },
+            {
+                title: '开除',
+                dataIndex: 'userId',
+                render: (userId) => <Popconfirm title="确定要开除这个团员吗？" onConfirm={this.expelGroupYes.bind({userId})} onCancel={this.cancel.bind(this)}><Button type="primary">{'授权'}</Button></Popconfirm>,
+            }
+        ];
+        const columns = [
+            {title: '姓名',dataIndex: 'user_name'}, 
+            {title: '类型',dataIndex: 'provider'}                    
+        ];
+        this.state.columns=columns;
+        if (this.state.grant==='CAPTAIN') {
+            this.state.columns=columnsall;
+        }else{
+            this.state.columns=columns;
+        } 
         return  <div style={{ background: '#ECECEC'}}>                    
                     <Card className="main-panel" title="团队" bordered={false}>
                         <div className="col-md-offset-2 col-sm-offset-1 col-md-8 col-sm-10">
                             <Card title="团员列表">
-                                <Collapse accordion>
-                                 {this.state.numList.map(function(list, i) {
-                                return (
-                                    <Panel header={list.user_name} key={i}>
-                                        <div className={this.state.power}>                                                                                
-                                        <Popconfirm title="确定要开除这个团员吗？" onConfirm={this.expelGroupYes.bind(this,list.provider,list.userId)} onCancel={this.cancel.bind(this)}>
-                                            <Button className="tool-button"  type="primary">开除</Button>
-                                        </Popconfirm>                                        
-                                        &nbsp;
-                                        <Popconfirm title="确定要给这个团员授权吗？" onConfirm={this.powerGroupYes.bind(this,list.provider,list.userId)} onCancel={this.cancel.bind(this)}>
-                                        <Button className="tool-button" type="primary">授权</Button> 
-                                        </Popconfirm>
-                                        </div>                                                                
-                                    </Panel>
-                                    );
-                                }, this)} 
-                                </Collapse>                                
+                                <Table columns={this.state.columns} dataSource={this.state.numList} bordered />                               
                             </Card>
                         </div>                                            
                     </Card>
                 </div>
     }
 }
-// numManage.defaultProps={myList:myList};//设置默认属性
 export default numManage;

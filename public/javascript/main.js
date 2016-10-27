@@ -14,6 +14,7 @@ import messages from './components/messages';
 import normal from './components/account';//分摊
 import bill from './components/debt';//欠账
 import fund from './components/fund';//经费
+import table from './components/table';//团员查看
 import feedback from './components/feedback';
 import './stylesheets/index.scss'
 
@@ -45,6 +46,7 @@ ReactDOM.render((
             <Route path="normal/:id" component={normal} />
             <Route path="bill/:id" component={bill} />
             <Route path="fund/:id" component={fund} />
+            <Route path="table/:id" component={table} />
             <Route path="billManage/:id" component={billManage} />
             <Route path="messages" component={messages} />
             <Route path="feedback" component={feedback} />
