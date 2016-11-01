@@ -1,12 +1,23 @@
 //团队管理
 import React from 'react';
-import { Card, Collapse, Button, Icon, Affix,  Popconfirm, message, Table } from 'antd';
+import { Card, Collapse, Button, Icon, Affix,  Popconfirm, message, Table, notification } from 'antd';
 import {Link} from 'react-router';
 const Panel = Collapse.Panel;
+notification.config({
+      top: 60,
+      duration: 3,
+    }) 
+var GRANT = {
+    CAPTAIN:'团长',   
+    VICECAPTAIN:'副团长',
+    TEAMMEMBER:'团员'
+};
+var that='';
 
 class numManage extends React.Component{ 
     constructor(props) {
-        super(props);        
+        super(props);  
+        that=this;     
         this.state={id:this.props.params.id,numList:[],columns:[],grant:''};
     }
     succesMessage() {
@@ -29,13 +40,14 @@ class numManage extends React.Component{
     } 
     componentDidMount(){
         $.ajax({
-            url: "/users/group/"+this.props.params.id,
+            url: "/users/group/"+this.state.id,
             dataType: 'json',
             type: 'get',
             async: true,
             success: function(data) { 
                 for (var i = data.result.members.length - 1; i >= 0; i--) {
                     data.result.members[i].copyuserId=data.result.members[i].userId;
+                    data.result.members[i].power=GRANT[data.result.members[i].grant];
                 }
                 this.setState({numList:data.result.members,grant:data.result.grant});                                                                                                         
             }.bind(this),
@@ -44,61 +56,101 @@ class numManage extends React.Component{
             }.bind(this)
         });
     }
-    expelGroupYes(provider,user_id) {        
+    expelGroupYes(user_id,provider) {     
+    debugger   
         $.ajax({            
-            url: "/users/group/"+this.state.id+"/deletemember",
+            url: "/users/group/"+that.state.id+"/deletemember",
             dataType: 'json',
             type: 'POST',
-            data:{provider:provider,user_id:user_id},
+            data:'{provider:"'+provider+'",user_id:"'+user_id+'"}',
             success: function(data) {                
-                this.componentDidMount();
-                this.setState({numList:this.state.numList});
-                this.succesMessage();
-            }.bind(this),
+                that.componentDidMount();
+                that.setState({numList:that.state.numList});
+                that.succesMessage();
+            }.bind(that),
             error: function(xhr, status, err) {                
-                console.log(this.props.url, status, err.toString());
+                console.log(that.props.url, status, err.toString());
                 this.errorMessage();
-            }.bind(this)
+            }.bind(that)
         });
     }
-    powerGroupYes(provider,user_id) {
+    powerGroupYes(user_id,provider) {
+        debugger
         $.ajax({
-            url: "/users/group/"+id+"/authorize",
+            url: "/users/group/"+that.state.id+"/authorize",
             dataType: 'json',
             type: 'POST',
-            data:{provider:provider,user_id:user_id},
+            data:'{provider:"'+provider+'",user_id:"'+user_id+'"}',
             success: function(data) {                
-                this.componentDidMount();
-                this.setState({numList:this.state.numList});
-                this.succesMessage();
-            }.bind(this),
+                that.componentDidMount();
+                that.setState({numList:that.state.numList});
+                that.succesMessage();
+            }.bind(that),
             error: function(xhr, status, err) {
-                console.log(this.props.url, status, err.toString());
-                this.errorMessage();
-            }.bind(this)
+                console.log(that.props.url, status, err.toString());
+                that.errorMessage();
+            }.bind(that)
         });        
     }
     cancel() {
-        this.infoMessage();  
+        that.infoMessage();  
     }    
     render(){        
         const columnsall = [
             {title: '姓名',dataIndex: 'user_name'}, 
-            {title: '类型',dataIndex: 'provider'},         
+            {title: '类型',dataIndex: 'power'},       
             {
                 title: '授权',
                 dataIndex: 'copyuserId',
-                render: (copyuserId) => <Popconfirm title="确定要给这个团员授权吗？" onConfirm={this.powerGroupYes.bind({copyuserId})} onCancel={this.cancel.bind(this)}><Button type="primary">{'删除'}</Button></Popconfirm>,
+                render: (copyuserId) => {
+                    var isuser=false;
+                    var provider='';
+                    for (var i = this.state.numList.length - 1; i >= 0; i--) {
+                        if(this.state.numList[i].userId==copyuserId){
+                            provider=this.state.numList[i].provider;
+                            if (this.state.numList[i].grant=="CAPTAIN") {                                
+                                isuser=true;
+                                break;
+                            }                        
+                        }
+                    }
+                    if (isuser) {
+                        return;
+                    }else{
+                        return  <Popconfirm title="确定要给这个团员授权吗？" onConfirm={this.powerGroupYes.bind(this,copyuserId,provider)} onCancel={this.cancel.bind(this)}>
+                                <Button type="primary">{'授权'}</Button>
+                                </Popconfirm>
+                    }    
+                }
             },
             {
                 title: '开除',
                 dataIndex: 'userId',
-                render: (userId) => <Popconfirm title="确定要开除这个团员吗？" onConfirm={this.expelGroupYes.bind({userId})} onCancel={this.cancel.bind(this)}><Button type="primary">{'授权'}</Button></Popconfirm>,
+                render: (userId) => {
+                    var isuser=false;
+                    var provider='';
+                    for (var i = this.state.numList.length - 1; i >= 0; i--) {
+                        if(this.state.numList[i].userId==userId){
+                            provider=this.state.numList[i].provider;
+                            if (this.state.numList[i].grant=="CAPTAIN") {                                
+                                isuser=true;
+                                break;
+                            }                        
+                        }
+                    }
+                    if (isuser) {
+                        return;
+                    }else{
+                        return  <Popconfirm title="确定要开除这个团员吗？" onConfirm={this.expelGroupYes.bind(this,userId,provider)} onCancel={this.cancel.bind(this)}>
+                                <Button type="primary">{'开除'}</Button>
+                                </Popconfirm>
+                    }   
+                }
             }
         ];
         const columns = [
             {title: '姓名',dataIndex: 'user_name'}, 
-            {title: '类型',dataIndex: 'provider'}                    
+            {title: '类型',dataIndex: 'power'}                    
         ];
         this.state.columns=columns;
         if (this.state.grant==='CAPTAIN') {
