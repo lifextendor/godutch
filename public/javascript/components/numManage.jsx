@@ -62,7 +62,7 @@ class numManage extends React.Component{
             url: "/users/group/"+that.state.id+"/deletemember",
             dataType: 'json',
             type: 'POST',
-            data:'{provider:"'+provider+'",user_id:"'+user_id+'"}',
+            data:{provider:provider,user_id:user_id},
             success: function(data) {                
                 that.componentDidMount();
                 that.setState({numList:that.state.numList});
@@ -79,8 +79,8 @@ class numManage extends React.Component{
         $.ajax({
             url: "/users/group/"+that.state.id+"/authorize",
             dataType: 'json',
-            type: 'POST',
-            data:'{provider:"'+provider+'",user_id:"'+user_id+'"}',
+            type: 'PUT',
+            data:{provider:provider,user_id:user_id},
             success: function(data) {                
                 that.componentDidMount();
                 that.setState({numList:that.state.numList});

@@ -304,7 +304,7 @@ function addMemberByInvite(groupId,memberInfo,money){
  * */
 function deleteMember(groupId,provider,userId,memberInfo){
 	var queryDoc = {id:groupId},
-		updateDoc = {'$pull':{members:{'user.provider':provider,'user.user_id':userId}}};
+		updateDoc = {'$pull':{members:{'user.provider':memberInfo.provider,'user.user_id':memberInfo.user_id}}};
 	return updateMemberWithCheck(OPERATE.Manage,queryDoc,groupId, provider,userId,updateDoc);
 }
 
@@ -374,7 +374,7 @@ function updateMoney(groupId,provider,userId,memberInfos){
  * */
 function authorize(groupId,provider,userId,memberInfo,reverse){
 	var grant = reverse ? GRANT.TeamMember : GRANT.ViceCapTain;
-	var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.userId},
+	var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.user_id},
 		updateDoc = {'$set':{'members.$.grant':grant}};
 	//只有团长有权限执行此操作
 	return updateMemberWithCheck(OPERATE.Manage,queryDoc,groupId, provider,userId,updateDoc);
