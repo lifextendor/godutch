@@ -126,7 +126,8 @@ function findGroupByCreator(provider,userId){
 					description:docs[i].description,
 					createTime:docs[i].createtime,
 					type:docs[i].type,
-					grant:grant
+					grant:grant,
+					updateTime:docs[i].lastModified
 				};
 				results.push(result);
 			}
@@ -162,7 +163,8 @@ function findGroupByMember(provider,userId){
 					description:docs[i].description,
 					createTime:docs[i].createtime,
 					type:docs[i].type,
-					grant:grant
+					grant:grant,
+					updateTime:docs[i].lastModified
 				};
 				results.push(result);
 			}
@@ -239,7 +241,8 @@ function findGroupByUser(provider,userId){
 						description:docs[i].description,
 						createTime:docs[i].createtime,
 						type:docs[i].type,
-						grant:grant
+						grant:grant,
+						updateTime:docs[i].lastModified
 					};
 					results.push(result);
 				}
