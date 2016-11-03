@@ -64,8 +64,7 @@ class debt extends React.Component{
                 return;
             }    
             var stringTime = values.time + " 00:00:00";
-            var time = Date.parse(new Date(stringTime));
-            time = time / 1000;      
+            var time = (new Date(stringTime)).getTime();   
             var ns = this.state.selectedRows.length;
             var average = values.money/ns;            
             var members = "[";

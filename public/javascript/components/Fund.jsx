@@ -57,8 +57,7 @@ class fund extends React.Component{
                 return;
             } 
             var stringTime = values.time + " 00:00:00";
-            var time = Date.parse(new Date(stringTime));
-            time = time / 1000;
+            var time = (new Date(stringTime)).getTime();
             var money = parseInt(this.state.data.money) + parseInt(values.money);              
             var members='[{"provider":"'+ this.state.data.provider +'","user_id":"'+ this.state.data.id +'","money":"'+ money +'"}]'; 
             var bill='[{"provider":"'+ this.state.data.provider +'","user_id":"'+ this.state.data.id +'","money":"'+ money +'"}]'; 

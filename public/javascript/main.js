@@ -40,14 +40,14 @@ ReactDOM.render((
         <Route path="/" component={App}>
             <IndexRoute path="" component={navigation} />
             <Route path="createTeam" component={createTeam} />
-            <Route path="teamManage" component={teamManage} /> 
+            <Route path="teamManage" component={teamManage} />
+            <Route path="billManage" component={billManage} /> 
             <Route path="numManage/:id" component={numManage} />
             <Route path="invitation/:id" component={invitation} />
             <Route path="normal/:id" component={normal} />
             <Route path="bill/:id" component={bill} />
             <Route path="fund/:id" component={fund} />
-            <Route path="table/:id" component={table} />
-            <Route path="billManage/:id" component={billManage} />
+            <Route path="table/:id" component={table} />            
             <Route path="messages" component={messages} />
             <Route path="feedback" component={feedback} />
         </Route>
