@@ -47,7 +47,7 @@ function findBillByDateTime(provider,userId,from,to){
         if(!evt){
             return;
         }
-        deferred.resolve(evt.doc);
+        deferred.resolve(evt.docs);
         evt.db.close();
     });
     return findBillPromise;
