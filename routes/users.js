@@ -446,7 +446,7 @@ router.get('/message/:id/reply/:type',function(req, res, next){
 
 /**
  * 查询帐单
- * rest服务相对地址："/users/from/12311313/to/1231313132"，http方法为:“GET”
+ * rest服务相对地址："/users/bills/from/12311313/to/1231313132"，http方法为:“GET”
  * 请求参数用from后面的数字代表起始时间，to后面的数字代表结束时间，两个的时间的单位都是毫秒
  */
 router.get('/bills/from/:from/to/:to',function(req, res, next){
@@ -457,8 +457,8 @@ router.get('/bills/from/:from/to/:to',function(req, res, next){
             from = req.params.from,
             to = req.params.to;
         try{
-            Bill.findBillByDateTime(provider,user_id,from,to).then(function(){
-                res.send({result:'success',operate:'getbill'});
+            Bill.findBillByDateTime(provider,user_id,from,to).then(function(result){
+                res.send({result:result,operate:'getbill'});
             }).catch(function(){
                 res.status(500).send({result:'failure',operate:'getbill'});
             });
