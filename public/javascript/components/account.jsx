@@ -70,7 +70,6 @@ class account extends React.Component{
             }  
             var stringTime = values.time + " 00:00:00";
             var time = (new Date(stringTime)).getTime();
-            time = time / 1000;        
             var ns = 0;
             for (var i = this.state.selectedRows.length - 1; i >= 0; i--) {
                 ns+=parseInt(this.state.selectedRows[i].num.n);

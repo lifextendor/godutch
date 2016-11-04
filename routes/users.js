@@ -214,7 +214,7 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
             totalMoney = reqBody.total,
             members = JSON.parse(reqBody.members),
             bill = JSON.parse(reqBody.bill),
-            dateTime = reqBody.dateTime;
+            dateTime = +reqBody.dateTime;
         try{
             Group.updateMoney(groupId,provider,user_id,members).then(function(){
                 Bill.createBill({
@@ -454,8 +454,8 @@ router.get('/bills/from/:from/to/:to',function(req, res, next){
     if(user) {
         var provider = user.provider,
             user_id = user.id || user.userID,
-            from = req.params.from,
-            to = req.params.to;
+            from = +req.params.from,
+            to = +req.params.to;
         try{
             Bill.findBillByDateTime(provider,user_id,from,to).then(function(result){
                 res.send({result:result,operate:'getbill'});

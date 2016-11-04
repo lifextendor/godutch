@@ -39,7 +39,7 @@ function findBillByDateTime(provider,userId,from,to){
         if(!evt){
             return;
         }
-        var queryDoc = {'members.$.provider':provider,'members.$.user_id':userId,'datetime':{'$gt':from,'$lt':to}};
+        var queryDoc = {'members.provider':provider,'members.user_id':userId,'datetime':{'$gt':from,'$lt':to}};
         return DbUtil.queryDoc(evt.db,evt.col,queryDoc,function(evt){
             deferred.reject(evt);
         });
