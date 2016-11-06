@@ -5,8 +5,8 @@ const FormItem = Form.Item;
 var username=window.userName;
 
 const columns = [
-    {title: '时间',dataIndex: 'time'}, 
-    {title: '消费记录',dataIndex: 'mark'}
+    {title: '时间',dataIndex: 'time',width:'30%'}, 
+    {title: '消费记录',dataIndex: 'mark',width:'70%'}
     ];
 
 class billManage extends React.Component{ 
