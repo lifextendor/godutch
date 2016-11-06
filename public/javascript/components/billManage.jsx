@@ -18,9 +18,9 @@ class billManage extends React.Component{
     query(){
       this.props.form.validateFields((errors, values) => {
         debugger
-        var starttime = values.starttime + " 00:00:00";
+        var starttime = (new Date(values.starttime)).toLocaleDateString() + " 00:00:00";
         starttime = (new Date(starttime)).getTime();
-        var endtime = values.endtime + " 23:59:59";
+        var endtime = (new Date(values.endtime)).toLocaleDateString() + " 23:59:59";
         endtime = (new Date(endtime)).getTime();
         $.ajax({
             url: "/users/bills/from/"+ starttime +"/to/" + endtime,
@@ -30,10 +30,10 @@ class billManage extends React.Component{
             success: function(data) {
                 debugger
                 var list = [];
-                for (var i = data.length - 1; i >= 0; i--) {
-                    var lis = data[i];
-                    for (var j = lis.length - 1; j >= 0; j--) {
-                      var li = { time:lis,user:lis.members[j]["user_id"],money:lis.members[j]["money"]};
+                for (var i = data.result.length - 1; i >= 0; i--) {
+                    var lis = data.result[i];
+                    for (var j = lis.members.length - 1; j >= 0; j--) {
+                      var li = { time:(new Date(lis.datetime)).toLocaleDateString(),user:lis.members[j]["name"],money:lis.members[j]["money"]};
                       list.push(li);
                     }
                 }                
@@ -45,11 +45,6 @@ class billManage extends React.Component{
         }); 
       });    
     }      
-    onSelectChange(selectedRowKeys) {
-        debugger
-        console.log('selectedRowKeys changed: ', selectedRowKeys);       
-        this.setState({ selectedRowKeys });
-    }
     render(){
         const { getFieldProps } = this.props.form;
         const starttime = getFieldProps('starttime', {
@@ -79,8 +74,8 @@ class billManage extends React.Component{
                           <DatePicker {...endtime} name="endtime" format="yyyy-MM-dd" />
                         </FormItem>
                         <FormItem wrapperCol={{ span: 12, offset: 7 }}>
-                                  <Button type="primary" onClick={this.query.bind(this)}>查询</Button>                                  
-                                </FormItem>
+                          <Button type="primary" onClick={this.query.bind(this)}>查询</Button>                                  
+                        </FormItem>
                         </Form>                         
                         <Table columns={columns} dataSource={this.state.list} />
                         </div>

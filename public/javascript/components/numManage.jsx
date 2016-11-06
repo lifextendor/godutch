@@ -18,7 +18,7 @@ class numManage extends React.Component{
     constructor(props) {
         super(props);  
         that=this;     
-        this.state={id:this.props.params.id,numList:[],columns:[],grant:''};
+        this.state={id:this.props.params.id,numList:[],columns:[],grant:'',power:'授权'};
     }
     succesMessage() {
       return notification['success']({
@@ -74,8 +74,14 @@ class numManage extends React.Component{
             }.bind(that)
         });
     }
+    power(user_id,provider,power){
+        if (power=='授权') {
+            this.powerGroupYes(provider,power);
+        }else{
+            this.powerGroupNo(provider,power);            
+        }
+    }
     powerGroupYes(user_id,provider) {
-        debugger
         $.ajax({
             url: "/users/group/"+that.state.id+"/authorize",
             dataType: 'json',
@@ -83,7 +89,24 @@ class numManage extends React.Component{
             data:{provider:provider,user_id:user_id},
             success: function(data) {                
                 that.componentDidMount();
-                that.setState({numList:that.state.numList});
+                that.setState({power:'取消授权'});
+                that.succesMessage();
+            }.bind(that),
+            error: function(xhr, status, err) {
+                console.log(that.props.url, status, err.toString());
+                that.errorMessage();
+            }.bind(that)
+        });        
+    }
+    powerGroupNo(user_id,provider) {
+        $.ajax({
+            url: "/users/group/"+that.state.id+"/deauthorize",
+            dataType: 'json',
+            type: 'PUT',
+            data:{provider:provider,user_id:user_id},
+            success: function(data) {                
+                that.componentDidMount();
+                that.setState({power:'授权'});
                 that.succesMessage();
             }.bind(that),
             error: function(xhr, status, err) {
@@ -94,7 +117,7 @@ class numManage extends React.Component{
     }
     cancel() {
         that.infoMessage();  
-    }    
+    }  
     render(){        
         const columnsall = [
             {title: '姓名',dataIndex: 'user_name'}, 
@@ -117,8 +140,8 @@ class numManage extends React.Component{
                     if (isuser) {
                         return;
                     }else{
-                        return  <Popconfirm title="确定要给这个团员授权吗？" onConfirm={this.powerGroupYes.bind(this,copyuserId,provider)} onCancel={this.cancel.bind(this)}>
-                                <Button type="primary">{'授权'}</Button>
+                        return  <Popconfirm title="确定操作吗？" onConfirm={this.power.bind(this,copyuserId,provider,this.state.power)} onCancel={this.cancel.bind(this)}>
+                                <Button type="primary">{this.state.power}</Button>
                                 </Popconfirm>
                     }    
                 }
@@ -160,6 +183,7 @@ class numManage extends React.Component{
         } 
         return  <div style={{ background: '#ECECEC'}}>                    
                     <Card className="main-panel" title="团队" bordered={false}>
+                    <span className="goback"><Link to="teamManage">返回</Link></span>
                         <div className="col-md-offset-2 col-sm-offset-1 col-md-8 col-sm-10">
                             <Card title="团员列表">
                                 <Table columns={this.state.columns} dataSource={this.state.numList} bordered />                               

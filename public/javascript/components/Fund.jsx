@@ -1,5 +1,6 @@
 //账单
 import React from 'react';
+import {Link} from 'react-router';
 import { Form, Input, Card, Button, DatePicker, notification } from 'antd';
 const FormItem = Form.Item;
 var username=window.userName; 
@@ -56,14 +57,14 @@ class fund extends React.Component{
                 console.log('Errors in form!!!');
                 return;
             } 
-            var stringTime = values.time + " 00:00:00";
+            var stringTime = (new Date(values.time)).toLocaleDateString() + " 00:00:00";
             var time = (new Date(stringTime)).getTime();
             var money = parseInt(this.state.data.money) + parseInt(values.money);              
             var members='[{"provider":"'+ this.state.data.provider +'","user_id":"'+ this.state.data.id +'","money":"'+ money +'"}]'; 
-            var bill='[{"provider":"'+ this.state.data.provider +'","user_id":"'+ this.state.data.id +'","money":"'+ money +'"}]'; 
+            var bill='[{"provider":"'+ this.state.data.provider +'","user_id":"'+ this.state.data.id +'","money":"'+ money +'","name":"'+member.name+'"}]'; 
             $.ajax({
             url: "/users/group/"+this.state.id+"/updatemoney",
-            dataType: 'json',
+            dataType: 'json', 
             type: 'put',
             async: true,
             data: {total:values['money'],members:members,dateTime:time,bill:bill},
@@ -109,6 +110,7 @@ class fund extends React.Component{
 
         return  <div style={{ background: '#ECECEC'}}>
                     <Card className="main-panel" title="记账" bordered={false}>
+                        <span className="goback"><Link to="teamManage">返回</Link></span>
                         <div className="col-md-offset-2 col-sm-offset-1 col-md-8 col-sm-10">
                             <div style={{ marginBottom: 16 }}>
                                 <Form horizontal form={this.props.form}>

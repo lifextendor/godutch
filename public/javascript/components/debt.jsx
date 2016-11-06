@@ -1,5 +1,6 @@
 //账单
 import React from 'react';
+import {Link} from 'react-router';
 import { Form, Input, Card, Table, Button, DatePicker, Select, notification } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -63,7 +64,7 @@ class debt extends React.Component{
                 this.errorMessage();
                 return;
             }    
-            var stringTime = values.time + " 00:00:00";
+            var stringTime = (new Date(values.time)).toLocaleDateString() + " 00:00:00";
             var time = (new Date(stringTime)).getTime();   
             var ns = this.state.selectedRows.length;
             var average = values.money/ns;            
@@ -77,11 +78,12 @@ class debt extends React.Component{
                     member.money=this.state.selectedRows[i].balance-average;
                }
                member.provider=this.state.selectedRows[i].provider;
-               member.user_id=this.state.selectedRows[i].key;               
+               member.user_id=this.state.selectedRows[i].key; 
+               member.name=this.state.selectedRows[i].name;              
                var json='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+member.money+'"}';
-               var billjson='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+average+'"}';
+               var billjson='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+average+'","name":"'+member.name+'"}';
                members+=json;
-               bill+=json;
+               bill+=billjson;
                if (i>0) {
                     members+=",";
                     bill+=",";
@@ -148,6 +150,7 @@ class debt extends React.Component{
         ];
         return  <div style={{ background: '#ECECEC'}}>
                     <Card className="main-panel" title="记账" bordered={false}>
+                        <span className="goback"><Link to="teamManage">返回</Link></span>
                         <div className="col-md-offset-2 col-sm-offset-0 col-md-8 col-sm-12">
                             <div style={{ marginBottom: 16 }}>
                                 <Form horizontal form={this.props.form}>

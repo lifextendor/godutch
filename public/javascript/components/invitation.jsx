@@ -1,5 +1,6 @@
 //邀请团员
 import React from 'react';
+import {Link} from 'react-router';
 import SearchInput from './searchInput';
 import {Card, Form, Input, Select, Button, Checkbox, notification } from 'antd';
 const FormItem = Form.Item;
@@ -53,6 +54,7 @@ class invitation extends React.Component{
         };
         return  <div style={{ background: '#ECECEC'}}>
                     <Card className="main-panel" title="邀请团员" bordered={false}>
+                      <span className="goback"><Link to="teamManage">返回</Link></span>
                       <div className="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">                       
                         <Form horizontal form={this.props.form}>
                             <FormItem
