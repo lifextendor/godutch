@@ -76,9 +76,9 @@ class numManage extends React.Component{
     }
     power(user_id,provider,power){
         if (power=='授权') {
-            this.powerGroupYes(provider,power);
+            this.powerGroupYes(user_id,provider);
         }else{
-            this.powerGroupNo(provider,power);            
+            this.powerGroupNo(user_id,provider);            
         }
     }
     powerGroupYes(user_id,provider) {
