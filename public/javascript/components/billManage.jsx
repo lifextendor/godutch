@@ -6,8 +6,7 @@ var username=window.userName;
 
 const columns = [
     {title: '时间',dataIndex: 'time'}, 
-    {title: '成员',dataIndex: 'user'}, 
-    {title: '消费',dataIndex: 'money'}
+    {title: '消费记录',dataIndex: 'mark'}
     ];
 
 class billManage extends React.Component{ 
@@ -28,14 +27,19 @@ class billManage extends React.Component{
             type: 'get',
             async: true,
             success: function(data) {
-                debugger
-                var list = [];
+                debugger 
+                var list = [];               
                 for (var i = data.result.length - 1; i >= 0; i--) {
                     var lis = data.result[i];
+                    var li={};
+                    var one = [];
+                    li.time=(new Date(lis.datetime)).toLocaleDateString();                    
                     for (var j = lis.members.length - 1; j >= 0; j--) {
-                      var li = { time:(new Date(lis.datetime)).toLocaleDateString(),user:lis.members[j]["name"],money:lis.members[j]["money"]};
-                      list.push(li);
+                      var mark = lis.members[j]["name"]+' 消费：'+lis.members[j]["money"]+'；';
+                      one.push(mark);
                     }
+                    li.mark=one;
+                    list.push(li);
                 }                
                 this.setState({list:list});
             }.bind(this),
