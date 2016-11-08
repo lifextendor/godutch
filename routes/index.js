@@ -28,14 +28,14 @@ router.get('/', function(req, res, next) {
                      });
                  }else{
                      addUser(user,function(userInfo){
-                         res.render('index',{title:TITLE,user:userInfo.user_name,root:root});
+                         res.render('index',{title:TITLE,user:userInfo.user_name,root:root,messages:0});
                      },function(){
                          res.render('users',{title:TITLE,root:root});
                      });
                  }
              }).catch(function(){
                  addUser(user,function(userInfo){
-                     res.render('index',{title:TITLE,user:userInfo.user_name,root:root});
+                     res.render('index',{title:TITLE,user:userInfo.user_name,root:root,messages:0});
                  },function(){
                      res.render('users',{title:TITLE,root:root});
                  });

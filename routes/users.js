@@ -36,6 +36,8 @@ router.get('/findusers/:userNameOrUserId', function (req, res, next) {
  */
 router.put('/creategroup', function (req, res, next) {
     var user = req.user;
+    console.info(user);
+    console.info(req);
     if(user){
         var provider = user.provider;
         var user_id = user.id || user.userID;
@@ -216,7 +218,9 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
             bill = JSON.parse(reqBody.bill),
             dateTime = +reqBody.dateTime;
         try{
+            console.info('begin updatemoney');
             Group.updateMoney(groupId,provider,user_id,members).then(function(){
+                console.info('begin createBill');
                 Bill.createBill({
                     id:Util.getGuid(),
                     groupid:groupId,

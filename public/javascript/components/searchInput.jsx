@@ -41,7 +41,7 @@ class SearchInput extends React.Component{
                 <input style={{display:'none'}} name='provider' value={provider}></input>
                 <input style={{display:'none'}} name='user_id' value={user_id}></input>
                 <ul>{items.map(function(item){
-                    return <li className='search-list' data-provider={item.provider} data-userid={item.user_id} data-name={item.user_name} onClick={that.handleSelect.bind(that)}>{item.name}</li>
+                    return <li className='search-list' data-provider={item.provider} data-userid={item.user_id} data-name={item.user_name||item.nickname} onClick={that.handleSelect.bind(that)}>{item.user_name||item.nickname}</li>
                 })}
                 </ul>
             </div>
