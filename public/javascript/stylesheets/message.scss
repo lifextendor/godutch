@@ -2,6 +2,16 @@
   border: 2px solid #ececec;
   margin: 20px 100px;
 }
+@media screen and （max-width： 980px） {
+	.message{
+  		margin: 10px 0px;
+	}
+}
+@media screen and （max-width： 650px） {
+	.message{
+  		margin: 10px -2px;
+	}
+}
 .message .close-btn{
   height: 32px;
   width: 32px;
