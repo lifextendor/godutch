@@ -67,6 +67,10 @@ function getCollection(db,cName){
 
 function insertDocument(db,collection, docs) {
     var deferred = when.defer();
+    for(var i = 0, len = docs.length; i<len;i++){
+        var doc = docs[i];
+        doc.lastModifyTime = new Date().getTime();
+    }
     collection.insertMany(docs, function(err, doc) {
         if (err) {
             deferred.reject({db:db,err:err});
@@ -79,12 +83,17 @@ function insertDocument(db,collection, docs) {
 
 function updateDocument(db,collection, query, updateDoc) {
     var deferred = when.defer();
-    updateDoc.$currentDate = {lastModified: true};
+    updateDoc.$set.lastModifyTime = new Date().getTime();
+    console.log('updateDoc begin');
     collection.updateOne(query, updateDoc, function(err, doc) {
         if (err) {
+            console.log('updateDoc err');
+            console.log(err);
             deferred.reject({db:db,err:err});
             return deferred.promise;
         }
+        console.log('updateDoc end');
+        console.log(doc);
         deferred.resolve({db:db,doc:doc,type:'update'});
     });
     return deferred.promise;

@@ -127,7 +127,7 @@ function findGroupByCreator(provider,userId){
 					createTime:docs[i].createtime,
 					type:docs[i].type,
 					grant:grant,
-					updateTime:docs[i].lastModified
+					updateTime:docs[i].lastModifyTime
 				};
 				results.push(result);
 			}
@@ -164,7 +164,7 @@ function findGroupByMember(provider,userId){
 					createTime:docs[i].createtime,
 					type:docs[i].type,
 					grant:grant,
-					updateTime:docs[i].lastModified
+					updateTime:docs[i].lastModifyTime
 				};
 				results.push(result);
 			}
@@ -242,7 +242,7 @@ function findGroupByUser(provider,userId){
 						createTime:docs[i].createtime,
 						type:docs[i].type,
 						grant:grant,
-						updateTime:docs[i].lastModified
+						updateTime:docs[i].lastModifyTime
 					};
 					results.push(result);
 				}
@@ -349,6 +349,7 @@ function deauthorizeViceCapTain(groupId,provider,userId,memberInfo){
 function updateMoney(groupId,provider,userId,memberInfos){
 	var deferred = when.defer(),
 		updateMoneyPromise = deferred.promise;
+		console.info('updateMoney begin checkGrant')
 	checkGrant(OPERATE.Count,groupId,provider,userId).then(function(){
 		var promises = [];
 		for(var i = 0, len = memberInfos.length; i < len; i++){
@@ -358,13 +359,16 @@ function updateMoney(groupId,provider,userId,memberInfos){
 			var promise = updateMember(queryDoc, updateDoc);
 			promises.push(promise);
 		}
+		console.info('updateMoney checkGrant end')
 		when.all(promises).then(function(){
+			console.info('updateMoney end')
 			deferred.resolve();
 		}).catch(function(){
 			deferred.reject();
 			console.log('update Money failed.date:'+new Date().getTime());
 		});
 	}).catch(function(){
+		console.log('updateMoney begin checkGrant failed.date:'+new Date().getTime());
 		deferred.reject();
 	});
 	return updateMoneyPromise;
@@ -413,8 +417,10 @@ function updateMember(queryDoc, updateDoc){
 	}).catch(function(evt){
 		deferred.reject(evt);
 	}).then(function(evt){
+		console.log('updateMember begin update');
 		return DbUtil.updateDoc(evt.db,evt.col,queryDoc,updateDoc);
 	}).done(function(evt){
+		console.log('updateMember update end');
 		deferred.resolve(evt.doc);
 		evt.db.close;
 	});
