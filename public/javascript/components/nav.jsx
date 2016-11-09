@@ -21,6 +21,7 @@ class nav extends React.Component{
                   <div className="row">
                     <div className="col-xs-10 col-sm-1 col-md-1 col-lg-1">
                       <div className="navbar-header">
+                        <img src="../../images/logo.png" style={{height: "46px"}}/>
                       </div>
                     </div>                
 

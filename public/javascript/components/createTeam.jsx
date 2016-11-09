@@ -103,9 +103,9 @@ class createTeam extends React.Component{
                               <Input {...textareaProps} type="textarea" placeholder="随便写" name="description"/>
                             </FormItem>
 
-                            <FormItem wrapperCol={{ span: 12, offset: 7 }}>
+                            <FormItem wrapperCol={{ span: 16, offset: 7 }}>
                               <Button type="primary" onClick={this.handleSubmit.bind(this)}>确定</Button>
-                              &nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;
                               <Button type="ghost" onClick={this.handleReset.bind(this)}>重置</Button>
                             </FormItem>
                           </Form>

@@ -59,7 +59,7 @@ class fund extends React.Component{
             } 
             var stringTime = (new Date(values.time)).toLocaleDateString() + " 00:00:00";
             var time = (new Date(stringTime)).getTime();
-            var money = parseInt(this.state.data.money) + parseInt(values.money);              
+            var money = praseDouble(this.state.data.money) + praseDouble(values.money);              
             var members='[{"provider":"'+ this.state.data.provider +'","user_id":"'+ this.state.data.id +'","money":"'+ money +'"}]'; 
             var bill='[{"provider":"'+ this.state.data.provider +'","user_id":"'+ this.state.data.id +'","money":"'+ money +'","name":"'+member.name+'"}]'; 
             $.ajax({

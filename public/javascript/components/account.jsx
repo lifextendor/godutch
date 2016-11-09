@@ -73,7 +73,7 @@ class account extends React.Component{
             var time = (new Date(stringTime)).getTime();
             var ns = 0;
             for (var i = this.state.selectedRows.length - 1; i >= 0; i--) {
-                ns+=parseInt(this.state.selectedRows[i].num.n);
+                ns+=praseDouble(this.state.selectedRows[i].num.n);
             }
             var average = values.money/ns; 
             if (e.target.innerText=="花 费") {
@@ -85,7 +85,7 @@ class account extends React.Component{
                var member={};
                member.provider=this.state.selectedRows[i].provider;
                member.user_id=this.state.selectedRows[i].key;
-               member.money=average*this.state.selectedRows[i].num.n+parseInt(this.state.selectedRows[i].balance);
+               member.money=average*this.state.selectedRows[i].num.n+praseDouble(this.state.selectedRows[i].balance);
                member.name=this.state.selectedRows[i].name;
                var membersjson='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+member.money+'"}';
                var billjson='{"provider":"'+member.provider+'","user_id":"'+member.user_id+'","money":"'+average+'","name":"'+member.name+'"}';
