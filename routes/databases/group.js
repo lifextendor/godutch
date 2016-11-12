@@ -18,7 +18,7 @@ var OPERATE_GRANT_MAP = {
 	MANAGE:[GRANT.Captain]
 };
 
-var groupInfoProps = ['createtime','creator','description','gname','id','members','type'];
+var groupInfoProps = ['createtime','creator','description','gname','id','members','balance','type'];
 
 /*************** Group操作 ****************/
 /**
@@ -84,12 +84,15 @@ function findGroupById(groupId,provider,userId){
 						}
 						value=members;
 					}
-					if(value){
+					if(value || value === 0 || value === ''){
 						result[prop]=value;
 					}
 					if(grant){
 						result.grant = grant;
 					}
+				}
+				if(result && result.type === 'association'){
+					result.average = doc.average;
 				}
 			}
 			deferred.resolve(result);
@@ -123,6 +126,7 @@ function findGroupByCreator(provider,userId){
 					id:docs[i].id,
 					groupName:docs[i].gname,
 					members:docs[i].members.length,
+					balance:docs[i].balance || 0,
 					description:docs[i].description,
 					createTime:docs[i].createtime,
 					type:docs[i].type,
@@ -160,6 +164,7 @@ function findGroupByMember(provider,userId){
 					id:docs[i].id,
 					groupName:docs[i].gname,
 					members:docs[i].members.length,
+					balance:docs[i].balance || 0,
 					description:docs[i].description,
 					createTime:docs[i].createtime,
 					type:docs[i].type,
@@ -238,6 +243,7 @@ function findGroupByUser(provider,userId){
 						id:docs[i].id,
 						groupName:docs[i].gname,
 						members:docs[i].members.length,
+						balance:docs[i].balance || 0,
 						description:docs[i].description,
 						createTime:docs[i].createtime,
 						type:docs[i].type,

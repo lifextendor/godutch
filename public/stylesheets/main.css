@@ -11166,6 +11166,45 @@ textarea.ant-time-picker-input {
   line-height: 1;
   vertical-align: bottom;
 }
+.message {
+  border: 2px solid #ececec;
+  margin: 20px 100px; }
+
+@media only screen and (max-width: 980px) {
+  .message {
+    margin: 10px 0px; } }
+
+@media only screen and (max-width: 650px) {
+  .message {
+    margin: 10px -2px; } }
+
+.message .close-btn {
+  height: 32px;
+  width: 32px;
+  position: relative;
+  top: -36px;
+  right: -583px; }
+
+.message .close-btn:hover {
+  font-weight: 700; }
+
+.message .ant-card-body {
+  padding: 0; }
+
+.message-content {
+  text-align: center;
+  font-size: 18px;
+  margin: 15px; }
+
+.message-footer {
+  text-align: center;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-top: 1px solid #ececec; }
+
+.message-footer button {
+  margin-left: 15px;
+  margin-right: 15px; }
 .row {
   margin: 0; }
 

@@ -33,6 +33,7 @@ router.get('/findusers/:userNameOrUserId', function (req, res, next) {
  * 创建团队
  * rest服务相对地址："/users/creategroup"，http方法为:“PUT”
  * 请求体必须包含type信息，有以下值：normal（吃饭团账本）,bill（合租账本）,fund（部门活动经费）,association（协会经费）
+ * 同时还有description团队描述，gname团队名，average为类型为协会时的固定人均花费这几个参数
  */
 router.put('/creategroup', function (req, res, next) {
     var user = req.user;
@@ -48,12 +49,14 @@ router.put('/creategroup', function (req, res, next) {
             try{
                 var gName = reqBody.gname,
                     description = reqBody.description,
+                    average = +reqBody.average,
                     creator = {provider:provider,user_id:user_id,user_name:user_name},
                     groupInfo = {
                         id:Util.getGuid(),
                         gname:gName,
                         //一开始余额为零
                         balance:0,
+                        average:average,
                         type: Util.getGroupType(type),
                         description: description,
                         creator:creator
@@ -205,8 +208,8 @@ router.post('/group/:id/leave',function(req, res, next) {
 /**
  * 算账
  * rest服务相对地址："/users/group/1/updatemoney"，其中1为团Id，http方法为:“PUT”
- * 请求参数如下：{balance:0,total:33,members:[{provider:'qq',user_id:1,money:10}],dataTime:121321313,bill:[{provider:'qq',user_id:1,money:11},{provider:'qq',user_id:2,money:22}]}
- * 其中balance为总余额，total为消费总额，members为成员及其余额，dataTime为计算时间（单位为毫秒），bill为当前消费帐单，为消费涉及的成员及其所消费的钱
+ * 请求参数如下：{balance:0,balanceCost:0,,cost:33,members:[{provider:'qq',user_id:1,money:10}],dataTime:121321313,bill:[{provider:'qq',user_id:1,money:11},{provider:'qq',user_id:2,money:22}]}
+ * 其中balance为总余额，balanceCost为余额的变化值，cost为消费总额，members为成员及其余额，dataTime为计算时间（单位为毫秒），bill为当前消费帐单，为消费涉及的成员及其所消费的钱
  */
 router.put('/group/:id/updatemoney',function(req, res, next) {
     var user = req.user;
@@ -216,7 +219,8 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
         var reqBody = req.body;
         var groupId = req.params.id,
             balance = +reqBody.balance,
-            totalMoney = +reqBody.total,
+            balanceCost = +reqBody.balanceCost,
+            cost = +reqBody.cost,
             members = JSON.parse(reqBody.members),
             bill = JSON.parse(reqBody.bill),
             dateTime = +reqBody.dateTime;
@@ -229,7 +233,8 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
                     groupid:groupId,
                     datetime:dateTime,
                     members:bill,
-                    money:totalMoney
+                    money:cost,
+                    balanceCost:balanceCost
                 }).then(function(){
                     res.send({result:'success',operate:'updatemoney'});
                 }).catch(function(){

@@ -92,8 +92,9 @@ class createTeam extends React.Component{
                             >
                               <Select {...texttypeProps} size="large" defaultValue="normal" name="type">
                                 <Option value="normal">吃饭团账本</Option>
+                                <Option value="association">协会活动账本</Option>
                                 <Option value="bill">合租账本</Option>
-                                <Option value="fund">活动经费</Option>
+                                <Option value="fund">部门活动经费</Option>                            
                               </Select>
                             </FormItem>
                             <FormItem

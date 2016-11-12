@@ -1,17 +1,24 @@
+@mixin max-screen($res){
+  @media only screen and ( max-width: $res )
+  {
+    @content;
+  }
+}
 .message{
   border: 2px solid #ececec;
   margin: 20px 100px;
 }
-@media screen and （max-width： 980px） {
-	.message{
-  		margin: 10px 0px;
-	}
+@include max-screen(980px) {
+  .message{
+      margin: 10px 0px;
+  }
 }
-@media screen and （max-width： 650px） {
-	.message{
-  		margin: 10px -2px;
-	}
+@include max-screen(650px) {
+  .message{
+      margin: 10px -2px;
+  }
 }
+
 .message .close-btn{
   height: 32px;
   width: 32px;
