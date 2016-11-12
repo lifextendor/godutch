@@ -73,7 +73,7 @@ class debt extends React.Component{
             for (var i = this.state.selectedRows.length - 1; i >= 0; i--) {                            
                var member={};
                if (this.state.selectedRows[i].name==this.state.host) {
-                    member.money=average*(ns-1)+parseInt(this.state.selectedRows[i].balance);
+                    member.money=average*(ns-1)+praseDouble(this.state.selectedRows[i].balance);
                }else{
                     member.money=this.state.selectedRows[i].balance-average;
                }

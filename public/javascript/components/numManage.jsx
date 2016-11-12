@@ -18,7 +18,7 @@ class numManage extends React.Component{
     constructor(props) {
         super(props);  
         that=this;     
-        this.state={id:this.props.params.id,numList:[],columns:[],grant:'',power:'授权'};
+        this.state={id:this.props.params.id,numList:[],columns:[],grant:'',power:''};
     }
     succesMessage() {
       return notification['success']({
@@ -104,7 +104,8 @@ class numManage extends React.Component{
             dataType: 'json',
             type: 'PUT',
             data:{provider:provider,user_id:user_id},
-            success: function(data) {                
+            success: function(data) { 
+                debugger               
                 that.componentDidMount();
                 that.setState({power:'授权'});
                 that.succesMessage();
@@ -124,30 +125,31 @@ class numManage extends React.Component{
             {title: '类型',dataIndex: 'power'},       
             {
                 title: '授权',
+                width:'6%',
                 dataIndex: 'copyuserId',
                 render: (copyuserId) => {
-                    var isuser=false;
                     var provider='';
                     for (var i = this.state.numList.length - 1; i >= 0; i--) {
                         if(this.state.numList[i].userId==copyuserId){
                             provider=this.state.numList[i].provider;
-                            if (this.state.numList[i].grant=="CAPTAIN") {                                
-                                isuser=true;
-                                break;
+                            if (this.state.numList[i].grant=="CAPTAIN") {
+                                return ;
+                            }else if(this.state.numList[i].grant=="VICECAPTAIN"){                                
+                                return  <Popconfirm title="确定操作吗？" onConfirm={this.power.bind(this,copyuserId,provider,this.state.power)} onCancel={this.cancel.bind(this)}>
+                                        <Button type="primary">{this.state.power=="取消授权"?"取消授权":"取消授权"}</Button>
+                                        </Popconfirm>
+                            }else{
+                                return  <Popconfirm title="确定操作吗？" onConfirm={this.power.bind(this,copyuserId,provider,this.state.power)} onCancel={this.cancel.bind(this)}>
+                                <Button type="primary">{this.state.power=="授权"?"授权":"授权"}</Button>
+                                </Popconfirm>
                             }                        
                         }
-                    }
-                    if (isuser) {
-                        return;
-                    }else{
-                        return  <Popconfirm title="确定操作吗？" onConfirm={this.power.bind(this,copyuserId,provider,this.state.power)} onCancel={this.cancel.bind(this)}>
-                                <Button type="primary">{this.state.power}</Button>
-                                </Popconfirm>
-                    }    
+                    }                      
                 }
             },
             {
                 title: '开除',
+                width:'6%',
                 dataIndex: 'userId',
                 render: (userId) => {
                     var isuser=false;

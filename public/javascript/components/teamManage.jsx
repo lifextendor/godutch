@@ -138,7 +138,7 @@ class teamManage extends React.Component{
                                     &nbsp;
                                     <Button type="primary" style={buttonStyle}><Link to={type[i] +'/'+list.id}>{boss[i]=='ok'?'记 账':'账 本'}</Link></Button>
                                     &nbsp;                                    
-                                    <Button className={fund[i]} type="primary" style={{margin: "2px 5px 2px 3px"}}><Link to={'numManage/'+list.id}>团 员</Link></Button>
+                                    <Button className={fund[i]} type="primary" style={{margin: "2px 5px 2px 0"}}><Link to={'numManage/'+list.id}>团 员</Link></Button>
                                     &nbsp;                                    
                                     <Button className={fund[i]} type="primary" style={buttonStyle}><Link to={'invitation/'+list.id}>邀 请</Link></Button>                                  
                                 </Panel>
