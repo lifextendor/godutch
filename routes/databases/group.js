@@ -344,9 +344,10 @@ function deauthorizeViceCapTain(groupId,provider,userId,memberInfo){
  * @param provider 用户的提供者
  * @param userId 用户在提供者处的id
  * @param memberInfos 成员的余额,memberInfos的信息应该是这样：[{provider:'a',user_id:1,money:10},{provider:'b',user_id:2,money:100}];
+ * @param balance 组里面所剩余额
  * @returns {*}
  */
-function updateMoney(groupId,provider,userId,memberInfos){
+function updateMoney(groupId,provider,userId,memberInfos,balance){
 	var deferred = when.defer(),
 		updateMoneyPromise = deferred.promise;
 		console.info('updateMoney begin checkGrant')
@@ -354,8 +355,13 @@ function updateMoney(groupId,provider,userId,memberInfos){
 		var promises = [];
 		for(var i = 0, len = memberInfos.length; i < len; i++){
 			var memberInfo = memberInfos[i];
-			var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.user_id},
+			var queryDoc = {id:groupId,'members.user.provider':memberInfo.provider,'members.user.user_id':memberInfo.user_id};
+			var updateDoc;
+			if(balance || balance === 0){
+				updateDoc = {'$set':{'members.$.money':memberInfo.money,'balance':balance}};
+			}else{
 				updateDoc = {'$set':{'members.$.money':memberInfo.money}};
+			}
 			var promise = updateMember(queryDoc, updateDoc);
 			promises.push(promise);
 		}

@@ -32,7 +32,7 @@ router.get('/findusers/:userNameOrUserId', function (req, res, next) {
 /**
  * 创建团队
  * rest服务相对地址："/users/creategroup"，http方法为:“PUT”
- * 请求体必须包含type信息，有以下值：normal（吃饭团账本）,bill（合租账本）,fund（活动经费）
+ * 请求体必须包含type信息，有以下值：normal（吃饭团账本）,bill（合租账本）,fund（部门活动经费）,association（协会经费）
  */
 router.put('/creategroup', function (req, res, next) {
     var user = req.user;
@@ -52,6 +52,8 @@ router.put('/creategroup', function (req, res, next) {
                     groupInfo = {
                         id:Util.getGuid(),
                         gname:gName,
+                        //一开始余额为零
+                        balance:0,
                         type: Util.getGroupType(type),
                         description: description,
                         creator:creator
@@ -203,8 +205,8 @@ router.post('/group/:id/leave',function(req, res, next) {
 /**
  * 算账
  * rest服务相对地址："/users/group/1/updatemoney"，其中1为团Id，http方法为:“PUT”
- * 请求参数如下：{total:33,members:[{provider:'qq',user_id:1,money:10}],dataTime:121321313,bill:[{provider:'qq',user_id:1,money:11},{provider:'qq',user_id:2,money:22}]}
- * 其中total为消费总额，members为成员及其余额，dataTime为计算时间（单位为毫秒），bill为当前消费帐单，为消费涉及的成员及其所消费的钱
+ * 请求参数如下：{balance:0,total:33,members:[{provider:'qq',user_id:1,money:10}],dataTime:121321313,bill:[{provider:'qq',user_id:1,money:11},{provider:'qq',user_id:2,money:22}]}
+ * 其中balance为总余额，total为消费总额，members为成员及其余额，dataTime为计算时间（单位为毫秒），bill为当前消费帐单，为消费涉及的成员及其所消费的钱
  */
 router.put('/group/:id/updatemoney',function(req, res, next) {
     var user = req.user;
@@ -213,13 +215,14 @@ router.put('/group/:id/updatemoney',function(req, res, next) {
         var user_id = user.id || user.userID;
         var reqBody = req.body;
         var groupId = req.params.id,
-            totalMoney = reqBody.total,
+            balance = +reqBody.balance,
+            totalMoney = +reqBody.total,
             members = JSON.parse(reqBody.members),
             bill = JSON.parse(reqBody.bill),
             dateTime = +reqBody.dateTime;
         try{
             console.info('begin updatemoney');
-            Group.updateMoney(groupId,provider,user_id,members).then(function(){
+            Group.updateMoney(groupId,provider,user_id,members,balance).then(function(){
                 console.info('begin createBill');
                 Bill.createBill({
                     id:Util.getGuid(),
